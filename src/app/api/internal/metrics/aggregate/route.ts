@@ -41,5 +41,12 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(data, { status: data.error === 'FORBIDDEN' ? 403 : 400 });
   }
 
-  return NextResponse.json(data);
+  // Normalizar: el RPC puede devolver el array directo o { data: [...] }
+  const rows: unknown[] = Array.isArray(data)
+    ? data
+    : Array.isArray((data as Record<string, unknown>)?.data)
+      ? (data as Record<string, unknown[]>).data
+      : [];
+
+  return NextResponse.json({ ok: true, data: rows });
 }
