@@ -1,0 +1,87 @@
+/**
+ * POST /api/public/submit
+ * Endpoint público: recibe respuestas del cliente y llama al RPC submit_feedback.
+ * No requiere autenticación.
+ *
+ * Rate limit: 5 envíos por IP cada 10 minutos.
+ * IP hasheada con SHA-256 + secret antes de almacenarla.
+ */
+import { NextRequest, NextResponse } from 'next/server';
+import { z } from 'zod';
+import { createHash } from 'crypto';
+import { createClient } from '@/lib/supabase/server';
+import { checkRateLimit } from '@/lib/rate-limit';
+import { validateShortCode } from '@/utils/shortcode';
+
+const answerSchema = z.object({
+  question_id: z.number().int().positive(),
+  value:       z.number().int().min(1).max(5),
+  comment:     z.string().max(500).optional(),
+});
+
+const schema = z.object({
+  code:    z.string().length(8, 'El código debe tener exactamente 8 caracteres'),
+  answers: z.array(answerSchema).min(1).max(50),
+});
+
+export async function POST(req: NextRequest) {
+  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+
+  // Rate limit: 5 envíos por IP por 10 minutos
+  const rl = checkRateLimit(`submit:${ip}`, 5, 600_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'RATE_LIMIT', message: 'Demasiados envíos. Intenta más tarde.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) },
+      }
+    );
+  }
+
+  const body = await req.json().catch(() => null);
+  const parsed = schema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json(
+      { error: 'INVALID_PAYLOAD', message: 'Datos inválidos', details: parsed.error.flatten() },
+      { status: 400 }
+    );
+  }
+
+  const { code, answers } = parsed.data;
+
+  if (!validateShortCode(code)) {
+    return NextResponse.json({ error: 'INVALID', message: 'Código inválido' }, { status: 400 });
+  }
+
+  // Hash de IP: no reversible (SHA-256 + secret de entorno)
+  const secret  = process.env.IP_HASH_SECRET ?? 'bajaws-fallback';
+  const ipHash  = createHash('sha256').update(ip + secret).digest('hex');
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc('submit_feedback', {
+    p_code:    code.toUpperCase(),
+    p_answers: answers,
+    p_ip_hash: ipHash,
+  });
+
+  if (error) {
+    return NextResponse.json({ error: 'SERVER_ERROR', message: error.message }, { status: 500 });
+  }
+
+  if (data?.error) {
+    const statusMap: Record<string, number> = {
+      INVALID:          404,
+      EXPIRED:          410,
+      USED:             409,
+      BLOCKED:          403,
+      RATE_LIMIT:       429,
+      INVALID_PAYLOAD:  400,
+      INVALID_VALUE:    400,
+      INVALID_QUESTION: 400,
+    };
+    return NextResponse.json(data, { status: statusMap[data.error] ?? 400 });
+  }
+
+  return NextResponse.json(data, { status: 201 });
+}

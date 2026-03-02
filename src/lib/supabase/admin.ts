@@ -1,0 +1,26 @@
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
+
+/**
+ * Crea/retorna el cliente Supabase service_role (lazy singleton).
+ * Bypasa RLS completamente. NUNCA usar en cliente ni exponer al browser.
+ * Solo para Route Handlers server-side.
+ */
+let _client: SupabaseClient | null = null;
+
+export function getAdminClient(): SupabaseClient {
+  if (!_client) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+    if (!url || !key) {
+      throw new Error(
+        'Faltan variables de entorno: NEXT_PUBLIC_SUPABASE_URL o SUPABASE_SERVICE_ROLE_KEY'
+      );
+    }
+
+    _client = createClient(url, key, {
+      auth: { autoRefreshToken: false, persistSession: false },
+    });
+  }
+  return _client;
+}
