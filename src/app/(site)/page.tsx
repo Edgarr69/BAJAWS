@@ -65,7 +65,7 @@ export default function HomePage() {
             {/* Eyebrow — nombre de empresa */}
             <div className="flex items-center gap-3 mb-5">
               <span className="text-teal-300 text-xs font-bold tracking-[0.25em] uppercase">
-                Baja Wastewater Solution
+                Baja Wastewater Solutions
               </span>
               <span className="h-px w-12 bg-teal-400/60" />
             </div>
