@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { KpiCard } from '@/components/panel/KpiCard';
-import { getMetrics } from '@/lib/api';
+import { getMetrics, getLinkStats } from '@/lib/api';
 import type { AggregateMetric } from '@/types/panel';
 import { useCountUp } from '@/hooks/useCountUp';
 
@@ -52,6 +52,7 @@ export default function DashboardPage() {
   const [loading, setLoading]     = useState(true);
   const [topicData, setTopicData] = useState<AggregateMetric[]>([]);
   const [trendData, setTrendData] = useState<AggregateMetric[]>([]);
+  const [linkStats, setLinkStats] = useState({ total: 0, used: 0, pct: 0 });
   const [dateFrom, setDateFrom]   = useState(monthAgo);
   const [dateTo, setDateTo]       = useState(today);
   const [groupBy, setGroupBy]     = useState<'day' | 'week'>('day');
@@ -59,12 +60,14 @@ export default function DashboardPage() {
   const load = useCallback(async () => {
     setLoading(true);
     try {
-      const [topicRes, trendRes] = await Promise.all([
+      const [topicRes, trendRes, stats] = await Promise.all([
         getMetrics({ date_from: dateFrom, date_to: dateTo, group_by: 'topic' }),
         getMetrics({ date_from: dateFrom, date_to: dateTo, group_by: groupBy }),
+        getLinkStats({ date_from: dateFrom, date_to: dateTo }),
       ]);
       setTopicData(topicRes.data ?? []);
       setTrendData(trendRes.data ?? []);
+      setLinkStats(stats);
     } catch {
       toast.error('Error al cargar métricas');
     } finally {
@@ -148,7 +151,14 @@ export default function DashboardPage() {
         <AnimatedKpi title="Score global"     numValue={globalAvg}     subtitle="Escala 1–5"      color="blue"  loading={loading} />
         <AnimatedKpi title="% Positivos"      numValue={pctPositive}   formatted={`${pctPositive.toFixed(1)}%`}  subtitle="Respuestas 4–5"  color="green" loading={loading} />
         <AnimatedKpi title="% Negativos"      numValue={pctNegative}   formatted={`${pctNegative.toFixed(1)}%`}  subtitle="Respuestas 1–2"  color="red"   loading={loading} />
-        <AnimatedKpi title="Total respuestas" numValue={totalResponses} subtitle="En el periodo"  color="gray"  loading={loading} />
+        <AnimatedKpi
+          title="Formularios contestados"
+          numValue={linkStats.pct}
+          formatted={`${linkStats.pct}%`}
+          subtitle={`${linkStats.used} de ${linkStats.total} enviados`}
+          color={linkStats.pct >= 70 ? 'green' : linkStats.pct >= 40 ? 'blue' : 'red'}
+          loading={loading}
+        />
       </div>
 
       {/* ── Gráficas fila 1 ──────────────────────────────────────────────────── */}

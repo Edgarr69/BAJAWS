@@ -24,6 +24,15 @@ export const getMetrics = (params: Record<string, string>) => {
 // ── Enlaces ──────────────────────────────────────────────────────────────────
 export const getLinks = () => apiFetch<unknown[]>('/api/internal/links');
 
+export const getLinkStats = async (params: { date_from: string; date_to: string }) => {
+  const qs = new URLSearchParams({ ...params, _stats: '1' }).toString();
+  const links = await apiFetch<{ used_at: string | null }[]>(`/api/internal/links?${qs}`);
+  const total = links.length;
+  const used  = links.filter(l => l.used_at != null).length;
+  const pct   = total > 0 ? Math.round((used / total) * 100) : 0;
+  return { total, used, pct };
+};
+
 export const createService = (body: { folio?: string; service_date?: string; notes?: string }) =>
   apiFetch<{ ok: boolean; service: { id: string } }>('/api/internal/services/create', {
     method: 'POST',
