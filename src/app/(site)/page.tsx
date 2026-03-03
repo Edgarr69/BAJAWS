@@ -74,7 +74,7 @@ export default function HomePage() {
             <h1 className="font-extrabold leading-[1.1] tracking-tight mb-5 text-white text-[2rem] sm:text-[2.8rem] lg:text-[3rem] xl:text-[3.4rem]">
               Soluciones integrales en
               <span className="block text-teal-300 mt-1">
-                manejo de líquidos peligrosos
+                manejo de residuos peligrosos
               </span>
             </h1>
 
