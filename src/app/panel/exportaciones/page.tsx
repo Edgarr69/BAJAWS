@@ -1,78 +1,97 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Download } from 'lucide-react';
+import { FileDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { getMetrics, getRawAnswers, getMe } from '@/lib/api';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { getSubmissions } from '@/lib/api';
+import dynamic from 'next/dynamic';
+import type { ReportData } from '@/types/report';
 
-function toCSV(rows: Record<string, unknown>[]): string {
-  if (!rows.length) return '';
-  const headers = Object.keys(rows[0]);
-  const lines = [
-    headers.join(','),
-    ...rows.map(r =>
-      headers.map(h => {
-        const v = String(r[h] ?? '');
-        return v.includes(',') || v.includes('"') ? `"${v.replace(/"/g, '""')}"` : v;
-      }).join(',')
-    ),
-  ];
-  return lines.join('\n');
-}
+const today    = new Date().toISOString().slice(0, 10);
+const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
 
-function downloadCSV(content: string, filename: string) {
-  const blob = new Blob(['\ufeff' + content], { type: 'text/csv;charset=utf-8;' });
-  const url  = URL.createObjectURL(blob);
-  const a    = document.createElement('a');
-  a.href = url; a.download = filename; a.click();
-  URL.revokeObjectURL(url);
-}
+const PdfReportTemplateLazy = dynamic(
+  () => import('@/components/panel/PdfReportTemplate').then(m => ({ default: m.PdfReportTemplate })),
+  { ssr: false }
+);
 
 export default function ExportacionesPage() {
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo]     = useState('');
-  const [loading, setLoading]   = useState<string | null>(null);
-  const [role, setRole]         = useState<string>('atencion');
+  const [companies, setCompanies]   = useState<string[]>([]);
+  const [loadingCo, setLoadingCo]   = useState(true);
+  const [company, setCompany]       = useState('__all__');
+  const [dateFrom, setDateFrom]     = useState(monthAgo);
+  const [dateTo, setDateTo]         = useState(today);
+  const [dateError, setDateError]   = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [reportMounted, setReportMounted] = useState(false);
+  const reportDataRef = useRef<ReportData | null>(null);
 
-  // Cargar rol al montar
+  // Cargar lista de empresas únicas
   useEffect(() => {
-    getMe().then(me => setRole(me.role)).catch(() => {});
+    getSubmissions()
+      .then(subs => {
+        const unique = Array.from(
+          new Set(subs.map(s => s.company_name).filter(Boolean) as string[])
+        ).sort();
+        setCompanies(unique);
+      })
+      .catch(() => { /* sin empresas disponibles */ })
+      .finally(() => setLoadingCo(false));
   }, []);
 
-  async function exportAgregado() {
-    setLoading('agregado');
-    try {
-      const params: Record<string, string> = { group_by: 'topic' };
-      if (dateFrom) params.date_from = dateFrom;
-      if (dateTo)   params.date_to   = dateTo;
-      const res = await getMetrics(params);
-      const csv = toCSV((res as { data: Record<string, unknown>[] }).data ?? []);
-      downloadCSV(csv, `metricas-agregadas-${Date.now()}.csv`);
-      toast.success('Exportación descargada');
-    } catch {
-      toast.error('Error al exportar');
-    } finally {
-      setLoading(null);
+  function validateDates(): boolean {
+    if (dateFrom && dateTo && dateFrom > dateTo) {
+      setDateError('La fecha de inicio no puede ser posterior a la fecha de fin.');
+      return false;
     }
+    setDateError('');
+    return true;
   }
 
-  async function exportRaw() {
-    setLoading('raw');
+  async function handleGenerate() {
+    if (!validateDates()) return;
+    setGenerating(true);
     try {
-      const params: Record<string, string> = {};
-      if (dateFrom) params.date_from = dateFrom;
-      if (dateTo)   params.date_to   = dateTo;
-      const res = await getRawAnswers(params);
-      const csv = toCSV((res as { data: Record<string, unknown>[] }).data ?? []);
-      downloadCSV(csv, `respuestas-raw-${Date.now()}.csv`);
-      toast.success('Exportación descargada');
-    } catch {
-      toast.error('Error al exportar');
+      const { buildReportData } = await import('@/lib/report-data');
+      const data = await buildReportData({
+        companyName: company !== '__all__' ? company : undefined,
+        dateFrom:    dateFrom || null,
+        dateTo:      dateTo   || null,
+      });
+
+      if (data.summary.totalResponses === 0) {
+        toast.info('No hay datos para el filtro seleccionado. Ajusta las fechas o la empresa.');
+        setGenerating(false);
+        return;
+      }
+
+      reportDataRef.current = data;
+      setReportMounted(true);
+
+      // Dar tiempo a React para montar y pintar el template
+      await new Promise(r => setTimeout(r, 300));
+
+      const { generatePdf }   = await import('@/lib/generate-pdf');
+      const { getPdfPageIds } = await import('@/components/panel/PdfReportTemplate');
+      const co   = company !== '__all__' ? company.toLowerCase().replace(/\s+/g, '-') : 'general';
+      const from = dateFrom || 'inicio';
+      const to   = dateTo   || 'fin';
+      const filename = `reporte_evaluacion_${co}_${from}_${to}.pdf`;
+
+      await generatePdf(getPdfPageIds(data), filename);
+      toast.success('PDF generado y descargado correctamente');
+    } catch (err) {
+      console.error(err);
+      toast.error('Error al generar el PDF. Intenta de nuevo.');
     } finally {
-      setLoading(null);
+      setGenerating(false);
+      setReportMounted(false);
+      reportDataRef.current = null;
     }
   }
 
@@ -80,67 +99,111 @@ export default function ExportacionesPage() {
     <div className="max-w-2xl space-y-6">
       <h1 className="text-xl font-bold text-slate-800">Exportaciones</h1>
 
-      {/* Filtro de fechas */}
       <Card className="border-slate-200">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold text-slate-700">Rango de fechas (opcional)</CardTitle>
+          <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+            <FileDown className="w-4 h-4 text-primary-700" />
+            Generar reporte PDF
+          </CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-wrap gap-4 items-end">
+        <CardContent className="space-y-4">
+          {/* Empresa */}
           <div className="space-y-1.5">
-            <Label className="text-xs">Desde</Label>
-            <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
-              className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
+            <Label className="text-xs">Empresa</Label>
+            {loadingCo ? (
+              <Skeleton className="h-9 w-full" />
+            ) : (
+              <Select value={company} onValueChange={setCompany}>
+                <SelectTrigger className="h-9 text-sm bg-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="__all__">Todas las evaluaciones (general)</SelectItem>
+                  {companies.map(c => (
+                    <SelectItem key={c} value={c}>{c}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {!loadingCo && companies.length === 0 && (
+              <p className="text-xs text-slate-400">
+                No hay empresas registradas aún. Las empresas aparecen aquí cuando los clientes completan el formulario con su nombre.
+              </p>
+            )}
           </div>
-          <div className="space-y-1.5">
-            <Label className="text-xs">Hasta</Label>
-            <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
-              className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
+
+          {/* Fechas */}
+          <div className="flex flex-wrap gap-4">
+            <div className="space-y-1.5">
+              <Label className="text-xs">Desde</Label>
+              <input
+                type="date"
+                value={dateFrom}
+                onChange={e => { setDateFrom(e.target.value); setDateError(''); }}
+                className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white h-9 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div className="space-y-1.5">
+              <Label className="text-xs">Hasta</Label>
+              <input
+                type="date"
+                value={dateTo}
+                onChange={e => { setDateTo(e.target.value); setDateError(''); }}
+                className="text-sm border border-slate-200 rounded-lg px-3 py-2 bg-white h-9 focus:outline-none focus:ring-2 focus:ring-primary-500"
+              />
+            </div>
+            <div className="flex items-end">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9"
+                onClick={() => { setDateFrom(monthAgo); setDateTo(today); setDateError(''); }}
+              >
+                Reset fechas
+              </Button>
+            </div>
           </div>
-          <Button variant="outline" size="sm" onClick={() => { setDateFrom(''); setDateTo(''); }}>
-            Limpiar
+
+          {dateError && (
+            <p className="text-xs text-red-600">{dateError}</p>
+          )}
+
+          {/* Descripción del contenido */}
+          <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-500 space-y-1">
+            <p className="font-medium text-slate-700">El reporte incluye:</p>
+            <ul className="list-disc list-inside space-y-0.5 pl-1">
+              <li>Score global y métricas de satisfacción</li>
+              <li>Resultados por categoría con gráfica de barras</li>
+              <li>Diagnóstico y hallazgos del período</li>
+              <li>Planes de acción para categorías con bajo desempeño</li>
+              {company !== '__all__' && <li>Detalle por pregunta para la empresa seleccionada</li>}
+            </ul>
+          </div>
+
+          <Button
+            onClick={handleGenerate}
+            disabled={generating || !!dateError}
+            className="w-full bg-primary-700 hover:bg-primary-600 gap-2"
+          >
+            {generating ? (
+              <>
+                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                Generando PDF…
+              </>
+            ) : (
+              <>
+                <FileDown className="w-4 h-4" />
+                Generar y descargar PDF
+              </>
+            )}
           </Button>
         </CardContent>
       </Card>
 
-      {/* Opciones de descarga */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Card className="border-slate-200">
-          <CardContent className="pt-5 space-y-3">
-            <div>
-              <p className="font-medium text-slate-800 text-sm">Métricas agregadas</p>
-              <p className="text-xs text-slate-500 mt-1">Promedios y distribución por tema. Disponible para todos los roles.</p>
-            </div>
-            <Button
-              onClick={exportAgregado}
-              disabled={!!loading}
-              className="w-full bg-primary-700 hover:bg-primary-600 gap-2"
-            >
-              <Download className="w-4 h-4" />
-              {loading === 'agregado' ? 'Exportando…' : 'Descargar CSV'}
-            </Button>
-          </CardContent>
-        </Card>
-
-        {role === 'admin' && (
-          <Card className="border-slate-200">
-            <CardContent className="pt-5 space-y-3">
-              <div>
-                <p className="font-medium text-slate-800 text-sm">Respuestas raw</p>
-                <p className="text-xs text-slate-500 mt-1">Pregunta → respuesta + comentario por cliente. Solo administradores.</p>
-              </div>
-              <Button
-                onClick={exportRaw}
-                disabled={!!loading}
-                variant="outline"
-                className="w-full gap-2 border-primary-200 text-primary-700 hover:bg-primary-50"
-              >
-                <Download className="w-4 h-4" />
-                {loading === 'raw' ? 'Exportando…' : 'Descargar CSV'}
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      {/* Template PDF oculto — montado solo durante la generación */}
+      {reportMounted && reportDataRef.current && (
+        <PdfReportTemplateLazy data={reportDataRef.current} />
+      )}
     </div>
   );
 }

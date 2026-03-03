@@ -18,7 +18,7 @@ export const getMe = () =>
 // ── Métricas ─────────────────────────────────────────────────────────────────
 export const getMetrics = (params: Record<string, string>) => {
   const qs = new URLSearchParams(params).toString();
-  return apiFetch<{ ok: boolean; data: unknown[] }>(`/api/internal/metrics/aggregate?${qs}`);
+  return apiFetch<AggregateResponse>(`/api/internal/metrics/aggregate?${qs}`);
 };
 
 // ── Enlaces ──────────────────────────────────────────────────────────────────
@@ -39,13 +39,15 @@ export const createLink = (body: { service_id?: string; ttl_seconds?: number }) 
   });
 
 // ── Submissions ───────────────────────────────────────────────────────────────
+import type { Submission, Answer, AggregateResponse } from '@/types/panel';
+
 export const getSubmissions = (params?: Record<string, string>) => {
   const qs = params ? '?' + new URLSearchParams(params).toString() : '';
-  return apiFetch<unknown[]>(`/api/internal/submissions${qs}`);
+  return apiFetch<Submission[]>(`/api/internal/submissions${qs}`);
 };
 
 export const getSubmission = (id: string) =>
-  apiFetch<{ submission: unknown; answers: unknown[] }>(`/api/internal/submissions/${id}`);
+  apiFetch<{ submission: Submission; answers: Answer[] }>(`/api/internal/submissions/${id}`);
 
 // ── Preguntas ─────────────────────────────────────────────────────────────────
 export const getQuestions = () => apiFetch<unknown[]>('/api/admin/questions');
