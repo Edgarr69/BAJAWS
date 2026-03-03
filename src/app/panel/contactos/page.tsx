@@ -17,6 +17,7 @@ export default function ContactosPage() {
   const [canDelete, setDelete]  = useState(false);
   const [detail, setDetail]     = useState<ContactRequest | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const [filter, setFilter]     = useState<'all' | 'contacto' | 'cotizacion'>('all');
 
   useEffect(() => {
     Promise.all([
@@ -46,6 +47,10 @@ export default function ContactosPage() {
   const fuenteLabel = (f: string) =>
     f === 'cotizacion' ? 'Cotización' : 'Contacto';
 
+  const filtered = filter === 'all' ? items : items.filter(i => i.fuente === filter);
+  const countContacto   = items.filter(i => i.fuente === 'contacto').length;
+  const countCotizacion = items.filter(i => i.fuente === 'cotizacion').length;
+
   return (
     <div className="max-w-4xl space-y-6">
       <div>
@@ -57,31 +62,69 @@ export default function ContactosPage() {
 
       <Card className="border-slate-200">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-            <Mail className="w-4 h-4 text-primary-600" />
-            Todos los mensajes
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+              <Mail className="w-4 h-4 text-primary-600" />
+              {filter === 'all' ? 'Todos los mensajes' : fuenteLabel(filter)}
+              {!loading && filtered.length > 0 && (
+                <span className="ml-1 bg-primary-100 text-primary-700 text-xs font-bold px-2 py-0.5 rounded-full">
+                  {filtered.length}
+                </span>
+              )}
+            </CardTitle>
+
+            {/* Filtros */}
             {!loading && items.length > 0 && (
-              <span className="ml-1 bg-primary-100 text-primary-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                {items.length}
-              </span>
+              <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+                {([
+                  { key: 'all',        label: 'Todos',      count: items.length },
+                  { key: 'contacto',   label: 'Contacto',   count: countContacto },
+                  { key: 'cotizacion', label: 'Cotización', count: countCotizacion },
+                ] as const).map(({ key, label, count }) => (
+                  <button
+                    key={key}
+                    onClick={() => setFilter(key)}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
+                      filter === key
+                        ? 'bg-white text-slate-800 shadow-sm'
+                        : 'text-slate-500 hover:text-slate-700'
+                    }`}
+                  >
+                    {label}
+                    {count > 0 && (
+                      <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
+                        filter === key
+                          ? key === 'cotizacion'
+                            ? 'bg-accent-100 text-accent-700'
+                            : 'bg-primary-100 text-primary-700'
+                          : 'bg-slate-200 text-slate-500'
+                      }`}>
+                        {count}
+                      </span>
+                    )}
+                  </button>
+                ))}
+              </div>
             )}
-          </CardTitle>
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
             <div className="p-6 space-y-3">
               {[1, 2, 3].map(i => <Skeleton key={i} className="h-16 w-full" />)}
             </div>
-          ) : items.length === 0 ? (
+          ) : filtered.length === 0 ? (
             <div className="text-center py-12">
               <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
                 <Mail className="w-5 h-5 text-slate-400" />
               </div>
-              <p className="text-sm text-slate-400">No hay mensajes todavía</p>
+              <p className="text-sm text-slate-400">
+                {items.length === 0 ? 'No hay mensajes todavía' : `No hay mensajes de tipo "${fuenteLabel(filter)}"`}
+              </p>
             </div>
           ) : (
             <div className="divide-y divide-slate-100">
-              {items.map(item => (
+              {filtered.map(item => (
                 <div
                   key={item.id}
                   className="flex items-start justify-between px-5 py-4 hover:bg-slate-50 transition-colors gap-4"
