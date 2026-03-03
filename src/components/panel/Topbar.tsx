@@ -2,7 +2,7 @@
 
 import { Menu, LogOut } from 'lucide-react';
 import { createClient } from '@/lib/supabase/client';
-import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
@@ -49,6 +49,9 @@ export function Topbar({ user, onMenuClick }: TopbarProps) {
           <DropdownMenuTrigger asChild>
             <button className="focus:outline-none">
               <Avatar className="w-8 h-8 bg-primary-700 cursor-pointer">
+                {user?.avatar_url && (
+                  <AvatarImage src={user.avatar_url} alt={user.full_name ?? user.email ?? ''} referrerPolicy="no-referrer" />
+                )}
                 <AvatarFallback className="bg-primary-700 text-white text-xs font-semibold">
                   {initials}
                 </AvatarFallback>
