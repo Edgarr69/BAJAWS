@@ -45,7 +45,6 @@ export default function FormularioPage() {
   const [companyName, setCompanyName] = useState('');
   const [topicIdx, setTopicIdx]   = useState(0);
   const [submitting, setSubmitting] = useState(false);
-  const [globalScore, setGlobalScore] = useState(0);
 
   useEffect(() => {
     fetch(`/api/public/form?code=${code}`)
@@ -114,8 +113,6 @@ export default function FormularioPage() {
       });
       const data = await res.json();
       if (data.ok) {
-        const total = Object.values(answers).reduce((s, a) => s + a.value, 0);
-        setGlobalScore(total / Object.values(answers).length);
         setState('success');
       } else {
         setErrorMsg(ERROR_MESSAGES[data.error] ?? data.message ?? 'Error al enviar.');
@@ -172,21 +169,12 @@ export default function FormularioPage() {
           <p className="text-slate-500 text-sm max-w-xs">
             Tu opinión es muy importante para nosotros y nos ayuda a mejorar nuestros servicios.
           </p>
-          {globalScore >= 4 && (
-            <div className="mt-2 p-4 bg-accent-50 border border-accent-200 rounded-xl max-w-xs">
-              <p className="text-sm text-accent-800 font-medium mb-2">
-                Nos alegra que hayas tenido una buena experiencia.
-              </p>
-              <a
-                href="https://g.page/r/baja-wastewater/review"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block bg-accent-600 hover:bg-accent-500 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors"
-              >
-                Dejar reseña en Google
-              </a>
-            </div>
-          )}
+          <a
+            href="/"
+            className="mt-2 inline-block bg-primary-700 hover:bg-primary-600 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
+          >
+            Salir
+          </a>
         </div>
       </Shell>
     );
