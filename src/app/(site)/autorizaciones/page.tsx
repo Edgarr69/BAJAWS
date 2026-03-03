@@ -25,7 +25,7 @@ export default function AutorizacionesPage() {
 
           {/* Texto */}
           <div className="lg:col-span-3">
-            <p className="text-gray-600 text-base sm:text-lg leading-relaxed">
+            <p className="text-gray-600 text-base sm:text-lg leading-relaxed text-justify">
               {intro}
             </p>
           </div>

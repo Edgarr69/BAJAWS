@@ -38,7 +38,7 @@ export default function ServiceCard({ title, description, icon }: ServiceCardPro
         {icons[icon]}
       </div>
       <h3 className="font-bold text-gray-900 text-base tracking-wide">{title}</h3>
-      <p className="text-gray-600 text-sm leading-relaxed flex-1">{description}</p>
+      <p className="text-gray-600 text-sm leading-relaxed flex-1 text-justify">{description}</p>
     </div>
   );
 }

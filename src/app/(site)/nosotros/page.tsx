@@ -28,7 +28,7 @@ export default function NosotrosPage() {
             {/* Texto */}
             <div className="lg:col-span-3 space-y-5">
               {paragraphs.map((p, i) => (
-                <p key={i} className="text-gray-700 leading-relaxed text-base">
+                <p key={i} className="text-gray-700 leading-relaxed text-base text-justify">
                   {p}
                 </p>
               ))}
@@ -69,7 +69,7 @@ export default function NosotrosPage() {
                 </svg>
               </div>
               <h2 className="text-lg font-bold text-primary-800 mb-3">{mision.title}</h2>
-              <p className="text-gray-700 leading-relaxed text-sm">{mision.text}</p>
+              <p className="text-gray-700 leading-relaxed text-sm text-justify">{mision.text}</p>
             </div>
 
             <div className="bg-slate-50 border border-slate-200 rounded-2xl p-7">
@@ -80,7 +80,7 @@ export default function NosotrosPage() {
                 </svg>
               </div>
               <h2 className="text-lg font-bold text-slate-800 mb-3">{vision.title}</h2>
-              <p className="text-gray-700 leading-relaxed text-sm">{vision.text}</p>
+              <p className="text-gray-700 leading-relaxed text-sm text-justify">{vision.text}</p>
             </div>
           </div>
         </div>
