@@ -1,8 +1,9 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Eye } from 'lucide-react';
+import { Eye, FileDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -11,6 +12,7 @@ import { getSubmissions, getSubmission } from '@/lib/api';
 import type { Submission, Answer } from '@/types/panel';
 
 export default function RespuestasPage() {
+  const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading]         = useState(true);
   const [dateFrom, setDateFrom]       = useState('');
@@ -80,6 +82,22 @@ export default function RespuestasPage() {
           onChange={e => setSearch(e.target.value)}
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-[160px]"
         />
+        {search.trim() && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="gap-1.5 border-primary-300 text-primary-700 hover:bg-primary-50"
+            onClick={() => {
+              const params = new URLSearchParams({ empresa: search.trim() });
+              if (dateFrom) params.set('date_from', dateFrom);
+              if (dateTo)   params.set('date_to',   dateTo);
+              router.push(`/panel/exportaciones?${params.toString()}`);
+            }}
+          >
+            <FileDown className="w-3.5 h-3.5" />
+            Generar reporte PDF
+          </Button>
+        )}
       </div>
 
       <Card className="border-slate-200">

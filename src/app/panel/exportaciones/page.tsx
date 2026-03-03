@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { FileDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -21,11 +22,12 @@ const PdfReportTemplateLazy = dynamic(
 );
 
 export default function ExportacionesPage() {
+  const searchParams = useSearchParams();
   const [companies, setCompanies]   = useState<string[]>([]);
   const [loadingCo, setLoadingCo]   = useState(true);
-  const [company, setCompany]       = useState('__all__');
-  const [dateFrom, setDateFrom]     = useState(monthAgo);
-  const [dateTo, setDateTo]         = useState(today);
+  const [company, setCompany]       = useState(searchParams.get('empresa') ?? '__all__');
+  const [dateFrom, setDateFrom]     = useState(searchParams.get('date_from') ?? monthAgo);
+  const [dateTo, setDateTo]         = useState(searchParams.get('date_to') ?? today);
   const [dateError, setDateError]   = useState('');
   const [generating, setGenerating] = useState(false);
   const [reportMounted, setReportMounted] = useState(false);
