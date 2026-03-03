@@ -125,9 +125,12 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-8 pt-6 border-t border-slate-700 text-center">
+        <div className="mt-8 pt-6 border-t border-slate-700 text-center space-y-1">
           <p className="text-gray-500 text-sm">
-            © {year} {name}. Todos los derechos reservados. 
+            © {year} {name}. Todos los derechos reservados.
+          </p>
+          <p className="text-gray-500 text-sm">
+            Hecho por Edgar Cabrera.
           </p>
         </div>
       </div>
