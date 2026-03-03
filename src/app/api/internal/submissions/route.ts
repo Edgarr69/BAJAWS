@@ -15,20 +15,28 @@ export async function GET(req: NextRequest) {
   const date_to   = searchParams.get('date_to');
 
   const admin = getAdminClient();
-  let query = admin
-    .from('feedback_submissions')
-    .select(`
-      id, submitted_at, ip_hash,
-      feedback_links(code, ttl_seconds),
-      services(folio, service_date)
-    `)
-    .order('submitted_at', { ascending: false })
-    .limit(200);
 
-  if (date_from) query = query.gte('submitted_at', date_from);
-  if (date_to)   query = query.lte('submitted_at', date_to + 'T23:59:59');
+  const buildQuery = (withCompanyName: boolean) => {
+    const select = withCompanyName
+      ? `id, submitted_at, company_name, feedback_links(code), services(folio, service_date)`
+      : `id, submitted_at, feedback_links(code), services(folio, service_date)`;
+    let q = admin
+      .from('feedback_submissions')
+      .select(select)
+      .order('submitted_at', { ascending: false })
+      .limit(200);
+    if (date_from) q = q.gte('submitted_at', date_from);
+    if (date_to)   q = q.lte('submitted_at', date_to + 'T23:59:59');
+    return q;
+  };
 
-  const { data, error } = await query;
+  let { data, error } = await buildQuery(true);
+
+  // Si la columna company_name aún no existe (migración pendiente), reintentar sin ella
+  if (error && error.message?.toLowerCase().includes('company_name')) {
+    ({ data, error } = await buildQuery(false));
+  }
+
   if (error) return serverError(error.message);
   return NextResponse.json(data);
 }

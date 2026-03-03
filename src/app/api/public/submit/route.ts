@@ -10,6 +10,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { createHash } from 'crypto';
 import { createClient } from '@/lib/supabase/server';
+import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validateShortCode } from '@/utils/shortcode';
 
@@ -20,8 +21,9 @@ const answerSchema = z.object({
 });
 
 const schema = z.object({
-  code:    z.string().length(8, 'El código debe tener exactamente 8 caracteres'),
-  answers: z.array(answerSchema).min(1).max(50),
+  code:         z.string().length(8, 'El código debe tener exactamente 8 caracteres'),
+  answers:      z.array(answerSchema).min(1).max(50),
+  company_name: z.string().max(120).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -48,7 +50,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { code, answers } = parsed.data;
+  const { code, answers, company_name } = parsed.data;
 
   if (!validateShortCode(code)) {
     return NextResponse.json({ error: 'INVALID', message: 'Código inválido' }, { status: 400 });
@@ -81,6 +83,24 @@ export async function POST(req: NextRequest) {
       INVALID_QUESTION: 400,
     };
     return NextResponse.json(data, { status: statusMap[data.error] ?? 400 });
+  }
+
+  // Si se proporcionó nombre de empresa, actualizamos la submission recién creada
+  if (company_name?.trim()) {
+    const admin = getAdminClient();
+    const { data: latest } = await admin
+      .from('feedback_submissions')
+      .select('id')
+      .eq('ip_hash', ipHash)
+      .order('submitted_at', { ascending: false })
+      .limit(1)
+      .single();
+    if (latest?.id) {
+      await admin
+        .from('feedback_submissions')
+        .update({ company_name: company_name.trim() })
+        .eq('id', latest.id);
+    }
   }
 
   return NextResponse.json(data, { status: 201 });

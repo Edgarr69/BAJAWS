@@ -15,6 +15,7 @@ export default function RespuestasPage() {
   const [loading, setLoading]         = useState(true);
   const [dateFrom, setDateFrom]       = useState('');
   const [dateTo, setDateTo]           = useState('');
+  const [search, setSearch]           = useState('');
   const [detail, setDetail]           = useState<{ submission: Submission; answers: Answer[] } | null>(null);
   const [detailOpen, setDetailOpen]   = useState(false);
   const [detailLoading, setDL]        = useState(false);
@@ -53,6 +54,12 @@ export default function RespuestasPage() {
   const scoreColor = (v: number) =>
     v <= 2 ? 'text-red-600 font-bold' : v === 3 ? 'text-amber-600 font-semibold' : 'text-accent-700 font-bold';
 
+  const filtered = search.trim()
+    ? submissions.filter(s =>
+        s.company_name?.toLowerCase().includes(search.trim().toLowerCase())
+      )
+    : submissions;
+
   return (
     <div className="max-w-5xl space-y-6">
       <h1 className="text-xl font-bold text-slate-800">Respuestas</h1>
@@ -66,6 +73,13 @@ export default function RespuestasPage() {
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
         <Button size="sm" onClick={load} className="bg-primary-700 hover:bg-primary-600">Filtrar</Button>
         <Button size="sm" variant="outline" onClick={() => { setDateFrom(''); setDateTo(''); }}>Reset</Button>
+        <input
+          type="text"
+          placeholder="Buscar empresa…"
+          value={search}
+          onChange={e => setSearch(e.target.value)}
+          className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-[160px]"
+        />
       </div>
 
       <Card className="border-slate-200">
@@ -74,6 +88,8 @@ export default function RespuestasPage() {
             <div className="p-6 space-y-3">{[1,2,3,4].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div>
           ) : submissions.length === 0 ? (
             <p className="text-sm text-slate-400 text-center py-12">Sin respuestas en el periodo</p>
+          ) : filtered.length === 0 ? (
+            <p className="text-sm text-slate-400 text-center py-12">Sin resultados para &quot;{search}&quot;</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
@@ -82,11 +98,12 @@ export default function RespuestasPage() {
                     <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Fecha</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Código</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Folio</th>
+                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Empresa</th>
                     <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Ver</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {submissions.map(s => (
+                  {filtered.map(s => (
                     <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
                       <td className="px-4 py-3 text-slate-600 text-xs">
                         {new Date(s.submitted_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}
@@ -96,6 +113,9 @@ export default function RespuestasPage() {
                       </td>
                       <td className="px-4 py-3 text-slate-600">
                         {(s.services as { folio: string | null } | null)?.folio ?? '—'}
+                      </td>
+                      <td className="px-4 py-3 text-slate-700 text-xs">
+                        {s.company_name ?? <span className="text-slate-300">—</span>}
                       </td>
                       <td className="px-4 py-3">
                         <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => openDetail(s.id)}>
@@ -126,6 +146,9 @@ export default function RespuestasPage() {
                 <p><span className="font-medium">Fecha:</span> {new Date(detail.submission.submitted_at).toLocaleString('es-MX')}</p>
                 <p><span className="font-medium">Código:</span> {(detail.submission.feedback_links as { code: string } | null)?.code ?? '—'}</p>
                 <p><span className="font-medium">Folio:</span> {(detail.submission.services as { folio: string | null } | null)?.folio ?? '—'}</p>
+                {detail.submission.company_name && (
+                  <p><span className="font-medium">Empresa:</span> {detail.submission.company_name}</p>
+                )}
               </div>
 
               {/* Respuestas agrupadas por tema */}

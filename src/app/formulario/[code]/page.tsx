@@ -41,8 +41,9 @@ export default function FormularioPage() {
   const [state, setState]       = useState<PageState>('loading');
   const [formData, setFormData] = useState<FormData | null>(null);
   const [errorMsg, setErrorMsg] = useState('');
-  const [answers, setAnswers]   = useState<Answers>({});
-  const [topicIdx, setTopicIdx] = useState(0);
+  const [answers, setAnswers]     = useState<Answers>({});
+  const [companyName, setCompanyName] = useState('');
+  const [topicIdx, setTopicIdx]   = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [globalScore, setGlobalScore] = useState(0);
 
@@ -84,7 +85,9 @@ export default function FormularioPage() {
   }
 
   function currentComplete() {
-    return currentTopic?.questions.every(q => (answers[q.id]?.value ?? 0) > 0) ?? false;
+    const questionsOk = currentTopic?.questions.every(q => (answers[q.id]?.value ?? 0) > 0) ?? false;
+    if (topicIdx === 0 && companyName.trim() === '') return false;
+    return questionsOk;
   }
 
   function isAllComplete() {
@@ -103,7 +106,11 @@ export default function FormularioPage() {
       const res = await fetch('/api/public/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code, answers: payload }),
+        body: JSON.stringify({
+          code,
+          answers: payload,
+          ...(companyName.trim() ? { company_name: companyName.trim() } : {}),
+        }),
       });
       const data = await res.json();
       if (data.ok) {
@@ -205,6 +212,26 @@ export default function FormularioPage() {
           />
         </div>
       </div>
+
+      {/* Empresa (solo en la primera sección) */}
+      {topicIdx === 0 && (
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            Nombre de empresa <span className="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            placeholder="Ej. Empresa XYZ"
+            value={companyName}
+            onChange={e => setCompanyName(e.target.value)}
+            maxLength={120}
+            className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+          />
+          {companyName.trim() === '' && (
+            <p className="text-xs text-slate-400 mt-1">Requerido para continuar</p>
+          )}
+        </div>
+      )}
 
       {/* Preguntas del tema actual */}
       <div className="space-y-6">
