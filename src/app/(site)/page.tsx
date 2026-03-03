@@ -39,119 +39,111 @@ export default function HomePage() {
   return (
     <>
       {/* ── Hero Split ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden flex flex-col min-h-[calc(100vh-4rem)]">
+      <section className="relative overflow-hidden flex flex-col h-[calc(100vh-4rem)]">
 
-        {/* Imagen marítima — fondo de todo el hero + stats */}
-        <Image
-          src="/images/maritimaa.png"
-          alt=""
-          fill
-          sizes="100vw"
-          className="object-cover object-center"
-          priority
-        />
-        {/* Overlay muy sutil — deja el mar visible */}
-        <div className="absolute inset-0 bg-black/10" />
+        {/* Video de fondo — reemplaza imagen marítima */}
+        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
+        <video
+          className="absolute inset-0 w-full h-full object-cover z-0"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          style={{ backfaceVisibility: 'hidden' }}
+        >
+          <source src="/videos/laboratorio.mp4" type="video/mp4" />
+          <source src="/videos/laboratorio.mov" type="video/quicktime" />
+        </video>
+        {/* Overlay para legibilidad del texto */}
+        <div className="absolute inset-0 bg-black/40 z-0" />
 
-        {/* Grid principal — ocupa el espacio sobrante */}
-        <div className="relative z-10 grid grid-cols-1 lg:grid-cols-[60%_40%] flex-1">
+        {/* Contenido */}
+        <div className="relative z-10 flex flex-1 items-center px-8 sm:px-12 lg:px-20 py-10 min-h-0">
+          <div className="max-w-2xl">
 
-          {/* Panel izquierdo — texto */}
-          <div className="relative flex flex-col justify-center px-8 sm:px-12 lg:px-16 py-24 lg:py-0">
-            {/* Gradiente claro para legibilidad del texto oscuro */}
-            <div className="absolute inset-0 bg-gradient-to-r from-white/55 via-white/30 to-transparent pointer-events-none" />
-            {/* Fade derecho — disuelve el panel hacia el fondo marino */}
-            <div className="absolute inset-y-0 right-0 w-32 pointer-events-none hidden lg:block"
-              style={{ background: "linear-gradient(to left, rgba(7,30,48,0.35) 0%, transparent 100%)" }} />
-            <div className="relative z-10 max-w-xl">
-
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 bg-white/15 border border-primary-300/40 text-primary-900 text-xs font-medium px-4 py-2 rounded-full mb-8">
-                <svg className="w-3.5 h-3.5 text-primary-700 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                </svg>
-                Empresa autorizada · SEMARNAT · CESPT · SEMAR · SCT
-              </div>
-
-              {/* Titular */}
-              <h1 className="font-extrabold leading-[1.15] tracking-tight mb-6 text-gray-900 text-[1.9rem] sm:text-[2.4rem] lg:text-[2.2rem] xl:text-[2.7rem]">
-                <span className="block">Una empresa de soluciones en</span>
-                <span className="block text-teal-700">manejo de líquidos peligrosos</span>
-              </h1>
-
-              {/* Subtítulo */}
-              <p className="text-gray-700 text-base sm:text-lg leading-relaxed mb-10">
-                Diseñamos, implementamos y operamos sistemas de tratamiento con
-                enfoque ambiental, eficiencia operativa y cumplimiento normativo.
-              </p>
-
-              {/* CTAs */}
-              <div className="flex flex-wrap gap-4">
-                <Link
-                  href="#cotizacion"
-                  className="inline-block bg-teal-700 hover:bg-teal-600 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 active:scale-[0.98] shadow-sm hover:shadow-md"
-                >
-                  Solicitar cotización
-                </Link>
-                <Link
-                  href="/servicios"
-                  className="inline-block bg-white/50 hover:bg-white/70 text-gray-800 font-semibold px-6 py-3 rounded-lg border border-gray-600 transition-all duration-200 active:scale-[0.98]"
-                >
-                  Ver servicios →
-                </Link>
-              </div>
+            {/* Eyebrow — nombre de empresa */}
+            <div className="flex items-center gap-3 mb-5">
+              <span className="text-teal-300 text-xs font-bold tracking-[0.25em] uppercase">
+                Baja Wastewater Solution
+              </span>
+              <span className="h-px w-12 bg-teal-400/60" />
             </div>
-          </div>
 
-          {/* Panel derecho — foto del edificio */}
-          <div className="relative min-h-[55vw] lg:min-h-0">
-            <Image
-              src="/images/planta-exterior.jpeg"
-              alt="Instalaciones Baja Wastewater Solution"
-              fill
-              sizes="(max-width: 1024px) 100vw, 40vw"
-              className="object-cover"
-              priority
-            />
-            {/* Fade superior */}
-            <div className="absolute inset-x-0 top-0 h-16 z-10 pointer-events-none"
-              style={{ background: "linear-gradient(to bottom, rgba(7,30,48,0.3) 0%, transparent 100%)" }} />
-            {/* Fade inferior */}
-            <div className="absolute inset-x-0 bottom-0 h-20 z-10 pointer-events-none"
-              style={{ background: "linear-gradient(to top, rgba(7,30,48,0.4) 0%, transparent 100%)" }} />
-            {/* Fade derecho */}
-            <div className="absolute inset-y-0 right-0 w-16 z-10 pointer-events-none"
-              style={{ background: "linear-gradient(to left, rgba(7,30,48,0.25) 0%, transparent 100%)" }} />
-            {/* Fade izquierdo — transición suave entre paneles */}
-            <div
-              className="absolute inset-y-0 left-0 z-10 pointer-events-none hidden lg:block"
-              style={{
-                width: "72px",
-                background: "linear-gradient(to right, rgba(7,30,48,0.22) 0%, transparent 100%)",
-              }}
-            />
+            {/* Titular */}
+            <h1 className="font-extrabold leading-[1.1] tracking-tight mb-5 text-white text-[2rem] sm:text-[2.8rem] lg:text-[3rem] xl:text-[3.4rem]">
+              Soluciones integrales en
+              <span className="block text-teal-300 mt-1">
+                manejo de líquidos peligrosos
+              </span>
+            </h1>
+
+            {/* Divisor decorativo */}
+            <div className="w-14 h-[3px] bg-teal-400 rounded-full mb-6" />
+
+            {/* Subtítulo */}
+            <p className="text-white/75 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
+              Diseñamos, implementamos y operamos sistemas de tratamiento con
+              enfoque ambiental, eficiencia operativa y cumplimiento normativo.
+            </p>
+
+            {/* Autorizaciones — fila con iconos */}
+            <div className="flex items-center gap-x-4 flex-wrap gap-y-2 mb-9">
+              {['SEMARNAT', 'CESPT', 'SEMAR', 'SCT'].map((org, i) => (
+                <div key={org} className="flex items-center gap-x-3">
+                  {i > 0 && <span className="w-px h-3.5 bg-white/20 flex-shrink-0" />}
+                  <div className="flex items-center gap-1.5">
+                    <svg className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                    </svg>
+                    <span className="text-[11px] font-semibold text-white/75 tracking-wider">{org}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-wrap gap-3">
+              <Link
+                href="#cotizacion"
+                className="inline-block bg-teal-600 hover:bg-teal-500 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 active:scale-[0.98] shadow-lg"
+              >
+                Solicitar cotización
+              </Link>
+              <Link
+                href="/servicios"
+                className="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-7 py-3.5 rounded-xl border border-white/25 transition-all duration-200 active:scale-[0.98]"
+              >
+                Ver servicios →
+              </Link>
+            </div>
           </div>
         </div>
 
-        {/* Barra de estadísticas — glass transparente, mar de fondo */}
+        {/* Barra de estadísticas — glassmorphism */}
         <div
-          className="relative z-10 border-t border-white/20 text-white"
-          style={{ backdropFilter: "blur(6px)", WebkitBackdropFilter: "blur(6px)", backgroundColor: "rgba(7,30,48,0.45)" }}
+          className="relative z-10 text-white"
+          style={{
+            backdropFilter: "blur(8px) saturate(140%)",
+            WebkitBackdropFilter: "blur(8px) saturate(140%)",
+            backgroundColor: "rgba(7,30,48,0.72)",
+            borderTop: "1px solid rgba(255,255,255,0.14)",
+            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.10)",
+          }}
         >
-          {/* Grid full-width para que el divisor de 100% quede alineado con el borde de la foto */}
-          <div className="grid grid-cols-3 lg:grid-cols-[30%_30%_40%]">
-            <div className="py-3 px-4 sm:px-8 text-center border-r border-white/10">
-              <p className="text-2xl sm:text-3xl font-bold text-white">{yearsExperience}+</p>
-              <p className="text-primary-200 text-xs mt-0.5">Años de experiencia</p>
+          <div className="grid grid-cols-3">
+            <div className="py-5 px-4 sm:px-10 text-center" style={{ borderRight: "1px solid rgba(255,255,255,0.12)" }}>
+              <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">{yearsExperience}+</p>
+              <p className="text-white/60 text-xs mt-1 tracking-wide uppercase">Años de experiencia</p>
             </div>
-            <div className="py-3 px-4 sm:px-8 text-center border-r border-white/10">
-              <p className="text-2xl sm:text-3xl font-bold text-white">{authorizationsCount}</p>
-              <p className="text-primary-200 text-xs mt-0.5">Autorizaciones vigentes</p>
+            <div className="py-5 px-4 sm:px-10 text-center" style={{ borderRight: "1px solid rgba(255,255,255,0.12)" }}>
+              <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">{authorizationsCount}</p>
+              <p className="text-white/60 text-xs mt-1 tracking-wide uppercase">Autorizaciones vigentes</p>
             </div>
-            <div className="py-3 px-4 sm:px-8 text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-white">100%</p>
-              <p className="text-primary-200 text-xs mt-0.5">Cumplimiento ambiental</p>
+            <div className="py-5 px-4 sm:px-10 text-center">
+              <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">100%</p>
+              <p className="text-white/60 text-xs mt-1 tracking-wide uppercase">Cumplimiento ambiental</p>
             </div>
           </div>
         </div>
