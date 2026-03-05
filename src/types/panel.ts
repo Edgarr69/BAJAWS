@@ -3,7 +3,7 @@ export type UserRole = 'superadmin' | 'admin' | 'atencion' | 'pending';
 export interface Profile {
   id: string;
   email: string;
-  full_name: string;
+  full_name: string | null;
   role: UserRole;
   avatar_url: string | null;
   created_at: string;

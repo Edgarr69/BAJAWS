@@ -21,9 +21,10 @@ const answerSchema = z.object({
 });
 
 const schema = z.object({
-  code:         z.string().length(8, 'El código debe tener exactamente 8 caracteres'),
-  answers:      z.array(answerSchema).min(1).max(50),
-  company_name: z.string().max(120).optional(),
+  code:            z.string().length(8, 'El código debe tener exactamente 8 caracteres'),
+  answers:         z.array(answerSchema).min(1).max(50),
+  company_name:    z.string().max(120).optional(),
+  private_comment: z.string().max(500).optional(),
 });
 
 export async function POST(req: NextRequest) {
@@ -50,7 +51,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { code, answers, company_name } = parsed.data;
+  const { code, answers, company_name, private_comment } = parsed.data;
 
   if (!validateShortCode(code)) {
     return NextResponse.json({ error: 'INVALID', message: 'Código inválido' }, { status: 400 });
@@ -85,8 +86,8 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data, { status: statusMap[data.error] ?? 400 });
   }
 
-  // Si se proporcionó nombre de empresa, actualizamos la submission recién creada
-  if (company_name?.trim()) {
+  // Si se proporcionaron campos adicionales, actualizamos la submission recién creada
+  if (company_name?.trim() || private_comment?.trim()) {
     const admin = getAdminClient();
     const { data: latest } = await admin
       .from('feedback_submissions')
@@ -98,7 +99,10 @@ export async function POST(req: NextRequest) {
     if (latest?.id) {
       await admin
         .from('feedback_submissions')
-        .update({ company_name: company_name.trim() })
+        .update({
+          ...(company_name?.trim() ? { company_name: company_name.trim() } : {}),
+          ...(private_comment?.trim() ? { private_comment: private_comment.trim() } : {}),
+        })
         .eq('id', latest.id);
     }
   }

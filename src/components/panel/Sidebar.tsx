@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Link2, MessageSquare, HelpCircle,
-  Users, Download, X, UserCheck, Mail,
+  Users, Download, X, Mail,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { UserRole } from '@/types/panel';
@@ -22,7 +22,6 @@ const NAV: NavItem[] = [
   { href: '/panel/respuestas',   label: 'Respuestas',   icon: MessageSquare,   roles: ['superadmin', 'admin'] },
   { href: '/panel/preguntas',    label: 'Preguntas',    icon: HelpCircle,      roles: ['superadmin', 'admin'] },
   { href: '/panel/usuarios',     label: 'Usuarios',     icon: Users,           roles: ['superadmin', 'admin'] },
-  { href: '/panel/solicitudes',  label: 'Solicitudes',  icon: UserCheck,       roles: ['superadmin', 'admin'] },
   { href: '/panel/contactos',    label: 'Contactos',    icon: Mail,            roles: ['superadmin', 'admin', 'atencion'] },
   { href: '/panel/exportaciones',label: 'Exportaciones',icon: Download,        roles: ['superadmin', 'admin', 'atencion'] },
 ];
@@ -31,10 +30,9 @@ interface SidebarProps {
   role: UserRole;
   open: boolean;
   onClose: () => void;
-  pendingCount?: number;
 }
 
-export function Sidebar({ role, open, onClose, pendingCount = 0 }: SidebarProps) {
+export function Sidebar({ role, open, onClose }: SidebarProps) {
   const pathname = usePathname();
   const items = NAV.filter(i => i.roles.includes(role));
 
@@ -87,11 +85,6 @@ export function Sidebar({ role, open, onClose, pendingCount = 0 }: SidebarProps)
               >
                 <item.icon className="w-4 h-4 shrink-0" />
                 <span className="flex-1">{item.label}</span>
-                {item.href === '/panel/solicitudes' && pendingCount > 0 && (
-                  <span className="bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full leading-none">
-                    {pendingCount}
-                  </span>
-                )}
               </Link>
             );
           })}

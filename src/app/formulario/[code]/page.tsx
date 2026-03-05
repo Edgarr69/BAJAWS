@@ -43,6 +43,7 @@ export default function FormularioPage() {
   const [errorMsg, setErrorMsg] = useState('');
   const [answers, setAnswers]     = useState<Answers>({});
   const [companyName, setCompanyName] = useState('');
+  const [privateComment, setPrivateComment] = useState('');
   const [topicIdx, setTopicIdx]   = useState(0);
   const [submitting, setSubmitting] = useState(false);
 
@@ -79,10 +80,6 @@ export default function FormularioPage() {
     setAnswers(prev => ({ ...prev, [qId]: { value, comment: prev[qId]?.comment ?? '' } }));
   }
 
-  function setComment(qId: number, comment: string) {
-    setAnswers(prev => ({ ...prev, [qId]: { value: prev[qId]?.value ?? 0, comment } }));
-  }
-
   function currentComplete() {
     const questionsOk = currentTopic?.questions.every(q => (answers[q.id]?.value ?? 0) > 0) ?? false;
     if (topicIdx === 0 && companyName.trim() === '') return false;
@@ -109,6 +106,7 @@ export default function FormularioPage() {
           code,
           answers: payload,
           ...(companyName.trim() ? { company_name: companyName.trim() } : {}),
+          ...(privateComment.trim() ? { private_comment: privateComment.trim() } : {}),
         }),
       });
       const data = await res.json();
@@ -251,20 +249,25 @@ export default function FormularioPage() {
               <span>Muy malo</span>
               <span>Excelente</span>
             </div>
-
-            {/* Comentario opcional */}
-            {(answers[q.id]?.value ?? 0) > 0 && (answers[q.id]?.value ?? 5) <= 3 && (
-              <textarea
-                placeholder="¿Qué podemos mejorar? (opcional)"
-                value={answers[q.id]?.comment ?? ''}
-                onChange={e => setComment(q.id, e.target.value)}
-                rows={2}
-                maxLength={300}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-slate-700 placeholder:text-slate-300"
-              />
-            )}
           </div>
         ))}
+
+        {/* Comentario privado (solo en la última sección) */}
+        {topicIdx === totalTopics - 1 && (
+          <div className="pt-2">
+            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+              Comentario privado <span className="text-slate-400 text-xs font-normal">(opcional)</span>
+            </label>
+            <textarea
+              placeholder="Algún comentario adicional para el equipo de Baja Wastewater Solution…"
+              value={privateComment}
+              onChange={e => setPrivateComment(e.target.value)}
+              rows={3}
+              maxLength={500}
+              className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-slate-700 placeholder:text-slate-300"
+            />
+          </div>
+        )}
       </div>
 
       {/* Navegación */}

@@ -81,6 +81,13 @@ export const deleteQuestion = (id: number) =>
 // ── Usuarios ──────────────────────────────────────────────────────────────────
 export const getUsers = () => apiFetch<unknown[]>('/api/admin/users');
 
+export const createUser = (body: { email: string; password: string; full_name?: string; role: 'admin' | 'atencion' | 'pending' }) =>
+  apiFetch<{ ok: boolean; id: string }>('/api/admin/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
 export const setUserRole = (user_id: string, role: 'admin' | 'atencion') =>
   apiFetch<{ ok: boolean }>('/api/admin/users/set-role', {
     method: 'POST',
@@ -88,15 +95,15 @@ export const setUserRole = (user_id: string, role: 'admin' | 'atencion') =>
     body: JSON.stringify({ user_id, role }),
   });
 
-// ── Solicitudes de acceso ─────────────────────────────────────
-export const getSolicitudes = () => apiFetch<{ id: string; email: string; full_name: string; created_at: string }[]>('/api/internal/solicitudes');
-
-export const procesarSolicitud = (user_id: string, action: 'aprobar' | 'rechazar') =>
-  apiFetch<{ ok: boolean; action: string; email: string }>('/api/internal/solicitudes', {
-    method: 'POST',
+export const updateUserName = (user_id: string, full_name: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/users/${user_id}`, {
+    method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id, action }),
+    body: JSON.stringify({ full_name }),
   });
+
+export const deleteUser = (user_id: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/users/${user_id}`, { method: 'DELETE' });
 
 // ── Contactos ─────────────────────────────────────────────────────────────────
 export const getContactos = () =>

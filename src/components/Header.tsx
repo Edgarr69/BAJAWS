@@ -3,6 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { LogIn } from "lucide-react";
 import { useState, useEffect } from "react";
 import { siteContent } from "@/content/site";
 
@@ -20,7 +21,7 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-all duration-300 relative ${
         scrolled ? "shadow-md border-b border-white/10" : "shadow-sm"
       }`}
     >
@@ -64,6 +65,13 @@ export default function Header() {
               Solicitar cotización
             </Link>
           </nav>
+          <Link
+            href="/login"
+            aria-label="Acceso interno"
+            className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-white/25 hover:text-white/60 transition-colors duration-200"
+          >
+            <LogIn className="w-4 h-4" />
+          </Link>
 
           {/* Mobile menu button */}
           <button

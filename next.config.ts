@@ -16,8 +16,8 @@ const CSP = [
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
   "frame-src https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
-  // Peticiones fetch/XHR solo al mismo origen
-  "connect-src 'self'",
+  // Peticiones fetch/XHR: mismo origen + Supabase (requerido para signInWithPassword y realtime)
+  "connect-src 'self' https://*.supabase.co",
   // El formulario solo puede enviar datos al mismo origen
   "form-action 'self'",
   // Evita inyección de <base>

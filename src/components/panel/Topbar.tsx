@@ -17,8 +17,9 @@ export function Topbar({ user, onMenuClick }: TopbarProps) {
   const supabase = createClient();
 
   async function handleLogout() {
-    await supabase.auth.signOut();
+    // Primero server-side (borra cookies SSR), luego client-side (borra tokens browser)
     await fetch('/api/auth/signout', { method: 'POST', credentials: 'include' });
+    await supabase.auth.signOut();
     window.location.href = '/login';
   }
 

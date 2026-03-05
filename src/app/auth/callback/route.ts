@@ -1,6 +1,6 @@
 /**
  * GET /auth/callback
- * Supabase intercambia el code de Google OAuth por una sesión.
+ * Supabase usa esta ruta para el flujo PKCE de recuperación de contraseña.
  * Las cookies DEBEN escribirse en el NextResponse (no en cookieStore)
  * porque en Route Handlers cookieStore es de solo lectura.
  */
