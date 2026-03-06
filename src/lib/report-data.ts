@@ -4,7 +4,7 @@ import { getMetrics, getSubmissions, getSubmission } from '@/lib/api';
 import type { AggregateMetric } from '@/types/panel';
 import type {
   ReportData, ReportScope, StatusLevel,
-  CategoryStat, QuestionDetail, TrendPoint,
+  CategoryStat, QuestionDetail, TrendPoint, PrivateComment,
 } from '@/types/report';
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
@@ -125,6 +125,7 @@ interface SubmissionDetail {
   submission: {
     id: string;
     submitted_at: string;
+    private_comment?: string | null;
     feedback_links?: { code: string } | null;
     services?: { folio: string | null; service_date: string | null } | null;
   };
@@ -225,13 +226,24 @@ async function buildSingleReport(
 
   // Acumular por topic y por question
   const byCategoryMap = new Map<string, { sum: number; count: number; d: [number,number,number,number,number] }>();
-  const byQuestionMap = new Map<number, { text: string; topic: string; answers: { fecha: string; score: number; comment: string | null }[] }>();
+  const byQuestionMap = new Map<number, { text: string; topic: string; answers: { fecha: string; score: number }[] }>();
+  const privateComments: PrivateComment[] = [];
 
   const trends: TrendPoint[] = [];
 
   details.forEach((detail, idx) => {
     const fecha = filtered[idx].submitted_at.slice(0, 10);
     const subAnswers = detail.answers ?? [];
+
+    // Comentario privado a nivel de submission
+    const pc = detail.submission?.private_comment?.trim();
+    if (pc) {
+      privateComments.push({
+        fecha,
+        companyName: filtered[idx].company_name ?? undefined,
+        comment: pc,
+      });
+    }
 
     let subSum = 0;
     subAnswers.forEach(a => {
@@ -241,7 +253,6 @@ async function buildSingleReport(
       const topic    = a.questions?.topics?.name ?? 'Sin categoría';
       const qId      = a.questions?.id ?? -1;
       const qText    = a.questions?.text ?? '';
-      const comment  = a.value_text ?? null;
 
       // byCategory
       if (!byCategoryMap.has(topic)) {
@@ -256,7 +267,7 @@ async function buildSingleReport(
       if (!byQuestionMap.has(qId)) {
         byQuestionMap.set(qId, { text: qText, topic, answers: [] });
       }
-      byQuestionMap.get(qId)!.answers.push({ fecha, score, comment });
+      byQuestionMap.get(qId)!.answers.push({ fecha, score });
     });
 
     if (subAnswers.length > 0) {
@@ -303,6 +314,7 @@ async function buildSingleReport(
     },
     byCategory,
     byQuestion,
+    privateComments: privateComments.length ? privateComments : undefined,
     trends,
     diagnostics,
   };

@@ -22,7 +22,13 @@ export interface CategoryStat {
 export interface QuestionDetail {
   questionText: string;
   topicName: string;
-  answers: { fecha: string; score: number; comment: string | null }[];
+  answers: { fecha: string; score: number }[];
+}
+
+export interface PrivateComment {
+  fecha: string;
+  companyName?: string;
+  comment: string;
 }
 
 export interface TrendPoint {
@@ -41,6 +47,7 @@ export interface ReportData {
   };
   byCategory: CategoryStat[];
   byQuestion?: QuestionDetail[]; // solo single
+  privateComments?: PrivateComment[]; // solo single
   trends: TrendPoint[];
   diagnostics: {
     topStrong: CategoryStat[];

@@ -18,7 +18,7 @@ export async function GET(
   const { data: submission, error: subErr } = await admin
     .from('feedback_submissions')
     .select(`
-      id, submitted_at,
+      id, submitted_at, private_comment,
       feedback_links(code),
       services(folio, service_date)
     `)

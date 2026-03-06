@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReportData, CategoryStat, StatusLevel } from '@/types/report';
+import type { ReportData, CategoryStat, StatusLevel, PrivateComment } from '@/types/report';
 
 // ── Constantes de estilo ──────────────────────────────────────────────────────
 
@@ -390,9 +390,8 @@ function QuestionCard({ q }: { q: QDetail }) {
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
         <thead>
           <tr style={{ backgroundColor: '#f1f5f9' }}>
-            <th style={{ textAlign: 'left',   padding: '6px 12px', color: '#64748b', fontWeight: 600, width: '25%' }}>Fecha</th>
-            <th style={{ textAlign: 'center', padding: '6px 12px', color: '#64748b', fontWeight: 600, width: '20%' }}>Calificación</th>
-            <th style={{ textAlign: 'left',   padding: '6px 12px', color: '#64748b', fontWeight: 600 }}>Comentario</th>
+            <th style={{ textAlign: 'left',   padding: '6px 12px', color: '#64748b', fontWeight: 600, width: '40%' }}>Fecha</th>
+            <th style={{ textAlign: 'center', padding: '6px 12px', color: '#64748b', fontWeight: 600 }}>Calificación</th>
           </tr>
         </thead>
         <tbody>
@@ -404,12 +403,6 @@ function QuestionCard({ q }: { q: QDetail }) {
                 color: a.score >= 4 ? '#3D8B36' : a.score >= 3 ? '#d97706' : '#dc2626',
               }}>
                 {a.score} / 5
-              </td>
-              <td style={{ padding: '7px 12px', color: '#64748b' }}>
-                {a.comment
-                  ? <span style={{ fontStyle: 'italic' }}>"{a.comment}"</span>
-                  : <span style={{ color: '#cbd5e1' }}>–</span>
-                }
               </td>
             </tr>
           ))}
@@ -460,6 +453,51 @@ function QuestionPage({
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
+// PÁGINA FINAL — Comentarios privados
+// ══════════════════════════════════════════════════════════════════════════════
+
+function PrivateCommentsPage({ data }: { data: ReportData }) {
+  const comments = data.privateComments;
+  if (!comments?.length) return null;
+
+  return (
+    <div id="pdf-page-comments" style={PAGE}>
+      <PageContext data={data} />
+
+      <div style={{ fontSize: 18, fontWeight: 800, color: '#0B3C5D', marginBottom: 6 }}>
+        Comentarios Privados
+      </div>
+      <p style={{ fontSize: 11, color: '#64748b', marginBottom: 20 }}>
+        Comentarios adicionales proporcionados por el cliente al completar el formulario. Solo visibles en este reporte.
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+        {comments.map((c, i) => (
+          <div key={i} style={{
+            borderLeft: '4px solid #2980B9',
+            backgroundColor: '#f0f7ff',
+            borderRadius: '0 8px 8px 0',
+            padding: '12px 16px',
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
+              <span style={{ fontSize: 11, fontWeight: 700, color: '#334155' }}>
+                {c.companyName ?? 'Cliente'}
+              </span>
+              <span style={{ fontSize: 10, color: '#94a3b8' }}>{c.fecha}</span>
+            </div>
+            <p style={{ margin: 0, fontSize: 11, color: '#475569', fontStyle: 'italic', lineHeight: 1.6 }}>
+              "{c.comment}"
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <PageFooter />
+    </div>
+  );
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
 // Componente raíz — apila las páginas verticalmente fuera del viewport
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -479,6 +517,7 @@ export function PdfReportTemplate({ data }: { data: ReportData }) {
           totalPages={chunks.length}
         />
       ))}
+      <PrivateCommentsPage data={data} />
     </div>
   );
 }
@@ -489,5 +528,6 @@ export function getPdfPageIds(data: ReportData): string[] {
   if (data.diagnostics.actionPlans.length > 0) ids.push('pdf-page-2');
   const totalQPages = buildQuestionChunks(data.byQuestion ?? []).length;
   for (let i = 0; i < totalQPages; i++) ids.push(`pdf-page-q-${i}`);
+  if (data.privateComments?.length) ids.push('pdf-page-comments');
   return ids;
 }
