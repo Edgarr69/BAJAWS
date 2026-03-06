@@ -2,11 +2,17 @@
 
 import { useEffect, useRef, useState } from 'react';
 
-export function useCountUp(target: number, duration = 900, decimals = 0): string {
+export function useCountUp(
+  target: number,
+  duration = 900,
+  decimals = 0,
+  trigger = true,
+): string {
   const [display, setDisplay] = useState('0');
   const rafRef = useRef<number | null>(null);
 
   useEffect(() => {
+    if (!trigger) return;
     if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
 
     if (target === 0) {
@@ -32,7 +38,7 @@ export function useCountUp(target: number, duration = 900, decimals = 0): string
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
     };
-  }, [target, duration, decimals]);
+  }, [target, duration, decimals, trigger]);
 
   return display;
 }
