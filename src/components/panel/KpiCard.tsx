@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
 
 interface KpiCardProps {
   title: string;
-  value: string | number;
+  value: ReactNode;
   subtitle?: string;
   color?: 'blue' | 'green' | 'red' | 'gray';
   loading?: boolean;

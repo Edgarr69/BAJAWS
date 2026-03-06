@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { KpiCard } from '@/components/panel/KpiCard';
 import { getMetrics, getLinkStats } from '@/lib/api';
 import type { AggregateMetric } from '@/types/panel';
-import { useCountUp } from '@/hooks/useCountUp';
+import { NumberTicker } from '@/components/ui/number-ticker';
 
 const today    = new Date().toISOString().slice(0, 10);
 const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
@@ -22,23 +22,25 @@ const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10)
 // ── KPI animado ───────────────────────────────────────────────────────────────
 
 function AnimatedKpi({
-  title, numValue, formatted, subtitle, color, loading,
+  title, numValue, decimalPlaces = 0, suffix = '', subtitle, color, loading,
 }: {
   title: string;
   numValue: number;
-  formatted?: string;
+  decimalPlaces?: number;
+  suffix?: string;
   subtitle?: string;
   color?: 'blue' | 'green' | 'red' | 'gray';
   loading?: boolean;
 }) {
-  const display = useCountUp(loading ? 0 : numValue, 900, formatted ? 0 : 2);
-  const shown = formatted
-    ? formatted.replace(/[\d.]+/, display)
-    : display;
   return (
     <KpiCard
       title={title}
-      value={loading ? '…' : shown}
+      value={loading ? '…' : (
+        <span>
+          <NumberTicker key={numValue} value={numValue} decimalPlaces={decimalPlaces} />
+          {suffix}
+        </span>
+      )}
       subtitle={subtitle}
       color={color}
       loading={loading}
@@ -148,13 +150,13 @@ export default function DashboardPage() {
 
       {/* ── KPIs ─────────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <AnimatedKpi title="Score global"     numValue={globalAvg}     subtitle="Escala 1–5"      color="blue"  loading={loading} />
-        <AnimatedKpi title="% Positivos"      numValue={pctPositive}   formatted={`${pctPositive.toFixed(1)}%`}  subtitle="Respuestas 4–5"  color="green" loading={loading} />
-        <AnimatedKpi title="% Negativos"      numValue={pctNegative}   formatted={`${pctNegative.toFixed(1)}%`}  subtitle="Respuestas 1–2"  color="red"   loading={loading} />
+        <AnimatedKpi title="Score global"     numValue={globalAvg}   decimalPlaces={2}           subtitle="Escala 1–5"     color="blue"  loading={loading} />
+        <AnimatedKpi title="% Positivos"      numValue={pctPositive} decimalPlaces={1} suffix="%" subtitle="Respuestas 4–5" color="green" loading={loading} />
+        <AnimatedKpi title="% Negativos"      numValue={pctNegative} decimalPlaces={1} suffix="%" subtitle="Respuestas 1–2" color="red"   loading={loading} />
         <AnimatedKpi
           title="Formularios contestados"
           numValue={linkStats.pct}
-          formatted={`${linkStats.pct}%`}
+          suffix="%"
           subtitle={`${linkStats.used} de ${linkStats.total} enviados`}
           color={linkStats.pct >= 70 ? 'green' : linkStats.pct >= 40 ? 'blue' : 'red'}
           loading={loading}
@@ -162,7 +164,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Gráficas fila 1 ──────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="border-slate-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold text-slate-700">Promedio por tema</CardTitle>
@@ -218,7 +220,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── Gráficas fila 2 ──────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card className="border-slate-200">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold text-slate-700">Distribución por tema</CardTitle>
