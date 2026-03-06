@@ -33,8 +33,8 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ title, description, icon }: ServiceCardProps) {
   return (
-    <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-7 hover:shadow-xl transition-shadow duration-300 flex flex-col gap-4">
-      <div className="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center">
+    <div className="group bg-white rounded-2xl shadow-md border border-gray-100 p-7 hover:shadow-xl transition-shadow duration-300 flex flex-col gap-4">
+      <div className="w-14 h-14 bg-primary-50 rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
         {icons[icon]}
       </div>
       <h3 className="font-bold text-gray-900 text-base tracking-wide">{title}</h3>

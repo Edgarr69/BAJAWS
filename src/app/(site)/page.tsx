@@ -5,6 +5,7 @@ import Section from "@/components/Section";
 import ServiceCard from "@/components/ServiceCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import ContactForm from "@/components/ContactForm";
+import HeroStats from "@/components/HeroStats";
 import { siteContent, getYearsExperience } from "@/content/site";
 
 export const metadata: Metadata = siteContent.home.meta;
@@ -30,7 +31,7 @@ const razones = [
 
 
 export default function HomePage() {
-  const services             = siteContent.services.items;
+  const services             = siteContent.services.items.slice(0, 3) as { id: string; title: string; description: string; icon: 'truck' | 'water' | 'warehouse' }[];
   const yearsExperience      = getYearsExperience();
   const authorizationsCount  = siteContent.autorizaciones.rows.length;
   const servicesCount        = services.length;
@@ -58,8 +59,13 @@ export default function HomePage() {
         {/* Overlay para legibilidad del texto */}
         <div className="absolute inset-0 bg-black/40 z-0" />
 
+        {/* Degradado inferior: funde el video con el HeroStats sin corte visible */}
+        <div className="absolute inset-x-0 bottom-0 h-40 z-[1] pointer-events-none"
+          style={{ background: 'linear-gradient(to bottom, transparent, rgba(7,30,48,0.65))' }}
+        />
+
         {/* Contenido */}
-        <div className="relative z-10 flex flex-1 items-center px-8 sm:px-12 lg:px-20 py-10 min-h-0">
+        <div className="relative z-10 flex flex-1 items-center px-4 sm:px-12 lg:px-20 py-10 min-h-0">
           <div className="max-w-2xl">
 
             {/* Eyebrow — nombre de empresa */}
@@ -121,32 +127,8 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Barra de estadísticas — glassmorphism */}
-        <div
-          className="relative z-10 text-white"
-          style={{
-            backdropFilter: "blur(8px) saturate(140%)",
-            WebkitBackdropFilter: "blur(8px) saturate(140%)",
-            backgroundColor: "rgba(7,30,48,0.72)",
-            borderTop: "1px solid rgba(255,255,255,0.14)",
-            boxShadow: "inset 0 1px 0 rgba(255,255,255,0.10)",
-          }}
-        >
-          <div className="grid grid-cols-3">
-            <div className="py-5 px-4 sm:px-10 text-center" style={{ borderRight: "1px solid rgba(255,255,255,0.12)" }}>
-              <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">{yearsExperience}+</p>
-              <p className="text-white/60 text-xs mt-1 tracking-wide uppercase">Años de experiencia</p>
-            </div>
-            <div className="py-5 px-4 sm:px-10 text-center" style={{ borderRight: "1px solid rgba(255,255,255,0.12)" }}>
-              <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">{authorizationsCount}</p>
-              <p className="text-white/60 text-xs mt-1 tracking-wide uppercase">Autorizaciones vigentes</p>
-            </div>
-            <div className="py-5 px-4 sm:px-10 text-center">
-              <p className="text-2xl sm:text-3xl font-bold text-white drop-shadow-sm">100%</p>
-              <p className="text-white/60 text-xs mt-1 tracking-wide uppercase">Cumplimiento ambiental</p>
-            </div>
-          </div>
-        </div>
+        {/* Barra de estadísticas — glassmorphism con animación count-up */}
+        <HeroStats yearsExperience={yearsExperience} authorizationsCount={authorizationsCount} />
       </section>
 
       {/* ── Servicios ────────────────────────────────────────────────────────── */}

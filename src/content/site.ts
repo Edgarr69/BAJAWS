@@ -85,10 +85,31 @@ export const siteContent = {
       },
       {
         id:    "acopio",
-        title: "ACOPIO DE RESIDUOS",
+        title: "ACOPIO TEMPORAL",
         description:
           "Nuestros almacenes están diseñados para acopiar altos volúmenes de residuos peligrosos con el fin de implementar las estrategias adecuadas de segregación a los distintos sitios de disposición final, y de esta manera mantener una constante disponibilidad de servicio de recolección.",
         icon: "warehouse" as const,
+      },
+      {
+        id:    "reciclaje",
+        title: "RECICLAJE Y REVALORIZACIÓN",
+        description:
+          "Gestionamos residuos peligrosos con enfoque en la economía circular, identificando corrientes valorizables que permiten recuperar materiales y reducir el volumen de disposición final, minimizando el impacto ambiental de tu operación.",
+        icon: "recycle" as const,
+      },
+      {
+        id:    "remediacion",
+        title: "SERVICIOS DE REMEDIACIÓN",
+        description:
+          "Llevamos a cabo diagnóstico, diseño y ejecución de proyectos de remediación de suelos y cuerpos de agua contaminados, apegándonos a la normatividad vigente y utilizando tecnologías probadas para restituir las condiciones ambientales del sitio.",
+        icon: "remediation" as const,
+      },
+      {
+        id:    "residuos-especiales",
+        title: "RESIDUOS DE MANEJO ESPECIAL",
+        description:
+          "Manejamos residuos no peligrosos de origen industrial que requieren atención especializada: chatarra, plásticos industriales, lodos no peligrosos y otros materiales que demandan una gestión responsable en cumplimiento con la normatividad estatal.",
+        icon: "special-waste" as const,
       },
     ],
     meta: {
