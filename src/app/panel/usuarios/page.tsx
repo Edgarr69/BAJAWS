@@ -172,8 +172,8 @@ export default function UsuariosPage() {
                 const Icon    = ROLE_ICON[u.role];
                 const actions = getActions(u);
                 return (
-                  <div key={u.id} className="flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors">
-                    <div className="flex items-center gap-3">
+                  <div key={u.id} className="flex items-start sm:items-center justify-between gap-3 px-4 sm:px-5 py-4 hover:bg-slate-50 transition-colors">
+                    <div className="flex items-center gap-3 min-w-0">
                       <div className={`w-9 h-9 rounded-full flex items-center justify-center ${
                         u.role === 'superadmin' ? 'bg-purple-100' :
                         u.role === 'admin'      ? 'bg-primary-100' : 'bg-slate-100'
@@ -183,21 +183,21 @@ export default function UsuariosPage() {
                           u.role === 'admin'      ? 'text-primary-700' : 'text-slate-500'
                         }`} />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         {u.full_name && (
-                          <p className="text-sm font-medium text-slate-800">
+                          <p className="text-sm font-medium text-slate-800 truncate">
                             {u.full_name}
                             {u.id === myId && <span className="ml-2 text-xs text-slate-400">(tú)</span>}
                           </p>
                         )}
-                        <p className={u.full_name ? 'text-xs text-slate-400' : 'text-sm font-medium text-slate-800'}>
+                        <p className={`truncate ${u.full_name ? 'text-xs text-slate-400' : 'text-sm font-medium text-slate-800'}`}>
                           {u.email}
                           {!u.full_name && u.id === myId && <span className="ml-2 text-xs text-slate-400">(tú)</span>}
                         </p>
                       </div>
                     </div>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
                       <span className={`text-xs font-medium px-2 py-1 rounded border ${ROLE_STYLE[u.role]}`}>
                         {ROLE_LABEL[u.role]}
                       </span>

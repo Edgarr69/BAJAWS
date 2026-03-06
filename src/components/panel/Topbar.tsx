@@ -1,6 +1,7 @@
 'use client';
 
-import { Menu, LogOut } from 'lucide-react';
+import { Menu, LogOut, Globe } from 'lucide-react';
+import Link from 'next/link';
 import { createClient } from '@/lib/supabase/client';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
@@ -56,13 +57,19 @@ export function Topbar({ user, onMenuClick }: TopbarProps) {
               </Avatar>
             </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-40">
+          <DropdownMenuContent align="end" className="w-44">
             <DropdownMenuItem
               onClick={handleLogout}
               className="gap-2 text-red-600 focus:text-red-600"
             >
               <LogOut className="w-4 h-4" />
               Cerrar sesión
+            </DropdownMenuItem>
+            <DropdownMenuItem asChild className="gap-2">
+              <Link href="/">
+                <Globe className="w-4 h-4" />
+                Ir a página
+              </Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
