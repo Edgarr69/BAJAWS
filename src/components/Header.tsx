@@ -3,13 +3,15 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LogIn } from "lucide-react";
-import { useState, useEffect } from "react";
+import { LogIn, ChevronDown } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { siteContent } from "@/content/site";
 
 export default function Header() {
-  const [isOpen, setIsOpen]     = useState(false);
-  const [scrolled, setScrolled] = useState(false);
+  const [isOpen, setIsOpen]       = useState(false);
+  const [scrolled, setScrolled]   = useState(false);
+  const [dropOpen, setDropOpen]   = useState(false);
+  const dropRef                   = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { links } = siteContent.nav;
 
@@ -43,7 +45,49 @@ export default function Header() {
           {/* Links + CTA — derecha */}
           <nav className="hidden md:flex items-center gap-1">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = pathname === link.href || pathname.startsWith(link.href + '/');
+              if (link.href === '/servicios') {
+                return (
+                  <div
+                    key={link.href}
+                    ref={dropRef}
+                    className="relative"
+                    onMouseEnter={() => setDropOpen(true)}
+                    onMouseLeave={() => setDropOpen(false)}
+                  >
+                    <button
+                      className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                        active
+                          ? "text-white font-semibold bg-white/15"
+                          : "text-white/75 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      {link.label}
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${dropOpen ? 'rotate-180' : ''}`} />
+                    </button>
+                    {dropOpen && (
+                      <div className="absolute top-full left-0 pt-1.5 z-50">
+                        <div className="bg-primary-900/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 py-1.5 min-w-[200px] overflow-hidden">
+                          <Link
+                            href="/servicios"
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0" />
+                            Todos los servicios
+                          </Link>
+                          <Link
+                            href="/servicios/integrales"
+                            className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-emerald-300 hover:bg-white/10 transition-colors"
+                          >
+                            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                            Servicios integrales
+                          </Link>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={link.href}
@@ -96,7 +140,31 @@ export default function Header() {
         {isOpen && (
           <div className="md:hidden border-t border-white/10 py-2 pb-3">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = pathname === link.href || pathname.startsWith(link.href + '/');
+              if (link.href === '/servicios') {
+                return (
+                  <div key={link.href}>
+                    <Link
+                      href="/servicios"
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-2.5 text-sm font-medium rounded-md mx-1 transition-colors ${
+                        active
+                          ? "text-white font-semibold bg-white/15"
+                          : "text-white/75 hover:text-white hover:bg-white/10"
+                      }`}
+                    >
+                      {link.label}
+                    </Link>
+                    <Link
+                      href="/servicios/integrales"
+                      onClick={() => setIsOpen(false)}
+                      className="block px-4 py-2 text-sm text-emerald-300/80 hover:text-emerald-200 rounded-md mx-1 pl-8 transition-colors"
+                    >
+                      → Servicios integrales
+                    </Link>
+                  </div>
+                );
+              }
               return (
                 <Link
                   key={link.href}
