@@ -14,11 +14,10 @@ import { getQuestions, createQuestion, updateQuestion, deleteQuestion } from '@/
 import type { Question } from '@/types/panel';
 
 const TOPICS = [
-  { id: 1, name: 'Calidad en el servicio' },
-  { id: 2, name: 'Presentación del personal' },
-  { id: 3, name: 'Facturación' },
-  { id: 4, name: 'Precios' },
-  { id: 5, name: 'Atención a cliente' },
+  { id: 1, name: 'Atención a cliente' },
+  { id: 2, name: 'Ventas' },
+  { id: 3, name: 'Documentación' },
+  { id: 4, name: 'Operativo' },
 ];
 
 export default function PreguntasPage() {

@@ -16,30 +16,25 @@ function scoreStatus(avg: number): StatusLevel {
 }
 
 const ACTION_PLANS: Record<string, string[]> = {
-  'Calidad': [
-    'Auditar proceso de tratamiento y verificar parámetros de efluente.',
-    'Implementar revisiones de calidad semanales con el equipo técnico.',
-    'Solicitar retroalimentación específica al cliente sobre los puntos de mejora.',
-  ],
-  'Presentación': [
-    'Revisar protocolo de presentación de informes al cliente.',
-    'Capacitar al personal en comunicación profesional y uniforme.',
-    'Establecer checklist de entrega de servicio antes de salida del equipo.',
-  ],
-  'Facturación': [
-    'Revisar proceso de emisión y entrega de facturas.',
-    'Capacitar al área administrativa en tiempos de respuesta.',
-    'Implementar confirmación de recepción de factura con el cliente.',
-  ],
-  'Precios': [
-    'Realizar análisis comparativo de mercado para validar tarifas.',
-    'Preparar material explicativo del valor diferenciado del servicio.',
-    'Revisar si los costos adicionales se están comunicando con claridad.',
-  ],
   'Atención': [
-    'Reforzar capacitación en atención al cliente para todo el personal.',
-    'Implementar protocolo de seguimiento post-servicio.',
-    'Establecer tiempo máximo de respuesta a solicitudes del cliente.',
+    'Reforzar capacitación en tiempos de respuesta y protocolos de atención al cliente.',
+    'Implementar indicador de tiempo máximo de respuesta a solicitudes.',
+    'Establecer seguimiento post-servicio para verificar satisfacción del cliente.',
+  ],
+  'Ventas': [
+    'Revisar claridad y estructura de las cotizaciones enviadas a clientes.',
+    'Capacitar al área comercial en escucha activa y diagnóstico de necesidades.',
+    'Implementar protocolo de seguimiento a propuestas enviadas.',
+  ],
+  'Documentación': [
+    'Auditar proceso de generación y revisión de manifiestos antes de su entrega.',
+    'Establecer tiempo máximo de entrega de documentación post-servicio.',
+    'Crear canal directo para corrección ágil de errores en documentos.',
+  ],
+  'Operativo': [
+    'Revisar rutas y tiempos de llegada para mejorar puntualidad en sitio.',
+    'Reforzar cumplimiento de procedimientos de seguridad y orden en campo.',
+    'Implementar checklist de revisión de unidades antes de cada servicio.',
   ],
 };
 
