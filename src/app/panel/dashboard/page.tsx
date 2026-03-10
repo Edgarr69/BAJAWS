@@ -118,13 +118,13 @@ export default function DashboardPage() {
         <h1 className="text-xl font-bold text-slate-800">Dashboard</h1>
         <div className="flex flex-wrap gap-2 items-center">
           <input
-            type="date" value={dateFrom} max={dateTo}
+            type="date" value={dateFrom} max={dateTo || today}
             onChange={e => setDateFrom(e.target.value)}
             className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
           <span className="text-slate-400 text-sm">—</span>
           <input
-            type="date" value={dateTo} min={dateFrom}
+            type="date" value={dateTo} min={dateFrom} max={today}
             onChange={e => setDateTo(e.target.value)}
             className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
@@ -274,7 +274,7 @@ export default function DashboardPage() {
 
         <Card className="border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Top 5 temas peor evaluados</CardTitle>
+            <CardTitle className="text-sm font-semibold text-slate-700">Top 4 temas peor evaluados</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? <Skeleton className="h-52 w-full" /> : (

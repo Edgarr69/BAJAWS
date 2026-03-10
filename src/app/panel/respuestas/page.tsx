@@ -11,6 +11,8 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { getSubmissions, getSubmission } from '@/lib/api';
 import type { Submission, Answer } from '@/types/panel';
 
+const today = new Date().toISOString().slice(0, 10);
+
 export default function RespuestasPage() {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
@@ -68,10 +70,10 @@ export default function RespuestasPage() {
 
       {/* Filtros */}
       <div className="flex flex-wrap gap-2 items-center">
-        <input type="date" value={dateFrom} onChange={e => setDateFrom(e.target.value)}
+        <input type="date" value={dateFrom} max={dateTo || today} onChange={e => setDateFrom(e.target.value)}
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
         <span className="text-slate-400 text-sm">—</span>
-        <input type="date" value={dateTo} onChange={e => setDateTo(e.target.value)}
+        <input type="date" value={dateTo} min={dateFrom} max={today} onChange={e => setDateTo(e.target.value)}
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
         <Button size="sm" onClick={load} className="bg-primary-700 hover:bg-primary-600">Filtrar</Button>
         <Button size="sm" variant="outline" onClick={() => { setDateFrom(''); setDateTo(''); }}>Reset</Button>
