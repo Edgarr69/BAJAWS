@@ -65,6 +65,11 @@
   }
 }
 
+@keyframes cursor-blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
 @layer components {
   .btn-primary {
     @apply inline-block bg-primary-700 hover:bg-primary-600 text-white font-semibold px-6 py-3 rounded-lg transition-all duration-200 active:scale-[0.98] shadow-sm hover:shadow-md;

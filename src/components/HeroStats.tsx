@@ -1,52 +1,33 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { NumberTicker } from '@/components/ui/number-ticker';
 
 interface HeroStatsProps {
-  yearsExperience: number;
+  yearsExperience:     number;
   authorizationsCount: number;
+  ready:               boolean;
 }
 
-export default function HeroStats({ yearsExperience, authorizationsCount }: HeroStatsProps) {
+export default function HeroStats({ yearsExperience, authorizationsCount, ready }: HeroStatsProps) {
   const stats = [
     { value: yearsExperience,      suffix: '+', label: 'Años de experiencia'    },
     { value: authorizationsCount,  suffix: '',  label: 'Autorizaciones vigentes' },
     { value: 100,                  suffix: '%', label: 'Cumplimiento ambiental'  },
   ];
 
-  const containerRef = useRef<HTMLDivElement>(null);
   const [activeCount, setActiveCount] = useState(0);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    let t1: ReturnType<typeof setTimeout>;
-    let t2: ReturnType<typeof setTimeout>;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          observer.disconnect();
-          setActiveCount(1);
-          t1 = setTimeout(() => setActiveCount(2), 2000);
-          t2 = setTimeout(() => setActiveCount(3), 4000);
-        }
-      },
-      { threshold: 0.1 },
-    );
-
-    observer.observe(el);
-    return () => {
-      observer.disconnect();
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, []);
+    if (!ready) return;
+    setActiveCount(1);
+    const t1 = setTimeout(() => setActiveCount(2), 2000);
+    const t2 = setTimeout(() => setActiveCount(3), 4000);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [ready]);
 
   return (
-    <div ref={containerRef} className="relative z-10 text-white">
+    <div className="relative z-10 text-white">
       <div className="grid grid-cols-3">
         {stats.map((s, i) => (
           <div key={s.label} className="py-4 sm:py-5 px-2 sm:px-6 lg:px-10 text-center">

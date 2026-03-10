@@ -5,7 +5,7 @@ import Section from "@/components/Section";
 import ServiceCard from "@/components/ServiceCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import ContactForm from "@/components/ContactForm";
-import HeroStats from "@/components/HeroStats";
+import HeroContent from "@/components/HeroContent";
 import { siteContent, getYearsExperience } from "@/content/site";
 
 export const metadata: Metadata = siteContent.home.meta;
@@ -64,71 +64,7 @@ export default function HomePage() {
           style={{ background: 'linear-gradient(to bottom, transparent, rgba(7,30,48,0.65))' }}
         />
 
-        {/* Contenido */}
-        <div className="relative z-10 flex flex-1 items-center px-4 sm:px-12 lg:px-20 py-10 min-h-0">
-          <div className="max-w-2xl">
-
-            {/* Eyebrow — nombre de empresa */}
-            <div className="flex items-center gap-3 mb-5">
-              <span className="text-teal-300 text-xs font-bold tracking-[0.25em] uppercase">
-                Baja Wastewater Solutions
-              </span>
-              <span className="h-px w-12 bg-teal-400/60" />
-            </div>
-
-            {/* Titular */}
-            <h1 className="font-extrabold leading-[1.1] tracking-tight mb-5 text-white text-[2rem] sm:text-[2.8rem] lg:text-[3rem] xl:text-[3.4rem]">
-              Soluciones integrales en
-              <span className="block text-teal-300 mt-1">
-                manejo de residuos peligrosos
-              </span>
-            </h1>
-
-            {/* Divisor decorativo */}
-            <div className="w-14 h-[3px] bg-teal-400 rounded-full mb-6" />
-
-            {/* Subtítulo */}
-            <p className="text-white/75 text-base sm:text-lg leading-relaxed mb-8 max-w-lg">
-              Diseñamos, implementamos y operamos sistemas de tratamiento con
-              enfoque ambiental, eficiencia operativa y cumplimiento normativo.
-            </p>
-
-            {/* Autorizaciones — fila con iconos */}
-            <div className="flex items-center gap-x-4 flex-wrap gap-y-2 mb-9">
-              {['SEMARNAT', 'CESPT', 'SEMAR', 'SCT'].map((org, i) => (
-                <div key={org} className="flex items-center gap-x-3">
-                  {i > 0 && <span className="w-px h-3.5 bg-white/20 flex-shrink-0" />}
-                  <div className="flex items-center gap-1.5">
-                    <svg className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
-                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                    </svg>
-                    <span className="text-[11px] font-semibold text-white/75 tracking-wider">{org}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* CTAs */}
-            <div className="flex flex-wrap gap-3">
-              <Link
-                href="#cotizacion"
-                className="inline-block bg-teal-600 hover:bg-teal-500 text-white font-semibold px-7 py-3.5 rounded-xl transition-all duration-200 active:scale-[0.98] shadow-lg"
-              >
-                Solicitar cotización
-              </Link>
-              <Link
-                href="/servicios"
-                className="inline-block bg-white/10 hover:bg-white/20 text-white font-semibold px-7 py-3.5 rounded-xl border border-white/25 transition-all duration-200 active:scale-[0.98]"
-              >
-                Ver servicios →
-              </Link>
-            </div>
-          </div>
-        </div>
-
-        {/* Barra de estadísticas — glassmorphism con animación count-up */}
-        <HeroStats yearsExperience={yearsExperience} authorizationsCount={authorizationsCount} />
+        <HeroContent yearsExperience={yearsExperience} authorizationsCount={authorizationsCount} />
       </section>
 
       {/* ── Servicios ────────────────────────────────────────────────────────── */}
