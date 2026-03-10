@@ -117,3 +117,10 @@ export const getRawAnswers = (params?: Record<string, string>) => {
   const qs = params ? '?' + new URLSearchParams(params).toString() : '';
   return apiFetch<{ ok: boolean; data: unknown[] }>(`/api/internal/answers/raw${qs}`);
 };
+
+// ── Reset ─────────────────────────────────────────────────────────────────────
+export const resetAllData = () =>
+  apiFetch<{ ok: boolean }>('/api/admin/reset-all', { method: 'DELETE' });
+
+export const deleteLinkByCode = (code: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/reset-all?code=${encodeURIComponent(code)}`, { method: 'DELETE' });

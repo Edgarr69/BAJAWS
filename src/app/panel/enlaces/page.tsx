@@ -3,16 +3,16 @@
 import { useEffect, useState, useRef } from 'react';
 import { toast } from 'sonner';
 import { QRCodeSVG } from 'qrcode.react';
-import { Copy, Share2, RefreshCw, QrCode } from 'lucide-react';
+import { Copy, Share2, RefreshCw, QrCode, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { createService, createLink, getLinks, getMe } from '@/lib/api';
+import { createService, createLink, getLinks, getMe, resetAllData, deleteLinkByCode } from '@/lib/api';
 import { getLinkStatus, type FeedbackLink } from '@/types/panel';
 
 const BASE_URL = 'https://bajaws.com.mx/formulario/';
@@ -33,12 +33,17 @@ export default function EnlacesPage() {
   // form
   const [folio, setFolio]     = useState('');
   const [fecha, setFecha]     = useState('');
-  const [notes, setNotes]     = useState('');
   const [ttl, setTtl]         = useState('3600');
 
   // resultado
   const [newLink, setNewLink] = useState<{ code: string; url: string; expires_at: string } | null>(null);
   const [qrOpen, setQrOpen]   = useState(false);
+
+  // eliminar
+  const [confirmReset, setConfirmReset]     = useState(false);
+  const [resetting, setResetting]           = useState(false);
+  const [deleteCode, setDeleteCode]         = useState('');
+  const [deletingCode, setDeletingCode]     = useState(false);
 
   useEffect(() => {
     Promise.all([getMe(), getLinks()])
@@ -55,7 +60,7 @@ export default function EnlacesPage() {
     try {
       let service_id: string | undefined;
       if (folio || fecha) {
-        const svc = await createService({ folio: folio || undefined, service_date: fecha || undefined, notes: notes || undefined });
+        const svc = await createService({ folio: folio || undefined, service_date: fecha || undefined });
         service_id = svc.service.id;
       }
       const ttlSeconds = role === 'admin' ? Number(ttl) : 3600;
@@ -75,6 +80,32 @@ export default function EnlacesPage() {
   function copyLink(code: string) {
     navigator.clipboard.writeText(BASE_URL + code);
     toast.success('Enlace copiado');
+  }
+
+  async function handleResetAll() {
+    setResetting(true);
+    try {
+      await resetAllData();
+      setLinks([]);
+      setNewLink(null);
+      setConfirmReset(false);
+      toast.success('Todos los datos han sido eliminados');
+    } catch { toast.error('Error al eliminar datos'); }
+    finally { setResetting(false); }
+  }
+
+  async function handleDeleteByCode() {
+    const code = deleteCode.trim().toUpperCase();
+    if (!code) return;
+    setDeletingCode(true);
+    try {
+      await deleteLinkByCode(code);
+      setLinks(ls => ls.filter(l => l.code !== code));
+      if (newLink?.code === code) setNewLink(null);
+      setDeleteCode('');
+      toast.success(`Enlace ${code} eliminado`);
+    } catch { toast.error('Código no encontrado o error al eliminar'); }
+    finally { setDeletingCode(false); }
   }
 
   function shareWhatsApp(code: string) {
@@ -101,11 +132,14 @@ export default function EnlacesPage() {
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="fecha" className="text-xs">Fecha del servicio</Label>
-              <Input id="fecha" type="date" value={fecha} onChange={e => setFecha(e.target.value)} />
-            </div>
-            <div className="space-y-1.5">
-              <Label htmlFor="notes" className="text-xs">Notas internas</Label>
-              <Input id="notes" placeholder="Opcional" value={notes} onChange={e => setNotes(e.target.value)} />
+              <Input
+                id="fecha"
+                type="date"
+                value={fecha}
+                onChange={e => setFecha(e.target.value)}
+                min={(() => { const d = new Date(); d.setDate(d.getDate() - 3); return d.toISOString().split('T')[0]; })()}
+                max={new Date().toISOString().split('T')[0]}
+              />
             </div>
 
             {role === 'admin' && (
@@ -140,33 +174,66 @@ export default function EnlacesPage() {
           </CardContent>
         </Card>
 
-        {/* Resultado */}
-        <Card className={`border-2 transition-colors ${newLink ? 'border-accent-400' : 'border-slate-200'}`}>
+        {/* Resultado + Acciones de eliminación */}
+        <Card className={`border-2 transition-colors flex flex-col ${newLink ? 'border-accent-400' : 'border-slate-200'}`}>
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-semibold text-slate-700">Enlace generado</CardTitle>
           </CardHeader>
-          <CardContent>
-            {!newLink ? (
-              <div className="h-48 flex items-center justify-center text-slate-300 text-sm">
-                El enlace aparecerá aquí
-              </div>
-            ) : (
-              <div className="space-y-4">
-                <div className="bg-slate-50 rounded-lg p-3 break-all text-sm font-mono text-primary-700 border border-slate-200">
-                  {BASE_URL}{newLink.code}
+          <CardContent className="flex flex-col flex-1 gap-0 p-0">
+            {/* Resultado */}
+            <div className="px-6 pb-5">
+              {!newLink ? (
+                <div className="h-32 flex items-center justify-center text-slate-300 text-sm">
+                  El enlace aparecerá aquí
                 </div>
-                <p className="text-xs text-slate-400">
-                  Expira: {new Date(newLink.expires_at).toLocaleString('es-MX')}
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => copyLink(newLink.code)}>
-                    <Copy className="w-3.5 h-3.5" /> Copiar
-                  </Button>
-                  <Button size="sm" variant="outline" className="gap-1.5 text-green-700 border-green-300 hover:bg-green-50" onClick={() => shareWhatsApp(newLink.code)}>
-                    <Share2 className="w-3.5 h-3.5" /> WhatsApp
-                  </Button>
-                  <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setQrOpen(true)}>
-                    <QrCode className="w-3.5 h-3.5" /> QR
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-slate-50 rounded-lg p-3 break-all text-sm font-mono text-primary-700 border border-slate-200">
+                    {BASE_URL}{newLink.code}
+                  </div>
+                  <p className="text-xs text-slate-400">
+                    Expira: {new Date(newLink.expires_at).toLocaleString('es-MX')}
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => copyLink(newLink.code)}>
+                      <Copy className="w-3.5 h-3.5" /> Copiar
+                    </Button>
+                    <Button size="sm" variant="outline" className="gap-1.5 text-green-700 border-green-300 hover:bg-green-50" onClick={() => shareWhatsApp(newLink.code)}>
+                      <Share2 className="w-3.5 h-3.5" /> WhatsApp
+                    </Button>
+                    <Button size="sm" variant="outline" className="gap-1.5" onClick={() => setQrOpen(true)}>
+                      <QrCode className="w-3.5 h-3.5" /> QR
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Zona de eliminación — solo admin/superadmin */}
+            {(role === 'admin' || role === 'superadmin') && (
+              <div className="border-t border-slate-100 px-6 py-4 mt-auto space-y-3">
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Eliminar un enlace</p>
+                {/* Por código */}
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="Código (ej. AB12CD34)"
+                    value={deleteCode}
+                    onChange={e => setDeleteCode(e.target.value.toUpperCase())}
+                    maxLength={8}
+                    className="font-mono text-sm h-8 text-xs"
+                  />
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="h-8 px-3 text-xs gap-1.5 text-red-600 border-red-200 hover:bg-red-50 shrink-0"
+                    onClick={handleDeleteByCode}
+                    disabled={deletingCode || deleteCode.trim().length === 0}
+                  >
+                    {deletingCode
+                      ? <span className="w-3 h-3 border-2 border-red-300 border-t-red-600 rounded-full animate-spin" />
+                      : <Trash2 className="w-3 h-3" />
+                    }
+                    Eliminar
                   </Button>
                 </div>
               </div>
@@ -178,7 +245,19 @@ export default function EnlacesPage() {
       {/* Tabla de enlaces */}
       <Card className="border-slate-200">
         <CardHeader className="pb-3">
-          <CardTitle className="text-sm font-semibold text-slate-700">Historial de enlaces</CardTitle>
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-sm font-semibold text-slate-700">Historial de enlaces</CardTitle>
+            {(role === 'admin' || role === 'superadmin') && links.length > 0 && (
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 px-2 text-xs text-red-500 hover:text-red-700 hover:bg-red-50 gap-1.5"
+                onClick={() => setConfirmReset(true)}
+              >
+                <Trash2 className="w-3.5 h-3.5" /> Eliminar todo
+              </Button>
+            )}
+          </div>
         </CardHeader>
         <CardContent className="p-0">
           {loading ? (
@@ -215,14 +294,16 @@ export default function EnlacesPage() {
                           </span>
                         </td>
                         <td className="px-4 py-3">
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => copyLink(link.code)}>
-                              <Copy className="w-3 h-3" />
-                            </Button>
-                            <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-green-600" onClick={() => shareWhatsApp(link.code)}>
-                              <Share2 className="w-3 h-3" />
-                            </Button>
-                          </div>
+                          {status !== 'usado' && (
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => copyLink(link.code)}>
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-green-600" onClick={() => shareWhatsApp(link.code)}>
+                                <Share2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          )}
                         </td>
                       </tr>
                     );
@@ -233,6 +314,32 @@ export default function EnlacesPage() {
           )}
         </CardContent>
       </Card>
+
+      {/* Dialog confirmar eliminar todo */}
+      <Dialog open={confirmReset} onOpenChange={setConfirmReset}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="text-red-600">¿Eliminar todos los datos?</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 py-1">
+            Esto eliminará <strong>todos los enlaces, respuestas y servicios</strong> registrados. No habrá información para mostrar en el dashboard ni en los reportes. Esta acción no se puede deshacer.
+          </p>
+          <DialogFooter className="gap-2">
+            <Button variant="outline" onClick={() => setConfirmReset(false)} disabled={resetting}>
+              Cancelar
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleResetAll}
+              disabled={resetting}
+              className="gap-2"
+            >
+              {resetting && <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+              Sí, eliminar todo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
 
       {/* Dialog QR */}
       <Dialog open={qrOpen} onOpenChange={setQrOpen}>
