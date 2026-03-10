@@ -10,8 +10,8 @@ const CSP = [
   "style-src 'self' 'unsafe-inline'",
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
-  // Imágenes locales + data URIs + avatares de Google OAuth
-  "img-src 'self' data: blob: https://lh3.googleusercontent.com",
+  // Imágenes locales + data URIs
+  "img-src 'self' data: blob:",
   // Video local (src/videos/*)
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
