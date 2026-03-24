@@ -35,31 +35,31 @@ export default function ServicesList() {
   const { items } = siteContent.services;
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
+    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
       {items.map((service, i) => {
         const Icon  = iconMap[service.icon as ServiceIcon];
         const color = colors[i % 2];
         const c     = colorMap[color];
         return (
-          <AnimateOnScroll key={service.id} delay={i * 80}>
+          <AnimateOnScroll key={service.id} delay={i * 60}>
             <div
-              className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_12px_30px_rgba(0,0,0,0.08)] transition-all duration-[250ms] ease-out p-5 h-full flex flex-col gap-3 overflow-hidden"
+              className="group relative bg-white rounded-xl border-t-4 shadow-sm hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] transition-all duration-[250ms] ease-out p-3 sm:p-4 h-full flex flex-col gap-2 overflow-hidden"
               style={{ borderTopColor: c.border }}
             >
               {/* Número de agua */}
-              <span className={`absolute bottom-1 right-2 text-6xl font-black leading-none select-none pointer-events-none ${c.num}`}>
+              <span className={`absolute bottom-0 right-1.5 text-5xl font-black leading-none select-none pointer-events-none ${c.num}`}>
                 {String(i + 1).padStart(2, '0')}
               </span>
 
               {/* Ícono */}
-              <div className={`w-9 h-9 rounded-xl flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 ${c.icon}`}>
-                <Icon className="w-4 h-4" strokeWidth={1.75} />
+              <div className={`w-8 h-8 rounded-lg flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 ${c.icon}`}>
+                <Icon className="w-3.5 h-3.5" strokeWidth={1.75} />
               </div>
 
               {/* Texto */}
               <div className="relative z-10">
-                <h3 className="font-bold text-slate-800 text-xs leading-snug mb-1">{service.title}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed text-justify">{service.description}</p>
+                <h3 className="font-bold text-slate-800 text-xs leading-snug mb-0.5">{service.title}</h3>
+                <p className="text-slate-500 text-[11px] leading-relaxed">{service.description}</p>
               </div>
             </div>
           </AnimateOnScroll>

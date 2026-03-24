@@ -19,9 +19,10 @@ export default function ServiciosPage() {
         </div>
       </div>
 
-      <Section>
+      <div className="py-8 sm:py-10 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Intro */}
-        <p className="text-center text-gray-600 text-lg max-w-2xl mx-auto mb-14 leading-relaxed">
+        <p className="text-center text-slate-500 text-sm max-w-2xl mx-auto mb-6 leading-relaxed">
           {intro}
         </p>
 
@@ -29,32 +30,33 @@ export default function ServiciosPage() {
         <ServicesList />
 
         {/* CTA */}
-        <div className="mt-16">
-          <div className="bg-gradient-to-br from-primary-800 to-slate-900 rounded-3xl p-8 sm:p-10 text-center">
-            <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-3">
+        <div className="mt-8">
+          <div className="bg-gradient-to-br from-primary-800 to-slate-900 rounded-3xl p-7 sm:p-8 text-center">
+            <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-2">
               Nuestro compromiso
             </p>
-            <h2 className="text-white text-2xl sm:text-3xl font-extrabold mb-4 leading-tight">{question}</h2>
-            <p className="text-white/60 text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-8">
+            <h2 className="text-white text-xl sm:text-2xl font-extrabold mb-2 leading-tight">{question}</h2>
+            <p className="text-white/60 text-sm max-w-xl mx-auto leading-relaxed mb-6">
               Cuéntanos sobre tus necesidades y construiremos la solución ideal para tu empresa.
             </p>
-            <div className="flex flex-wrap justify-center gap-4">
+            <div className="flex flex-wrap justify-center gap-3">
               <Link
                 href={ctaHref}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-7 py-3 rounded-xl transition-colors duration-200 text-sm"
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors duration-200 text-sm"
               >
                 {cta}
               </Link>
               <Link
                 href="/servicios/integrales"
-                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-7 py-3 rounded-xl transition-colors duration-200 text-sm"
+                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors duration-200 text-sm"
               >
                 Ver servicios integrales
               </Link>
             </div>
           </div>
         </div>
-      </Section>
+        </div>
+      </div>
     </>
   );
 }
