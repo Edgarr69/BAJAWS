@@ -57,9 +57,9 @@ export default function ServicesList({ className = '' }: { className?: string })
               </div>
 
               {/* Texto */}
-              <div className="relative z-10 flex flex-col gap-1">
-                <h3 className="font-bold text-slate-800 text-base sm:text-lg leading-snug">{service.title}</h3>
-                <p className="text-slate-500 text-sm leading-relaxed text-justify">{service.description}</p>
+              <div className="relative z-10 flex flex-col gap-1 flex-1 min-h-0">
+                <h3 className="font-bold text-slate-800 text-base sm:text-lg leading-snug flex-shrink-0">{service.title}</h3>
+                <p className="text-slate-500 text-sm leading-relaxed text-justify flex-1 overflow-hidden">{service.description}</p>
               </div>
             </div>
           </AnimateOnScroll>
