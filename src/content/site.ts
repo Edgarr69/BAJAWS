@@ -73,42 +73,42 @@ export const siteContent = {
         id:    "recoleccion",
         title: "RECOLECCIÓN Y TRANSPORTE",
         description:
-          "Para la prestación de nuestro servicio de manejo de residuos peligrosos y de manejo especial, contamos con una flotilla de transporte suficiente para cubrir las necesidades de recolección y traslado de los residuos a los diferentes destinos autorizados, esto con la finalidad de proveer un servicio integral de manejo, dando tranquilidad a nuestros clientes y cumpliendo así nuestra parte del proceso.",
+          "Flotilla autorizada para recolectar y trasladar residuos peligrosos y de manejo especial a los destinos autorizados, brindando un servicio integral y tranquilidad a nuestros clientes.",
         icon: "truck" as const,
       },
       {
         id:    "tratamiento",
         title: "TRATAMIENTO DE AGUAS RESIDUALES",
         description:
-          "Nuestra solución principal se enfoca en el tratamiento de aguas residuales industriales como sitio de disposición final por medio de procesos físico-químicos, los cuales son monitoreados mediante análisis de calidad del agua como medida de control para asegurar la eficiencia de nuestro servicio.",
+          "Tratamos aguas residuales industriales como sitio de disposición final mediante procesos físico-químicos monitoreados con análisis de calidad, asegurando la eficiencia del servicio.",
         icon: "water" as const,
       },
       {
         id:    "acopio",
         title: "ACOPIO TEMPORAL",
         description:
-          "Nuestros almacenes están diseñados para acopiar altos volúmenes de residuos peligrosos con el fin de implementar las estrategias adecuadas de segregación a los distintos sitios de disposición final, y de esta manera mantener una constante disponibilidad de servicio de recolección.",
+          "Almacenes para acopio de grandes volúmenes de residuos peligrosos con estrategias de segregación hacia los distintos sitios de disposición, garantizando disponibilidad continua del servicio.",
         icon: "warehouse" as const,
       },
       {
         id:    "reciclaje",
         title: "RECICLAJE Y REVALORIZACIÓN",
         description:
-          "Gestionamos residuos peligrosos con enfoque en la economía circular, identificando corrientes valorizables que permiten recuperar materiales y reducir el volumen de disposición final, minimizando el impacto ambiental de tu operación.",
+          "Identificamos corrientes valorizables de residuos peligrosos para recuperar materiales y reducir la disposición final, minimizando el impacto ambiental de tu operación.",
         icon: "recycle" as const,
       },
       {
         id:    "remediacion",
         title: "SERVICIOS DE REMEDIACIÓN",
         description:
-          "Llevamos a cabo diagnóstico, diseño y ejecución de proyectos de remediación de suelos y cuerpos de agua contaminados, apegándonos a la normatividad vigente y utilizando tecnologías probadas para restituir las condiciones ambientales del sitio.",
+          "Diagnóstico, diseño y ejecución de proyectos de remediación de suelos y cuerpos de agua contaminados, apegados a normatividad vigente y con tecnologías probadas.",
         icon: "remediation" as const,
       },
       {
         id:    "residuos-especiales",
         title: "RESIDUOS DE MANEJO ESPECIAL",
         description:
-          "Manejamos residuos no peligrosos de origen industrial que requieren atención especializada: chatarra, plásticos industriales, lodos no peligrosos y otros materiales que demandan una gestión responsable en cumplimiento con la normatividad estatal.",
+          "Gestión responsable de residuos no peligrosos de origen industrial: chatarra, plásticos, lodos y otros materiales, en cumplimiento con la normatividad estatal aplicable.",
         icon: "special-waste" as const,
       },
     ],
