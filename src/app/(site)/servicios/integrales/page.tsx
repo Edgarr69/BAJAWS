@@ -123,7 +123,7 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
 
 export default function ServiciosIntegralesPage() {
   return (
-    <div className="bg-slate-50 min-h-[calc(100svh-4rem)]">
+    <div className="bg-slate-50">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         {/* Encabezado compacto */}
