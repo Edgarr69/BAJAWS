@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 
-export default function IntegralesLayout({ children }: { children: React.ReactNode }) {
+export default function ServiciosLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col min-h-screen">
       <Header />
