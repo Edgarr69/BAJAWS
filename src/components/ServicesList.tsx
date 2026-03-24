@@ -43,23 +43,23 @@ export default function ServicesList() {
         return (
           <AnimateOnScroll key={service.id} delay={i * 60}>
             <div
-              className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-all duration-[250ms] ease-out p-4 sm:p-5 h-full flex flex-col gap-3 overflow-hidden"
+              className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-all duration-[250ms] ease-out p-3 sm:p-5 h-full flex flex-col gap-2 sm:gap-3 overflow-hidden"
               style={{ borderTopColor: c.border }}
             >
               {/* Número de agua */}
-              <span className={`absolute bottom-1 right-2 text-7xl font-black leading-none select-none pointer-events-none ${c.num}`}>
+              <span className={`absolute bottom-1 right-1 text-5xl sm:text-7xl font-black leading-none select-none pointer-events-none ${c.num}`}>
                 {String(i + 1).padStart(2, '0')}
               </span>
 
               {/* Ícono */}
-              <div className={`w-10 h-10 rounded-xl flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 flex-shrink-0 ${c.icon}`}>
-                <Icon className="w-5 h-5" strokeWidth={1.75} />
+              <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shadow-sm transition-transform duration-300 group-hover:scale-110 flex-shrink-0 ${c.icon}`}>
+                <Icon className="w-4 h-4 sm:w-5 sm:h-5" strokeWidth={1.75} />
               </div>
 
               {/* Texto */}
               <div className="relative z-10 flex flex-col gap-1">
-                <h3 className="font-bold text-slate-800 text-sm leading-snug">{service.title}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed">{service.description}</p>
+                <h3 className="font-bold text-slate-800 text-xs sm:text-sm leading-snug">{service.title}</h3>
+                <p className="text-slate-500 text-[11px] sm:text-xs leading-relaxed text-justify">{service.description}</p>
               </div>
             </div>
           </AnimateOnScroll>
