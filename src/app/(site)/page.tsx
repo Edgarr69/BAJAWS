@@ -40,7 +40,7 @@ export default function HomePage() {
   return (
     <>
       {/* ── Hero Split ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden flex flex-col h-[calc(100vh-4rem)]">
+      <section className="relative overflow-hidden flex flex-col h-[calc(100svh-4rem)]">
 
         {/* Video de fondo — reemplaza imagen marítima */}
         {/* eslint-disable-next-line jsx-a11y/media-has-caption */}

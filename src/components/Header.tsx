@@ -180,13 +180,21 @@ export default function Header() {
                 </Link>
               );
             })}
-            <div className="mx-1 mt-2 pt-2 border-t border-white/10">
+            <div className="mx-1 mt-2 pt-2 border-t border-white/10 space-y-2">
               <Link
                 href="/#cotizacion"
                 onClick={() => setIsOpen(false)}
                 className="block px-4 py-2.5 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-600 rounded-full transition-colors text-center"
               >
                 Solicitar cotización
+              </Link>
+              <Link
+                href="/login"
+                onClick={() => setIsOpen(false)}
+                className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white/90 transition-colors"
+              >
+                <LogIn className="w-4 h-4" />
+                Acceso interno
               </Link>
             </div>
           </div>
