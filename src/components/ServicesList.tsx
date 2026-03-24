@@ -35,7 +35,7 @@ export default function ServicesList({ className = '' }: { className?: string })
   const { items } = siteContent.services;
 
   return (
-    <div className={`grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 md:gap-5 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5 ${className}`}>
       {items.map((service, i) => {
         const Icon  = iconMap[service.icon as ServiceIcon];
         const color = colors[i % 2];
