@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -51,14 +50,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-[100svh] bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 flex items-center justify-center p-4 relative">
-      <Link
-        href="/"
-        className="absolute top-4 left-4 flex items-center gap-1.5 text-white/50 hover:text-white/90 text-sm transition-colors duration-200"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Inicio
-      </Link>
+    <div className="min-h-[100svh] bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         {/* Logo / marca */}
         <div className="text-center mb-8">
@@ -128,6 +120,12 @@ export default function LoginPage() {
               <p className="text-xs text-center text-muted-foreground">
                 Solo personal autorizado de Baja Wastewater Solution
               </p>
+              <Link
+                href="/"
+                className="flex items-center justify-center w-full h-11 border border-slate-200 text-slate-500 hover:text-slate-700 hover:border-slate-300 rounded-lg text-sm font-medium transition-colors duration-150"
+              >
+                Regresar a la página principal
+              </Link>
             </form>
           </CardContent>
         </Card>
