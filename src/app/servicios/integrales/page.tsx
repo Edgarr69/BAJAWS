@@ -104,8 +104,8 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
           <step.Icon className="w-4 h-4 sm:w-6 sm:h-6" strokeWidth={1.75} />
         </div>
         <div className="relative z-10 flex flex-col gap-1">
-          <h3 className="font-bold text-slate-800 text-xs sm:text-base leading-snug">{step.title}</h3>
-          <p className="text-slate-500 text-[11px] sm:text-sm leading-relaxed text-justify">{step.description}</p>
+          <h3 className="font-bold text-slate-800 text-sm sm:text-base leading-snug">{step.title}</h3>
+          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed text-justify">{step.description}</p>
         </div>
       </div>
     </AnimateOnScroll>
@@ -123,14 +123,14 @@ export default function ServiciosIntegralesPage() {
         </div>
       </div>
 
-      <div className="py-3 sm:py-4 bg-white">
+      <div className="py-6 sm:py-8 md:py-10 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
             {steps.slice(0, 4).map((step, i) => (
               <StepCard key={step.num} step={step} delay={i * 80} />
             ))}
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5 mt-2 sm:w-3/4 mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mt-4 sm:mt-5 sm:max-w-3xl mx-auto">
             {steps.slice(4).map((step, i) => (
               <StepCard key={step.num} step={step} delay={(i + 4) * 80} />
             ))}

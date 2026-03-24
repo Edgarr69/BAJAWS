@@ -10,11 +10,11 @@ export default function ServiciosPage() {
 
   return (
     <>
-      {/* ── Cards — ocupa viewport completo ── */}
-      <div className="bg-slate-50 flex flex-col" style={{ height: 'calc(100svh - 4rem)' }}>
-        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-5 sm:py-6 flex flex-col flex-1 min-h-0">
+      {/* ── Cards — viewport completo en desktop, scroll natural en móvil/tablet ── */}
+      <div className="bg-slate-50 py-8 sm:py-10 md:py-0 md:flex md:flex-col md:h-[calc(100svh-4rem)]">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 md:py-6 md:flex md:flex-col md:flex-1 md:min-h-0">
 
-          <div className="flex-shrink-0 mb-4">
+          <div className="mb-5 sm:mb-6 md:mb-4 md:flex-shrink-0">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-1">
               Soluciones integrales
             </p>
@@ -25,7 +25,7 @@ export default function ServiciosPage() {
             <div className="mt-3 w-8 h-1 bg-emerald-600 rounded-full" />
           </div>
 
-          <ServicesList className="flex-1 min-h-0" />
+          <ServicesList className="md:flex-1 md:min-h-0" />
 
         </div>
       </div>
