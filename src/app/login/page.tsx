@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 
@@ -49,7 +51,14 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 flex items-center justify-center p-4">
+    <div className="min-h-[100svh] bg-gradient-to-br from-primary-900 via-primary-800 to-primary-700 flex items-center justify-center p-4 relative">
+      <Link
+        href="/"
+        className="absolute top-4 left-4 flex items-center gap-1.5 text-white/50 hover:text-white/90 text-sm transition-colors duration-200"
+      >
+        <ArrowLeft className="w-4 h-4" />
+        Inicio
+      </Link>
       <div className="w-full max-w-md">
         {/* Logo / marca */}
         <div className="text-center mb-8">
