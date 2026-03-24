@@ -29,17 +29,30 @@ export default function ServiciosPage() {
         <ServicesList />
 
         {/* CTA */}
-        <div className="mt-20 text-center bg-gray-50 rounded-2xl p-10 border border-gray-100">
-          <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-4">{question}</h2>
-          <p className="text-gray-500 mb-7 max-w-lg mx-auto">
-            Cuéntanos sobre tus necesidades y construiremos la solución ideal para tu empresa.
-          </p>
-          <Link
-            href={ctaHref}
-            className="inline-block bg-primary-700 hover:bg-primary-600 text-white font-bold px-8 py-4 rounded-xl text-sm tracking-widest uppercase transition-colors duration-200 shadow-lg shadow-primary-900/20"
-          >
-            {cta}
-          </Link>
+        <div className="mt-16">
+          <div className="bg-gradient-to-br from-primary-800 to-slate-900 rounded-3xl p-8 sm:p-10 text-center">
+            <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-3">
+              Nuestro compromiso
+            </p>
+            <h2 className="text-white text-2xl sm:text-3xl font-extrabold mb-4 leading-tight">{question}</h2>
+            <p className="text-white/60 text-sm sm:text-base max-w-xl mx-auto leading-relaxed mb-8">
+              Cuéntanos sobre tus necesidades y construiremos la solución ideal para tu empresa.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Link
+                href={ctaHref}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-7 py-3 rounded-xl transition-colors duration-200 text-sm"
+              >
+                {cta}
+              </Link>
+              <Link
+                href="/servicios/integrales"
+                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-7 py-3 rounded-xl transition-colors duration-200 text-sm"
+              >
+                Ver servicios integrales
+              </Link>
+            </div>
+          </div>
         </div>
       </Section>
     </>
