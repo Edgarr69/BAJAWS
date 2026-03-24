@@ -117,15 +117,6 @@ export default function Header() {
             <LogIn className="w-4 h-4" />
           </Link>
 
-          {/* Login icon — mobile */}
-          <Link
-            href="/login"
-            aria-label="Acceso interno"
-            className="md:hidden p-2 text-white/30 hover:text-white/60 transition-colors duration-200"
-          >
-            <LogIn className="w-4 h-4" />
-          </Link>
-
           {/* Mobile menu button */}
           <button
             className="md:hidden p-2 rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
@@ -147,7 +138,15 @@ export default function Header() {
 
         {/* Mobile navigation */}
         {isOpen && (
-          <div className="md:hidden border-t border-white/10 py-2 pb-3">
+          <div className="md:hidden border-t border-white/10 py-2 pb-3 relative">
+            <Link
+              href="/login"
+              aria-label="Acceso interno"
+              className="absolute top-2 right-1 p-2 text-white/25 hover:text-white/60 transition-colors duration-200"
+              onClick={() => setIsOpen(false)}
+            >
+              <LogIn className="w-3.5 h-3.5" />
+            </Link>
             {links.map((link) => {
               const active = pathname === link.href || pathname.startsWith(link.href + '/');
               if (link.href === '/servicios') {
