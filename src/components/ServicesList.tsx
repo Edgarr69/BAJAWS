@@ -31,17 +31,17 @@ const colorMap: Record<Color, { icon: string; num: string; border: string }> = {
   },
 };
 
-export default function ServicesList() {
+export default function ServicesList({ className = '' }: { className?: string }) {
   const { items } = siteContent.services;
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+    <div className={`grid grid-cols-2 sm:grid-cols-3 grid-rows-3 sm:grid-rows-2 gap-3 sm:gap-4 ${className}`}>
       {items.map((service, i) => {
         const Icon  = iconMap[service.icon as ServiceIcon];
         const color = colors[i % 2];
         const c     = colorMap[color];
         return (
-          <AnimateOnScroll key={service.id} delay={i * 60}>
+          <AnimateOnScroll key={service.id} delay={i * 60} className="h-full">
             <div
               className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-all duration-[250ms] ease-out p-3 sm:p-5 h-full flex flex-col gap-2 sm:gap-3 overflow-hidden"
               style={{ borderTopColor: c.border }}
@@ -59,7 +59,7 @@ export default function ServicesList() {
               {/* Texto */}
               <div className="relative z-10 flex flex-col gap-1">
                 <h3 className="font-bold text-slate-800 text-xs sm:text-sm leading-snug">{service.title}</h3>
-                <p className="text-slate-500 text-[11px] sm:text-xs leading-relaxed text-justify">{service.description}</p>
+                <p className="text-slate-500 text-[11px] sm:text-xs leading-relaxed text-justify line-clamp-4">{service.description}</p>
               </div>
             </div>
           </AnimateOnScroll>
