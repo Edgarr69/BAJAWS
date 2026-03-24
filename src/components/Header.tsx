@@ -117,6 +117,15 @@ export default function Header() {
             <LogIn className="w-4 h-4" />
           </Link>
 
+          {/* Login icon — mobile */}
+          <Link
+            href="/login"
+            aria-label="Acceso interno"
+            className="md:hidden p-2 text-white/30 hover:text-white/60 transition-colors duration-200"
+          >
+            <LogIn className="w-4 h-4" />
+          </Link>
+
           {/* Mobile menu button */}
           <button
             className="md:hidden p-2 rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
@@ -180,21 +189,13 @@ export default function Header() {
                 </Link>
               );
             })}
-            <div className="mx-1 mt-2 pt-2 border-t border-white/10 space-y-2">
+            <div className="mx-1 mt-2 pt-2 border-t border-white/10">
               <Link
                 href="/#cotizacion"
                 onClick={() => setIsOpen(false)}
                 className="block px-4 py-2.5 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-600 rounded-full transition-colors text-center"
               >
                 Solicitar cotización
-              </Link>
-              <Link
-                href="/login"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-white/60 hover:text-white/90 transition-colors"
-              >
-                <LogIn className="w-4 h-4" />
-                Acceso interno
               </Link>
             </div>
           </div>
