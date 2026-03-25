@@ -21,9 +21,6 @@ export default function HeroStats({ yearsExperience, authorizationsCount, ready 
   useEffect(() => {
     if (!ready) return;
     setActiveCount(1);
-    const t1 = setTimeout(() => setActiveCount(2), 2000);
-    const t2 = setTimeout(() => setActiveCount(3), 4000);
-    return () => { clearTimeout(t1); clearTimeout(t2); };
   }, [ready]);
 
   return (
@@ -34,7 +31,11 @@ export default function HeroStats({ yearsExperience, authorizationsCount, ready 
             <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-white drop-shadow-sm">
               {i < activeCount ? (
                 <>
-                  <NumberTicker value={s.value} className="text-white" />
+                  <NumberTicker
+                    value={s.value}
+                    className="text-white"
+                    onComplete={i + 1 < stats.length ? () => setActiveCount(i + 2) : undefined}
+                  />
                   {s.suffix}
                 </>
               ) : (

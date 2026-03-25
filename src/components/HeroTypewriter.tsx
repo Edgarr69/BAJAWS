@@ -27,7 +27,7 @@ export default function HeroTypewriter({ onComplete, onNearComplete }: Props) {
 
   // Espera a que el eyebrow termine de aparecer antes de empezar
   useEffect(() => {
-    const t = setTimeout(() => setStarted(true), 1000);
+    const t = setTimeout(() => setStarted(true), 600);
     return () => clearTimeout(t);
   }, []);
 
@@ -38,7 +38,7 @@ export default function HeroTypewriter({ onComplete, onNearComplete }: Props) {
       const t = setTimeout(() => {
         setCursorVisible(false);
         onCompleteRef.current?.();
-      }, 700);
+      }, 500);
       return () => clearTimeout(t);
     }
 
@@ -49,8 +49,8 @@ export default function HeroTypewriter({ onComplete, onNearComplete }: Props) {
 
     const ch    = (LINE1 + LINE2)[charIndex];
     const delay = ch === ' '
-      ? 100 + Math.random() * 80  // 100–180 ms en espacios
-      : 55  + Math.random() * 65; // 55–120 ms en letras
+      ? 60 + Math.random() * 40   // 60–100 ms en espacios
+      : 35 + Math.random() * 30;  // 35–65 ms en letras
 
     const t = setTimeout(() => setCharIndex(i => i + 1), delay);
     return () => clearTimeout(t);
