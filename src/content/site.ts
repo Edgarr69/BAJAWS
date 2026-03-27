@@ -54,7 +54,7 @@ export const siteContent = {
       { label: "Nuestros servicios",   href: "/servicios",    variant: "secondary" as const },
     ],
     meta: {
-      title: "Inicio | Baja Wastewater Solution",
+      title: "Inicio",
       description:
         "Baja Wastewater Solution — empresa de soluciones para el tratamiento de aguas residuales industriales en Baja California.",
     },
@@ -113,7 +113,7 @@ export const siteContent = {
       },
     ],
     meta: {
-      title: "Servicios | Baja Wastewater Solution",
+      title: "Servicios",
       description:
         "Servicios de recolección y transporte, tratamiento de aguas residuales y acopio de residuos industriales en Baja California.",
     },
@@ -136,7 +136,7 @@ export const siteContent = {
       text: "Nuestra visión de proporcionar continuamente el servicio más eficaz en el tratamiento, reciclaje y recuperación de recursos, así como promover el cumplimiento puntual de la normatividad ambiental utilizando las mejores tecnologías que protejan y mejoren nuestro planeta tierra.",
     },
     meta: {
-      title: "Nosotros | Baja Wastewater Solution",
+      title: "Nosotros",
       description:
         "Conoce la historia, misión y visión de Baja Wastewater Solution — más de 14 años de experiencia en tratamiento de residuos industriales en Baja California.",
     },
@@ -166,7 +166,7 @@ export const siteContent = {
       ["General",         "SCT",      "Transporte", "Carga general líquida, sólida o semisólida",            "0202AALJ01092015230301000",       "Indefinido"],
     ] as string[][],
     meta: {
-      title: "Autorizaciones | Baja Wastewater Solution",
+      title: "Autorizaciones",
       description:
         "Autorizaciones oficiales de Baja Wastewater Solution emitidas por SEMARNAT, CESPT, SEMAR y SCT para el manejo seguro de residuos industriales.",
     },
@@ -186,7 +186,7 @@ export const siteContent = {
     },
     honeypotLabel: "Si eres humano, deja este campo en blanco.",
     meta: {
-      title: "Contacto | Baja Wastewater Solution",
+      title: "Contacto",
       description:
         "Contáctanos en Baja Wastewater Solution. Dirección: Fray Junípero Serra No.17501, Garita de Otay, Tijuana B.C. Teléfono: (664) 647 5020.",
     },
