@@ -22,16 +22,23 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // --dvh: altura real del viewport, congelada durante el scroll.
-  // Se actualiza solo cuando la barra del navegador termina de moverse (debounce 150ms).
+  // --dvh: altura capturada al montar, completamente estática durante el scroll.
+  // Solo se actualiza si cambia el ancho (orientación real), ignorando los resize
+  // causados por la barra del navegador que solo cambian el alto.
   useEffect(() => {
     const setDvh = () =>
       document.documentElement.style.setProperty("--dvh", `${window.innerHeight}px`);
     setDvh();
-    let timer: ReturnType<typeof setTimeout>;
-    const onResize = () => { clearTimeout(timer); timer = setTimeout(setDvh, 150); };
+    let prevWidth = window.innerWidth;
+    const onResize = () => {
+      const newWidth = window.innerWidth;
+      if (newWidth !== prevWidth) {
+        prevWidth = newWidth;
+        setDvh();
+      }
+    };
     window.addEventListener("resize", onResize);
-    return () => { window.removeEventListener("resize", onResize); clearTimeout(timer); };
+    return () => window.removeEventListener("resize", onResize);
   }, []);
 
   // Al cambiar de ruta, resetear a no-scrolled para que el hero quede alineado
