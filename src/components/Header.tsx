@@ -72,7 +72,7 @@ export default function Header() {
           <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-12" : "h-16"}`}>
 
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: "auto" })}>
+            <Link href="/" className="flex-shrink-0" onClick={() => window.scrollTo({ top: 0 })}>
               <Image
                 src="/logoo.webp"
                 alt="Baja Wastewater Solution"
