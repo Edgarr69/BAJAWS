@@ -181,24 +181,24 @@ export default function HomePage() {
       </section>
 
       {/* ── Cotización ───────────────────────────────────────────────────────── */}
-      <section id="cotizacion" className="py-24 bg-gray-50">
+      <section id="cotizacion" className="py-12 bg-gray-50">
         <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll direction="fade">
-            <div className="text-center mb-10">
-              <span className="inline-block bg-primary-100 text-primary-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-4 uppercase tracking-wider">
+            <div className="text-center mb-5">
+              <span className="inline-block bg-primary-100 text-primary-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-3 uppercase tracking-wider">
                 Respuesta en menos de 24 horas
               </span>
-              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-3">
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
                 Solicita tu Asesoría Técnica
               </h2>
-              <p className="text-gray-500 text-base">
+              <p className="text-gray-500 text-sm">
                 Nuestro equipo especializado analizará tu caso y te presentará la mejor solución para tu industria.
               </p>
             </div>
           </AnimateOnScroll>
 
           <AnimateOnScroll delay={100}>
-            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 sm:p-10">
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-5 sm:p-7">
               <ContactForm ctaLabel="Solicitar Asesoría Técnica" source="cotizacion" />
             </div>
 

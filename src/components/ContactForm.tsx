@@ -135,7 +135,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate className="space-y-5">
+    <form onSubmit={handleSubmit} noValidate className="space-y-3">
 
       {/* Honeypot — oculto para usuarios reales, visible para bots */}
       <div
@@ -155,10 +155,10 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
         />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Nombre */}
         <div>
-          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label htmlFor="nombre" className="block text-sm font-medium text-gray-700 mb-1">
             Nombre <span className="text-primary-600">*</span>
           </label>
           <input
@@ -178,7 +178,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
 
         {/* Teléfono */}
         <div>
-          <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1.5">
+          <label htmlFor="telefono" className="block text-sm font-medium text-gray-700 mb-1">
             Teléfono
           </label>
           <input
@@ -198,7 +198,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
 
       {/* Correo */}
       <div>
-        <label htmlFor="correo" className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor="correo" className="block text-sm font-medium text-gray-700 mb-1">
           Correo electrónico <span className="text-primary-600">*</span>
         </label>
         <input
@@ -218,14 +218,14 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
 
       {/* Mensaje */}
       <div>
-        <label htmlFor="mensaje" className="block text-sm font-medium text-gray-700 mb-1.5">
+        <label htmlFor="mensaje" className="block text-sm font-medium text-gray-700 mb-1">
           Mensaje <span className="text-primary-600">*</span>
         </label>
         <textarea
           id="mensaje"
           name="mensaje"
           required
-          rows={5}
+          rows={3}
           maxLength={LIMITS.mensaje}
           value={form.mensaje}
           onChange={handleChange}

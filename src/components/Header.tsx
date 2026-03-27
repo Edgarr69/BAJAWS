@@ -21,6 +21,11 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Al cambiar de ruta, sincroniza el estado con el scroll real (evita hueco en el hero)
+  useEffect(() => {
+    setScrolled(window.scrollY > 20);
+  }, [pathname]);
+
   return (
     <header
       className={`sticky top-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-all duration-300 relative ${
