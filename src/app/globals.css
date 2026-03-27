@@ -7,6 +7,14 @@
     scroll-behavior: smooth;
   }
 
+  /* Móvil: scroll instantáneo al volver al top — la barra del navegador
+     vuelve de inmediato y --dvh se puede sincronizar correctamente */
+  @media (max-width: 767px) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
+
   body {
     @apply text-gray-900 antialiased;
   }

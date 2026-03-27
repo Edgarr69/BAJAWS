@@ -16,29 +16,30 @@ export default function Header() {
   const { links } = siteContent.nav;
 
   useEffect(() => {
-    setScrolled(window.scrollY > 20);
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
-  // --dvh: altura capturada al montar, completamente estática durante el scroll.
-  // Solo se actualiza si cambia el ancho (orientación real), ignorando los resize
-  // causados por la barra del navegador que solo cambian el alto.
-  useEffect(() => {
     const setDvh = () =>
       document.documentElement.style.setProperty("--dvh", `${window.innerHeight}px`);
     setDvh();
+
+    // Actualiza --dvh cuando scroll llega a 0: la barra del navegador siempre
+    // está visible en ese momento, así que innerHeight es el valor correcto.
+    // Ignora resizes de solo-altura (barra animándose) para evitar el estirón.
+    const onScroll = () => {
+      setScrolled(window.scrollY > 20);
+      if (window.scrollY === 0) setDvh();
+    };
+
     let prevWidth = window.innerWidth;
     const onResize = () => {
-      const newWidth = window.innerWidth;
-      if (newWidth !== prevWidth) {
-        prevWidth = newWidth;
-        setDvh();
-      }
+      const w = window.innerWidth;
+      if (w !== prevWidth) { prevWidth = w; setDvh(); }
     };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
     window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onResize);
+    };
   }, []);
 
   // Al cambiar de ruta, resetear a no-scrolled para que el hero quede alineado
@@ -47,12 +48,18 @@ export default function Header() {
     setIsOpen(false);
   }, [pathname]);
 
-  // Sincroniza variable CSS con altura real del header para que el hero la use
+  // --header-height: al encoger actualiza inmediato; al expandir espera 300ms
+  // para sincronizar con la transición CSS del header (transition-all duration-300).
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--header-height",
-      scrolled ? "3rem" : "4rem"
-    );
+    if (scrolled) {
+      document.documentElement.style.setProperty("--header-height", "3rem");
+    } else {
+      const t = setTimeout(
+        () => document.documentElement.style.setProperty("--header-height", "4rem"),
+        300
+      );
+      return () => clearTimeout(t);
+    }
   }, [scrolled]);
 
   // Bloquea scroll del body cuando el menú móvil está abierto
