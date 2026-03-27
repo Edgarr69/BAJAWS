@@ -20,10 +20,11 @@ export default function Footer() {
           <div>
             <div className="mb-4">
               <Image
-                src="/logoo.png"
+                src="/logoo.webp"
                 alt="Baja Wastewater Solution"
                 width={160}
                 height={62}
+                sizes="160px"
                 className="h-9 w-auto object-contain"
               />
             </div>

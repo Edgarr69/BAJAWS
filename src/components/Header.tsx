@@ -33,10 +33,11 @@ export default function Header() {
           {/* Logo — alineado con el inicio del texto del hero */}
           <Link href="/" className="flex-shrink-0">
             <Image
-              src="/logoo.png"
+              src="/logoo.webp"
               alt="Baja Wastewater Solution"
               width={160}
               height={62}
+              sizes="160px"
               className={`w-auto object-contain transition-all duration-300 ${scrolled ? "h-7" : "h-9"}`}
               priority
             />
