@@ -21,9 +21,9 @@ export default function Header() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Al cambiar de ruta, sincroniza el estado con el scroll real (evita hueco en el hero)
+  // Al cambiar de ruta, resetear a no-scrolled para que el hero quede alineado
   useEffect(() => {
-    setScrolled(window.scrollY > 20);
+    setScrolled(false);
   }, [pathname]);
 
   return (
