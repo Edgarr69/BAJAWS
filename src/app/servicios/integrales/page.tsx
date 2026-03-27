@@ -115,32 +115,34 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
 export default function ServiciosIntegralesPage() {
   return (
     <>
-      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-7 sm:py-9">
+      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-3">Proceso de gestión</p>
-          <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Servicios Integrales</h1>
-          <div className="mt-4 w-10 h-1 bg-emerald-600 rounded-full" />
+          <AnimateOnScroll direction="fade">
+            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Proceso de gestión</p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Servicios Integrales</h1>
+            <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
+          </AnimateOnScroll>
         </div>
       </div>
 
-      <div className="py-6 sm:py-8 md:py-10 bg-white">
+      <div className="py-4 sm:py-6 md:py-8 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
             {steps.slice(0, 4).map((step, i) => (
-              <StepCard key={step.num} step={step} delay={i * 80} />
+              <StepCard key={step.num} step={step} delay={i * 60} />
             ))}
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mt-4 sm:mt-5 sm:max-w-3xl mx-auto">
             {steps.slice(4).map((step, i) => (
-              <StepCard key={step.num} step={step} delay={(i + 4) * 80} />
+              <StepCard key={step.num} step={step} delay={(i + 4) * 60} />
             ))}
           </div>
 
           {/* Botones al pie, sin bloque extra */}
-          <div className="flex flex-wrap justify-center gap-3 mt-3">
+          <AnimateOnScroll direction="fade" delay={200} className="flex flex-wrap justify-center gap-3 mt-3">
             <a href="/#cotizacion" className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors duration-200">Solicitar diagnóstico</a>
             <a href="/servicios" className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors duration-200">Ver todos los servicios</a>
-          </div>
+          </AnimateOnScroll>
         </div>
       </div>
     </>
