@@ -12,7 +12,7 @@ export default function ServiciosPage() {
   return (
     <>
       {/* ── Cards ── */}
-      <div className="bg-slate-50 py-6 sm:py-8 md:py-10">
+      <div className="bg-slate-50 py-6 sm:py-8 md:py-4">
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">
 
           <AnimateOnScroll direction="fade" className="mb-5 sm:mb-6">

@@ -35,7 +35,7 @@ export default function ServicesList({ className = '' }: { className?: string })
   const { items } = siteContent.services;
 
   return (
-    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-5 ${className}`}>
+    <div className={`grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 md:gap-3 ${className}`}>
       {items.map((service, i) => {
         const Icon  = iconMap[service.icon as ServiceIcon];
         const color = colors[i % 2];
@@ -43,7 +43,7 @@ export default function ServicesList({ className = '' }: { className?: string })
         return (
           <AnimateOnScroll key={service.id} delay={i * 50} className="h-full">
             <div
-              className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-[transform,box-shadow] duration-[250ms] ease-out p-4 sm:p-5 h-full flex flex-col gap-2 sm:gap-3 overflow-hidden"
+              className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-[transform,box-shadow] duration-[250ms] ease-out p-3 sm:p-4 md:p-3 h-full flex flex-col gap-2 overflow-hidden"
               style={{ borderTopColor: c.border }}
             >
               {/* Número de agua */}
