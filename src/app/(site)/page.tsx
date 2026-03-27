@@ -5,7 +5,9 @@ import Section from "@/components/Section";
 import ServiceCard from "@/components/ServiceCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import ContactForm from "@/components/ContactForm";
+import YoutubeEmbed from "@/components/YoutubeEmbed";
 import HeroContent from "@/components/HeroContent";
+import HeroVideo from "@/components/HeroVideo";
 import { siteContent, getYearsExperience } from "@/content/site";
 
 export const metadata: Metadata = siteContent.home.meta;
@@ -42,20 +44,7 @@ export default function HomePage() {
       {/* ── Hero Split ───────────────────────────────────────────────────────── */}
       <section className="relative overflow-hidden flex flex-col h-[calc(100svh-4rem)]">
 
-        {/* Video de fondo — reemplaza imagen marítima */}
-        {/* eslint-disable-next-line jsx-a11y/media-has-caption */}
-        <video
-          className="absolute inset-0 w-full h-full object-cover z-0"
-          autoPlay
-          muted
-          loop
-          playsInline
-          preload="none"
-          style={{ backfaceVisibility: 'hidden' }}
-        >
-          <source src="/videos/laboratorio.mp4" type="video/mp4" />
-          <source src="/videos/laboratorio.mov" type="video/quicktime" />
-        </video>
+        <HeroVideo />
         {/* Overlay para legibilidad del texto */}
         <div className="absolute inset-0 bg-black/40 z-0" />
 
@@ -146,13 +135,9 @@ export default function HomePage() {
         </AnimateOnScroll>
         <AnimateOnScroll delay={150}>
           <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-gray-200 aspect-video">
-            <iframe
-              src="https://www.youtube-nocookie.com/embed/UyetZ7i_Mg4?rel=0&modestbranding=1"
+            <YoutubeEmbed
+              videoId="UyetZ7i_Mg4"
               title="Baja Wastewater Solution — Video institucional"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              loading="lazy"
-              className="w-full h-full"
             />
           </div>
         </AnimateOnScroll>
