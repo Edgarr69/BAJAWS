@@ -225,7 +225,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           id="mensaje"
           name="mensaje"
           required
-          rows={3}
+          rows={2}
           maxLength={LIMITS.mensaje}
           value={form.mensaje}
           onChange={handleChange}

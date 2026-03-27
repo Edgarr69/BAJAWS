@@ -181,8 +181,8 @@ export default function HomePage() {
       </section>
 
       {/* ── Cotización ───────────────────────────────────────────────────────── */}
-      <section id="cotizacion" className="py-12 bg-gray-50">
-        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section id="cotizacion" className="bg-gray-50 scroll-mt-16 min-h-[calc(100svh-4rem)] flex items-center">
+        <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <AnimateOnScroll direction="fade">
             <div className="text-center mb-5">
               <span className="inline-block bg-primary-100 text-primary-700 text-xs font-semibold px-3 py-1.5 rounded-full mb-3 uppercase tracking-wider">

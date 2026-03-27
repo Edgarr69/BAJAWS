@@ -7,6 +7,7 @@ interface Props {
   className?: string;
   delay?: number; // ms
   direction?: "up" | "fade" | "left" | "right";
+  once?: boolean; // false = se revierte al salir del viewport
 }
 
 /**
@@ -21,8 +22,9 @@ export default function AnimateOnScroll({
   className = "",
   delay = 0,
   direction = "up",
+  once = true,
 }: Props) {
-  const { ref, inView } = useInView();
+  const { ref, inView } = useInView(0, once);
 
   const hiddenMap: Record<string, string> = {
     up:    "opacity-0 translate-y-4",
