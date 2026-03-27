@@ -11,7 +11,7 @@ const CSP = [
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
   // Imágenes locales + data URIs
-  "img-src 'self' data: blob:",
+  "img-src 'self' data: blob: https://i.ytimg.com",
   // Video local (src/videos/*)
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
@@ -46,6 +46,11 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      { protocol: "https", hostname: "i.ytimg.com" },
+    ],
+  },
   async headers() {
     return [
       {
