@@ -50,7 +50,7 @@ export default function HomePage() {
           muted
           loop
           playsInline
-          preload="auto"
+          preload="none"
           style={{ backfaceVisibility: 'hidden' }}
         >
           <source src="/videos/laboratorio.mp4" type="video/mp4" />
@@ -151,6 +151,7 @@ export default function HomePage() {
               title="Baja Wastewater Solution — Video institucional"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
+              loading="lazy"
               className="w-full h-full"
             />
           </div>

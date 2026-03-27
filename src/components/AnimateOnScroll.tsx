@@ -36,7 +36,7 @@ export default function AnimateOnScroll({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-500 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : hidden} ${className}`}
+      className={`transition-[transform,opacity] duration-500 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : hidden} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
