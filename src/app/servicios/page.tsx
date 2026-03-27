@@ -11,11 +11,11 @@ export default function ServiciosPage() {
 
   return (
     <>
-      {/* ── Cards — viewport completo en desktop, scroll natural en móvil/tablet ── */}
-      <div className="bg-slate-50 py-5 sm:py-6 md:py-0 md:flex md:flex-col md:h-[calc(100svh-4rem)]">
-        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8 md:py-4 md:flex md:flex-col md:flex-1 md:min-h-0">
+      {/* ── Cards ── */}
+      <div className="bg-slate-50 py-6 sm:py-8 md:py-10">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">
 
-          <AnimateOnScroll direction="fade" className="mb-4 sm:mb-5 md:mb-3 md:flex-shrink-0">
+          <AnimateOnScroll direction="fade" className="mb-5 sm:mb-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-1">
               Soluciones integrales
             </p>
@@ -26,13 +26,13 @@ export default function ServiciosPage() {
             <div className="mt-3 w-8 h-1 bg-emerald-600 rounded-full" />
           </AnimateOnScroll>
 
-          <ServicesList className="md:flex-1 md:min-h-0" />
+          <ServicesList />
 
         </div>
       </div>
 
-      {/* ── CTA — solo visible al hacer scroll ── */}
-      <div className="bg-gray-50 py-10">
+      {/* ── CTA — separación generosa para que no quede empalmado ── */}
+      <div className="bg-gray-50 py-16 sm:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll direction="up">
           <div className="bg-gradient-to-br from-primary-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-center">
