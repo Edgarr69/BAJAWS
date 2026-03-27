@@ -211,7 +211,7 @@ export default function FormularioPage() {
             value={companyName}
             onChange={e => setCompanyName(e.target.value)}
             maxLength={120}
-            className="w-full text-sm border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+            className="w-full text-base border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
           />
           {companyName.trim() === '' && (
             <p className="text-xs text-slate-400 mt-1">Requerido para continuar</p>
@@ -264,7 +264,7 @@ export default function FormularioPage() {
               onChange={e => setPrivateComment(e.target.value)}
               rows={3}
               maxLength={500}
-              className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-slate-700 placeholder:text-slate-300"
+              className="w-full text-base border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-slate-700 placeholder:text-slate-300"
             />
           </div>
         )}
