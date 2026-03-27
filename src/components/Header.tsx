@@ -16,6 +16,7 @@ export default function Header() {
   const { links } = siteContent.nav;
 
   useEffect(() => {
+    setScrolled(window.scrollY > 20);
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -25,6 +26,14 @@ export default function Header() {
   useEffect(() => {
     setScrolled(false);
   }, [pathname]);
+
+  // Sincroniza variable CSS con altura real del header para que el hero la use
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--header-height",
+      scrolled ? "3rem" : "4rem"
+    );
+  }, [scrolled]);
 
   return (
     <header
@@ -36,7 +45,7 @@ export default function Header() {
         <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-12" : "h-16"}`}>
 
           {/* Logo — alineado con el inicio del texto del hero */}
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" className="flex-shrink-0" onClick={() => window.scrollTo({ top: 0, behavior: "auto" })}>
             <Image
               src="/logoo.webp"
               alt="Baja Wastewater Solution"

@@ -42,7 +42,7 @@ export default function HomePage() {
   return (
     <>
       {/* ── Hero Split ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden flex flex-col h-[calc(100svh-4rem)]">
+      <section className="relative overflow-hidden flex flex-col" style={{ height: 'calc(100svh - var(--header-height, 4rem))' }}>
 
         <HeroVideo />
         {/* Overlay para legibilidad del texto */}
