@@ -25,10 +25,10 @@ export default function AnimateOnScroll({
   const { ref, inView } = useInView();
 
   const hiddenMap: Record<string, string> = {
-    up:    "opacity-0 translate-y-8",
+    up:    "opacity-0 translate-y-4",
     fade:  "opacity-0",
-    left:  "opacity-0 -translate-x-8",
-    right: "opacity-0 translate-x-8",
+    left:  "opacity-0 -translate-x-4",
+    right: "opacity-0 translate-x-4",
   };
 
   const hidden = hiddenMap[direction] ?? "opacity-0";
@@ -36,7 +36,7 @@ export default function AnimateOnScroll({
   return (
     <div
       ref={ref}
-      className={`transition-all duration-700 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : hidden} ${className}`}
+      className={`transition-all duration-500 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : hidden} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
