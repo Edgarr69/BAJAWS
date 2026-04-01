@@ -140,10 +140,10 @@ export default function ServiciosIntegralesPage() {
           </div>
 
           {/* Botones al pie, sin bloque extra */}
-          <AnimateOnScroll direction="fade" delay={200} className="flex flex-wrap justify-center gap-3 mt-3">
+          <AnimateOnMount direction="fade" delay={200} className="flex flex-wrap justify-center gap-3 mt-3">
             <a href="/#cotizacion" className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors duration-200">Solicitar diagnóstico</a>
             <a href="/servicios" className="bg-white hover:bg-slate-100 border border-slate-200 text-slate-700 font-semibold px-6 py-2.5 rounded-xl text-sm transition-colors duration-200">Ver todos los servicios</a>
-          </AnimateOnScroll>
+          </AnimateOnMount>
         </div>
       </div>
     </>
