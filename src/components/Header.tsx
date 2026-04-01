@@ -71,7 +71,7 @@ export default function Header() {
   return (
     <>
       <header
-        className={`sticky top-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-all duration-300 ${
           scrolled ? "shadow-md border-b border-white/10" : "shadow-sm"
         }`}
       >
