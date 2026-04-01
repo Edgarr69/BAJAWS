@@ -95,6 +95,18 @@ export interface ContactRequest {
   created_at: string;
 }
 
+export interface Autorizacion {
+  id: string;
+  clasificacion: string;
+  dependencia: string;
+  modalidad: string;
+  residuo: string;
+  numero_autorizacion: string;
+  vigencia: string;
+  display_order: number;
+  created_at: string;
+}
+
 export type LinkStatus = 'vigente' | 'usado' | 'expirado' | 'bloqueado';
 
 export function getLinkStatus(link: FeedbackLink): LinkStatus {

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Link2, MessageSquare, HelpCircle,
-  Users, Download, X, Mail,
+  Users, Download, X, Mail, FileCheck,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { UserRole } from '@/types/panel';
@@ -21,8 +21,9 @@ const NAV: NavItem[] = [
   { href: '/panel/enlaces',      label: 'Enlaces',      icon: Link2,           roles: ['superadmin', 'admin', 'atencion'] },
   { href: '/panel/respuestas',   label: 'Respuestas',   icon: MessageSquare,   roles: ['superadmin', 'admin'] },
   { href: '/panel/preguntas',    label: 'Preguntas',    icon: HelpCircle,      roles: ['superadmin', 'admin'] },
-  { href: '/panel/usuarios',     label: 'Usuarios',     icon: Users,           roles: ['superadmin', 'admin'] },
-  { href: '/panel/contactos',    label: 'Contactos',    icon: Mail,            roles: ['superadmin', 'admin', 'atencion'] },
+  { href: '/panel/usuarios',        label: 'Usuarios',        icon: Users,      roles: ['superadmin', 'admin'] },
+  { href: '/panel/autorizaciones',  label: 'Autorizaciones',  icon: FileCheck,  roles: ['superadmin', 'admin'] },
+  { href: '/panel/contactos',       label: 'Contactos',       icon: Mail,       roles: ['superadmin', 'admin', 'atencion'] },
   { href: '/panel/exportaciones',label: 'Exportaciones',icon: Download,        roles: ['superadmin', 'admin', 'atencion'] },
 ];
 

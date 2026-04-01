@@ -112,6 +112,29 @@ export const getContactos = () =>
 export const deleteContacto = (id: string) =>
   apiFetch<{ ok: boolean }>(`/api/internal/contactos?id=${id}`, { method: 'DELETE' });
 
+// ── Autorizaciones ────────────────────────────────────────────────────────────
+import type { Autorizacion } from '@/types/panel';
+
+export const getAutorizaciones = () =>
+  apiFetch<Autorizacion[]>('/api/admin/autorizaciones');
+
+export const createAutorizacion = (body: Omit<Autorizacion, 'id' | 'created_at'>) =>
+  apiFetch<Autorizacion>('/api/admin/autorizaciones', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+export const updateAutorizacion = (id: string, body: Partial<Omit<Autorizacion, 'id' | 'created_at'>>) =>
+  apiFetch<Autorizacion>(`/api/admin/autorizaciones/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+export const deleteAutorizacion = (id: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/autorizaciones/${id}`, { method: 'DELETE' });
+
 // ── Exportaciones ─────────────────────────────────────────────────────────────
 export const getRawAnswers = (params?: Record<string, string>) => {
   const qs = params ? '?' + new URLSearchParams(params).toString() : '';
