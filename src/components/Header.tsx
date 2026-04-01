@@ -48,19 +48,10 @@ export default function Header() {
     setIsOpen(false);
   }, [pathname]);
 
-  // --header-height: al encoger actualiza inmediato; al expandir espera 300ms
-  // para sincronizar con la transición CSS del header (transition-all duration-300).
+  // --header-height siempre fija en 4rem (el header no encoge)
   useEffect(() => {
-    if (scrolled) {
-      document.documentElement.style.setProperty("--header-height", "3rem");
-    } else {
-      const t = setTimeout(
-        () => document.documentElement.style.setProperty("--header-height", "4rem"),
-        300
-      );
-      return () => clearTimeout(t);
-    }
-  }, [scrolled]);
+    document.documentElement.style.setProperty("--header-height", "4rem");
+  }, []);
 
   // Bloquea scroll del body cuando el menú móvil está abierto
   useEffect(() => {
@@ -71,12 +62,12 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-all duration-300 ${
-          scrolled ? "shadow-md border-b border-white/10" : "shadow-sm"
+        className={`fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-shadow duration-300 ${
+          scrolled ? "shadow-md" : "shadow-sm"
         }`}
       >
         <div className="px-8 sm:px-12 lg:px-16">
-          <div className={`flex items-center justify-between transition-all duration-300 ${scrolled ? "h-12" : "h-16"}`}>
+          <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
             <Link href="/" className="flex-shrink-0" onClick={() => window.scrollTo({ top: 0 })}>
@@ -86,7 +77,7 @@ export default function Header() {
                 width={160}
                 height={62}
                 sizes="160px"
-                className={`w-auto object-contain transition-all duration-300 ${scrolled ? "h-7" : "h-9"}`}
+                className="w-auto object-contain h-9"
                 priority
               />
             </Link>

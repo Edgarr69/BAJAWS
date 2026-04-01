@@ -16,7 +16,7 @@
   }
 
   body {
-    @apply text-gray-900 antialiased;
+    @apply text-gray-900 antialiased bg-primary-900;
   }
   :root {
     --background: 0 0% 100%;
