@@ -22,36 +22,63 @@ const EMPTY_FORM = {
 
 type FormData = typeof EMPTY_FORM;
 
+const REQUIRED_TEXT_FIELDS: (keyof FormData)[] = [
+  'clasificacion', 'dependencia', 'modalidad',
+  'residuo', 'numero_autorizacion', 'vigencia',
+];
+
+function validateForm(f: FormData): string | null {
+  for (const key of REQUIRED_TEXT_FIELDS) {
+    if (!(f[key] as string).trim()) return 'Todos los campos son requeridos.';
+  }
+  return null;
+}
+
 function AutorizacionForm({
   value,
   onChange,
+  submitted,
 }: {
   value: FormData;
   onChange: (f: FormData) => void;
+  submitted: boolean;
 }) {
   const field = (
     key: keyof FormData,
     label: string,
     placeholder = '',
     maxLength = 200,
-  ) => (
-    <div className="space-y-1">
-      <label className="text-xs font-medium text-slate-500">{label}</label>
-      <input
-        type={key === 'display_order' ? 'number' : 'text'}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        value={value[key] as string}
-        onChange={e =>
-          onChange({
-            ...value,
-            [key]: key === 'display_order' ? Number(e.target.value) : e.target.value,
-          })
-        }
-        className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
-      />
-    </div>
-  );
+  ) => {
+    const isRequired = REQUIRED_TEXT_FIELDS.includes(key as typeof REQUIRED_TEXT_FIELDS[number]);
+    const hasError = submitted && isRequired && !(value[key] as string).trim();
+    return (
+      <div className="space-y-1">
+        <label className="text-xs font-medium text-slate-500">
+          {label} {isRequired && <span className="text-red-500">*</span>}
+        </label>
+        <input
+          type={key === 'display_order' ? 'number' : 'text'}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          value={value[key] as string}
+          onChange={e =>
+            onChange({
+              ...value,
+              [key]: key === 'display_order' ? Number(e.target.value) : e.target.value,
+            })
+          }
+          className={`w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 text-slate-700 placeholder:text-slate-300 ${
+            hasError
+              ? 'border-red-400 focus:ring-red-400 bg-red-50'
+              : 'border-slate-200 focus:ring-primary-500'
+          }`}
+        />
+        {hasError && (
+          <p className="text-xs text-red-500">Este campo es requerido.</p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="py-2 space-y-3">
@@ -69,12 +96,14 @@ function AutorizacionForm({
 export default function AutorizacionesPage() {
   const [rows, setRows]         = useState<Autorizacion[]>([]);
   const [loading, setLoading]   = useState(true);
-  const [saving, setSaving]     = useState(false);
+  const [saving, setSaving]         = useState(false);
 
   // Dialog crear
-  const [newForm, setNewForm]   = useState<FormData | null>(null);
+  const [newForm, setNewForm]       = useState<FormData | null>(null);
+  const [newSubmitted, setNewSubmitted] = useState(false);
   // Dialog editar
   const [editTarget, setEditTarget] = useState<{ id: string; form: FormData } | null>(null);
+  const [editSubmitted, setEditSubmitted] = useState(false);
   // Dialog eliminar
   const [delTarget, setDelTarget]   = useState<Autorizacion | null>(null);
 
@@ -87,11 +116,15 @@ export default function AutorizacionesPage() {
 
   async function handleCreate() {
     if (!newForm) return;
+    setNewSubmitted(true);
+    const err = validateForm(newForm);
+    if (err) { toast.error(err); return; }
     setSaving(true);
     try {
       const created = await createAutorizacion(newForm);
       setRows(r => [...r, created].sort((a, b) => a.display_order - b.display_order));
       setNewForm(null);
+      setNewSubmitted(false);
       toast.success('Autorización creada');
     } catch (e: unknown) {
       toast.error((e as Error).message ?? 'Error al crear');
@@ -102,6 +135,9 @@ export default function AutorizacionesPage() {
 
   async function handleUpdate() {
     if (!editTarget) return;
+    setEditSubmitted(true);
+    const err = validateForm(editTarget.form);
+    if (err) { toast.error(err); return; }
     setSaving(true);
     try {
       const updated = await updateAutorizacion(editTarget.id, editTarget.form);
@@ -111,6 +147,7 @@ export default function AutorizacionesPage() {
           .sort((a, b) => a.display_order - b.display_order),
       );
       setEditTarget(null);
+      setEditSubmitted(false);
       toast.success('Autorización actualizada');
     } catch (e: unknown) {
       toast.error((e as Error).message ?? 'Error al actualizar');
@@ -147,12 +184,6 @@ export default function AutorizacionesPage() {
         display_order:       row.display_order,
       },
     });
-
-  const canCreate =
-    typeof newForm === 'object' &&
-    newForm !== null &&
-    newForm.clasificacion.trim() !== '' &&
-    newForm.numero_autorizacion.trim() !== '';
 
   return (
     <div className="space-y-6">
@@ -238,21 +269,21 @@ export default function AutorizacionesPage() {
       </Card>
 
       {/* ── Dialog nueva autorización ─────────────────────────────────── */}
-      <Dialog open={!!newForm} onOpenChange={open => !open && setNewForm(null)}>
+      <Dialog open={!!newForm} onOpenChange={open => { if (!open) { setNewForm(null); setNewSubmitted(false); } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Nueva autorización</DialogTitle>
           </DialogHeader>
           {newForm && (
-            <AutorizacionForm value={newForm} onChange={setNewForm} />
+            <AutorizacionForm value={newForm} onChange={setNewForm} submitted={newSubmitted} />
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setNewForm(null)}>
+            <Button variant="outline" onClick={() => { setNewForm(null); setNewSubmitted(false); }}>
               Cancelar
             </Button>
             <Button
               onClick={handleCreate}
-              disabled={saving || !canCreate}
+              disabled={saving}
               className="bg-primary-700 hover:bg-primary-600"
             >
               {saving ? 'Guardando…' : 'Crear'}
@@ -262,7 +293,7 @@ export default function AutorizacionesPage() {
       </Dialog>
 
       {/* ── Dialog editar autorización ────────────────────────────────── */}
-      <Dialog open={!!editTarget} onOpenChange={open => !open && setEditTarget(null)}>
+      <Dialog open={!!editTarget} onOpenChange={open => { if (!open) { setEditTarget(null); setEditSubmitted(false); } }}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Editar autorización</DialogTitle>
@@ -271,10 +302,11 @@ export default function AutorizacionesPage() {
             <AutorizacionForm
               value={editTarget.form}
               onChange={form => setEditTarget(t => t ? { ...t, form } : null)}
+              submitted={editSubmitted}
             />
           )}
           <DialogFooter>
-            <Button variant="outline" onClick={() => setEditTarget(null)}>
+            <Button variant="outline" onClick={() => { setEditTarget(null); setEditSubmitted(false); }}>
               Cancelar
             </Button>
             <Button
