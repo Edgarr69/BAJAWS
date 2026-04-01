@@ -28,7 +28,7 @@ export function useInView(threshold = 0, once = true) {
       },
       {
         threshold,
-        rootMargin: "-64px 0px -150px 0px",
+        rootMargin: "0px 0px -150px 0px",
       }
     );
 
