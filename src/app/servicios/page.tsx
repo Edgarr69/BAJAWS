@@ -15,7 +15,7 @@ export default function ServiciosPage() {
       <div className="bg-slate-50 py-6 sm:py-8 md:py-4">
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">
 
-          <AnimateOnScroll direction="fade" className="mb-5 sm:mb-6">
+          <AnimateOnScroll direction="fade" once={false} className="mb-5 sm:mb-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-1">
               Soluciones integrales
             </p>
@@ -34,7 +34,7 @@ export default function ServiciosPage() {
       {/* ── CTA — separación generosa para que no quede empalmado ── */}
       <div className="bg-gray-50 py-16 sm:py-20">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnScroll direction="up">
+          <AnimateOnScroll direction="up" once={false}>
           <div className="bg-gradient-to-br from-primary-800 to-slate-900 rounded-2xl p-6 sm:p-8 text-center">
             <p className="text-emerald-300 text-xs font-bold uppercase tracking-widest mb-2">
               Nuestro compromiso

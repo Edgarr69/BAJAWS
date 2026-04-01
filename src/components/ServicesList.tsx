@@ -41,7 +41,7 @@ export default function ServicesList({ className = '' }: { className?: string })
         const color = colors[i % 2];
         const c     = colorMap[color];
         return (
-          <AnimateOnScroll key={service.id} delay={i * 50} className="h-full">
+          <AnimateOnScroll key={service.id} delay={i * 50} once={false} className="h-full">
             <div
               className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-[transform,box-shadow] duration-[250ms] ease-out p-3 sm:p-4 md:p-3 h-full flex flex-col gap-2 overflow-hidden"
               style={{ borderTopColor: c.border }}

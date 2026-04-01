@@ -4,6 +4,7 @@ import {
   ShieldCheck, RefreshCcw, Award,
 } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import AnimateOnMount from "@/components/AnimateOnMount";
 import Section from "@/components/Section";
 
 export const metadata: Metadata = {
@@ -117,11 +118,11 @@ export default function ServiciosIntegralesPage() {
     <>
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-6">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnScroll direction="fade">
+          <AnimateOnMount direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Proceso de gestión</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Servicios Integrales</h1>
             <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnScroll>
+          </AnimateOnMount>
         </div>
       </div>
 
