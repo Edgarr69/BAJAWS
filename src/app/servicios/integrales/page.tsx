@@ -115,8 +115,9 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
 
 export default function ServiciosIntegralesPage() {
   return (
-    <>
-      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-6">
+    <div className="flex flex-col bg-white md:overflow-hidden md:h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
+
+      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnMount direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Proceso de gestión</p>
@@ -126,22 +127,20 @@ export default function ServiciosIntegralesPage() {
         </div>
       </div>
 
-      <div className="py-4 sm:py-6 md:py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 sm:gap-5">
+      <div className="flex-1 overflow-hidden py-4 sm:py-5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {steps.slice(0, 4).map((step, i) => (
               <StepCard key={step.num} step={step} delay={i * 60} />
             ))}
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 mt-4 sm:mt-5 sm:max-w-3xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-3 sm:mt-4 sm:max-w-3xl mx-auto">
             {steps.slice(4).map((step, i) => (
               <StepCard key={step.num} step={step} delay={(i + 4) * 60} />
             ))}
           </div>
-
-
         </div>
       </div>
-    </>
+    </div>
   );
 }
