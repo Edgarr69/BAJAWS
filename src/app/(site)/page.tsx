@@ -9,7 +9,9 @@ import YoutubeEmbed from "@/components/YoutubeEmbed";
 import HeroContent from "@/components/HeroContent";
 import HeroVideo from "@/components/HeroVideo";
 import { siteContent, getYearsExperience } from "@/content/site";
+import { getAdminClient } from "@/lib/supabase/admin";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = siteContent.home.meta;
 
 const razones = [
@@ -32,12 +34,17 @@ const razones = [
 ];
 
 
-export default function HomePage() {
+export default async function HomePage() {
   const services             = siteContent.services.items.slice(0, 3) as { id: string; title: string; description: string; icon: 'truck' | 'water' | 'warehouse' }[];
   const yearsExperience      = getYearsExperience();
-  const authorizationsCount  = siteContent.autorizaciones.rows.length;
   const servicesCount        = services.length;
   const agencias             = siteContent.landing.autorizaciones.items;
+
+  const admin = getAdminClient();
+  const { count } = await admin
+    .from("autorizaciones")
+    .select("id", { count: "exact", head: true });
+  const authorizationsCount = count ?? 0;
 
   return (
     <>

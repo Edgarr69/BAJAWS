@@ -5,7 +5,10 @@ import AuthorizationsTable from "@/components/AuthorizationsTable";
 import AnimateOnMount from "@/components/AnimateOnMount";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { siteContent } from "@/content/site";
+import { getAdminClient } from "@/lib/supabase/admin";
+import type { Autorizacion } from "@/types/panel";
 
+export const dynamic = "force-dynamic";
 export const metadata: Metadata = siteContent.autorizaciones.meta;
 
 const stats = [
@@ -15,8 +18,15 @@ const stats = [
   { value: "2009", label: "Año de inicio de operaciones" },
 ];
 
-export default function AutorizacionesPage() {
+export default async function AutorizacionesPage() {
   const { title, intro } = siteContent.autorizaciones;
+
+  const admin = getAdminClient();
+  const { data } = await admin
+    .from("autorizaciones")
+    .select("id, clasificacion, dependencia, modalidad, residuo, numero_autorizacion, vigencia, display_order, created_at")
+    .order("display_order");
+  const rows: Autorizacion[] = data ?? [];
 
   return (
     <>
@@ -73,7 +83,7 @@ export default function AutorizacionesPage() {
 
         {/* Tabla — aparece al hacer scroll, se oculta al subir */}
         <AnimateOnScroll direction="up" once={false}>
-          <AuthorizationsTable />
+          <AuthorizationsTable rows={rows} />
         </AnimateOnScroll>
 
         <p className="mt-6 text-xs text-gray-400 text-center">

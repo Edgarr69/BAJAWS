@@ -25,7 +25,7 @@ export const siteContent = {
       { label: "Inicio",          href: "/" },
       { label: "Nosotros",        href: "/nosotros" },
       { label: "Servicios",       href: "/servicios" },
-      { label: "Certificaciones", href: "/autorizaciones" },
+      { label: "Autorizaciones", href: "/autorizaciones" },
       { label: "Contacto",        href: "/contacto" },
     ],
   },
@@ -147,24 +147,6 @@ export const siteContent = {
     title: "AUTORIZACIONES",
     intro:
       "Contamos con las autorizaciones necesarias emitidas por autoridades locales, estatales y federales competentes, para llevar a cabo nuestros servicios de manejo de residuos de forma segura y confiable, siempre procurando cumplir cabalmente con las disposiciones establecidas en las normas, leyes y reglamentos que rigen en nuestro país.",
-    columns: [
-      "Clasificación",
-      "Dependencia",
-      "Modalidad",
-      "Residuo",
-      "No. Autorización",
-      "Vigencia",
-    ] as const,
-    rows: [
-      ["Peligrosos",      "SEMARNAT", "Transporte", "Residuos líquidos, sólidos y semisólidos CTI",          "02-004-PS-I-05-D-2015",           "26/10/2025"],
-      ["Peligrosos",      "SEMARNAT", "Acopio",     "Residuos líquidos, sólidos y semisólidos CTI",          "02-004-PS-II-12-D-2009",          "25/02/2029"],
-      ["Peligrosos",      "SEMARNAT", "Acopio",     "Residuos líquidos, sólidos y semisólidos CTI",          "02-004-PS-II-06-D-2014",          "26/06/2034"],
-      ["Peligrosos",      "SEMARNAT", "Tratamiento","Residuos líquidos acuosos CT",                          "02-V-20-21 PRORROGA",             "28/07/2031"],
-      ["Manejo especial", "SMADS BC", "Transporte", "Residuos líquidos, sólidos y semisólidos no peligrosos","PS/TIJ-256/19",                   "En renovación"],
-      ["Aguas residuales","CESPT",    "Descarga",   "Aguas residuales tratadas",                             "TIJ-5-001/5/16",                  "21/03/2025"],
-      ["General",         "SEMAR",    "Manejo",     "Residuos líquidos, sólidos y semisólidos CTI",          "UNICAPAM-MIYII-ENSE-003",         "24/06/2029"],
-      ["General",         "SCT",      "Transporte", "Carga general líquida, sólida o semisólida",            "0202AALJ01092015230301000",       "Indefinido"],
-    ] as string[][],
     meta: {
       title: "Autorizaciones",
       description:
