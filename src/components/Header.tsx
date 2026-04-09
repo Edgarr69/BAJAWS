@@ -120,7 +120,7 @@ export default function Header() {
                               className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-emerald-300 hover:bg-white/10 transition-colors"
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-                              Servicios integrales
+                              Cadena de valor
                             </Link>
                           </div>
                         </div>
