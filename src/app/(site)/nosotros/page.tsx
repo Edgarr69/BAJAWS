@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import AnimateOnMount from "@/components/AnimateOnMount";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import FlotaGallery from "@/components/FlotaGallery";
 import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = siteContent.nosotros.meta;
@@ -89,6 +90,18 @@ export default function NosotrosPage() {
               </div>
             </AnimateOnScroll>
           </div>
+
+          {/* Flota — galería */}
+          <AnimateOnScroll direction="fade" once={false} className="mt-12">
+            <div className="flex items-center gap-4 mb-7">
+              <div className="flex-1 h-px bg-gray-200" />
+              <span className="text-xs font-semibold text-primary-600 uppercase tracking-widest bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full">
+                Nuestra Flota
+              </span>
+              <div className="flex-1 h-px bg-gray-200" />
+            </div>
+            <FlotaGallery />
+          </AnimateOnScroll>
 
         </div>
       </section>
