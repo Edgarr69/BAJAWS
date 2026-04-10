@@ -30,21 +30,13 @@ export const siteContent = {
     ],
   },
 
-  footer: {
-    links: [
-      { label: "Inicio",   href: "/" },
-      { label: "Contacto", href: "/contacto" },
-      { label: "Nosotros", href: "/nosotros" },
-    ],
-  },
-
   // ── Inicio ─────────────────────────────────────────────────────────────────
   home: {
     title: "UNA EMPRESA DE SOLUCIONES",
     description:
       "En Baja Wastewater Solution, creemos que cada gota de agua cuenta, por eso nos dedicamos a dar tratamiento a este vital líquido, buscando generar un impacto positivo duradero en el ecosistema, a través de la innovación, la tecnología de vanguardia y nuestro compromiso con el medio ambiente, trabajamos para ofrecer soluciones que no solo benefician a nuestros clientes, sino que también contribuyen al cuidado de nuestro planeta.",
     stats: [
-      { value: "14+",  label: "Años de experiencia" },
+      { value: `${getYearsExperience()}+`,  label: "Años de experiencia" },
       { value: "8",    label: "Autorizaciones vigentes" },
       { value: "3",    label: "Servicios especializados" },
       { value: "100%", label: "Compromiso ambiental" },
@@ -65,7 +57,7 @@ export const siteContent = {
     title: "SERVICIOS",
     intro:
       "Contamos con diversas soluciones en el manejo de residuos industriales tales como líquidos, solidos y semisólidos. Explora nuestras opciones y coméntanos.",
-    question: "¿Como podemos trabajar juntos?",
+    question: "¿Cómo podemos trabajar juntos?",
     cta: "CONTÁCTANOS Y TRABAJEMOS JUNTOS",
     ctaHref: "/contacto",
     items: [
@@ -125,11 +117,11 @@ export const siteContent = {
     paragraphs: [
       "Baja Wastewater Solutions inicia sus operaciones en 2009 como una empresa dedicada a proveer soluciones en el manejo de residuos industriales bajo la modalidad de tratamiento de aguas residuales.",
       "Consolidamos nuestras operaciones incorporando la recolección controlada y el transporte local y foráneo de residuos industriales peligrosos y de manejo especial, tanto líquidos como sólidos y semisólidos, teniendo siempre presente el tratamiento de aguas residuales como proceso productivo principal, colaborando así para mantener el ciclo de vida de este vital líquido.",
-      "Para nuestro equipo es bastante importante el compromiso en la prestación de nuestros servicios teniendo en cuenta que formamos parte del proceso productivo de nuestros clientes. Contamos con clientes de gran prestigio con relaciones que superan los 14 años.",
+      `Para nuestro equipo es bastante importante el compromiso en la prestación de nuestros servicios teniendo en cuenta que formamos parte del proceso productivo de nuestros clientes. Contamos con clientes de gran prestigio con relaciones que superan los ${getYearsExperience()} años.`,
     ],
     mision: {
       title: "MISIÓN",
-      text: "Proporcionar a nuestros clientes los métodos más eficaces de recuperación, tratamiento de reciclaje que existen en el mercado, para proteger y mejorar el medio ambiente, con los más altos estándares al precio más competitivo, en colaboración con los sitios de reciclaje de más alto prestigio en México.",
+      text: "Proporcionar a nuestros clientes los métodos más eficaces de recuperación, tratamiento y reciclaje que existen en el mercado, para proteger y mejorar el medio ambiente, con los más altos estándares al precio más competitivo, en colaboración con los sitios de reciclaje de más alto prestigio en México.",
     },
     vision: {
       title: "VISIÓN",
@@ -138,7 +130,7 @@ export const siteContent = {
     meta: {
       title: "Nosotros",
       description:
-        "Conoce la historia, misión y visión de Baja Wastewater Solution — más de 14 años de experiencia en tratamiento de residuos industriales en Baja California.",
+        `Conoce la historia, misión y visión de Baja Wastewater Solution — más de ${getYearsExperience()} años de experiencia en tratamiento de residuos industriales en Baja California.`,
     },
   },
 
@@ -180,7 +172,7 @@ export const siteContent = {
       badge: "Empresa autorizada · SEMARNAT · CESPT · SEMAR · SCT",
       title: "Tratamiento de Aguas Residuales Industriales en Baja California",
       subtitle:
-        "Cumplimiento normativo garantizado, procesos físico-químicos certificados y más de 14 años de experiencia respaldando la industria de Baja California.",
+        `Cumplimiento normativo garantizado, procesos físico-químicos certificados y más de ${getYearsExperience()} años de experiencia respaldando la industria de Baja California.`,
       cta:    "Solicitar Cotización",
       ctaHref:"#cotizacion",
     },
@@ -221,7 +213,7 @@ export const siteContent = {
           descripcion:"Procesos físico-químicos de vanguardia para el tratamiento efectivo de residuos líquidos industriales.",
         },
         {
-          titulo:     "14+ años de experiencia",
+          titulo:     `${getYearsExperience()}+ años de experiencia`,
           descripcion:"Desde 2009 brindando soluciones de manejo de residuos a industrias de gran prestigio en Baja California.",
         },
       ],
@@ -244,7 +236,7 @@ export const siteContent = {
       title:
         "Tratamiento de Aguas Residuales Industriales en Baja California | Baja Wastewater Solution",
       description:
-        "Empresa certificada en tratamiento de aguas residuales industriales. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de 14 años de experiencia. Solicita cotización.",
+        `Empresa certificada en tratamiento de aguas residuales industriales. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de ${getYearsExperience()} años de experiencia. Solicita cotización.`,
     },
   },
-} as const;
+};
