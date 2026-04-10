@@ -1,87 +1,103 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function CookieBanner() {
-  const [visible, setVisible] = useState(false);
+  const [visible, setVisible]       = useState(false);
+  const [leaving, setLeaving]       = useState(false);
+  const [processing, setProcessing] = useState(false);
+  const dismissTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
     if (!consent) {
-      // Pequeño delay para que no aparezca al mismo tiempo que carga la página
       const t = setTimeout(() => setVisible(true), 800);
       return () => clearTimeout(t);
     }
   }, []);
 
-  const accept = () => {
-    localStorage.setItem("cookie-consent", "accepted");
-    setVisible(false);
+  // Bug #2 + #3: limpiar timer y CSS var en desmontaje
+  useEffect(() => {
+    return () => {
+      if (dismissTimer.current) clearTimeout(dismissTimer.current);
+      document.documentElement.style.setProperty("--cookie-banner-height", "0px");
+    };
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      "--cookie-banner-height",
+      visible ? "64px" : "0px"
+    );
+  }, [visible]);
+
+  const dismiss = (value: "accepted" | "rejected") => {
+    // Bug #5: evitar clicks múltiples
+    if (processing) return;
+    setProcessing(true);
+
+    localStorage.setItem("cookie-consent", value);
+    setLeaving(true);
+
+    // Bug #4: dispatch después de iniciar animación de salida
+    // Bug #2: guardar ref del timer para limpiarlo si el componente se desmonta
+    dismissTimer.current = setTimeout(() => {
+      setVisible(false);
+      window.dispatchEvent(new CustomEvent("cookie-consent-updated"));
+    }, 350);
   };
 
-  const essential = () => {
-    localStorage.setItem("cookie-consent", "essential");
-    setVisible(false);
-  };
-
-  const reject = () => {
-    localStorage.setItem("cookie-consent", "rejected");
-    setVisible(false);
-  };
+  const accept = () => dismiss("accepted");
+  const reject = () => dismiss("rejected");
 
   if (!visible) return null;
 
   return (
     <div
-      className="fixed bottom-5 right-5 z-50 max-w-[300px] w-full"
-      style={{ animation: "cookie-in 0.4s cubic-bezier(0.34,1.1,0.64,1) forwards" }}
+      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
+      style={{
+        animation: leaving
+          ? "cookie-out 0.35s ease forwards"
+          : "cookie-in 0.4s cubic-bezier(0.34,1.1,0.64,1) forwards",
+      }}
     >
-      <div className="bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden">
-        {/* Header */}
-        <div className="px-4 pt-4 pb-3 border-b border-gray-100">
-          <div className="flex items-center gap-2 mb-1.5">
-            <span className="text-base">🍪</span>
-            <span className="text-sm font-semibold text-slate-800">Cookies</span>
-          </div>
-          <p className="text-xs text-gray-500 leading-relaxed">
-            Usamos cookies esenciales para el funcionamiento del sitio.{" "}
-            <Link
-              href="/aviso-privacidad"
-              className="text-primary-600 hover:underline"
-            >
-              Más información
-            </Link>
-          </p>
-        </div>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+        {/* Texto */}
+        <p className="text-sm text-gray-600 text-center sm:text-left leading-relaxed">
+          Usamos cookies para analizar el tráfico del sitio y mejorar tu experiencia.{" "}
+          <Link href="/aviso-privacidad" className="text-primary-600 hover:underline font-medium">
+            Aviso de privacidad
+          </Link>
+        </p>
 
         {/* Botones */}
-        <div className="px-4 py-3 flex flex-col gap-2">
-          <button
-            onClick={accept}
-            className="w-full text-xs font-semibold bg-primary-700 hover:bg-primary-800 text-white px-3 py-2 rounded-lg transition-colors duration-150"
-          >
-            Aceptar todo
-          </button>
-          <button
-            onClick={essential}
-            className="w-full text-xs font-medium bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg transition-colors duration-150"
-          >
-            Solo esenciales
-          </button>
+        <div className="flex gap-3 flex-shrink-0">
           <button
             onClick={reject}
-            className="w-full text-xs text-gray-400 hover:text-gray-600 transition-colors duration-150 py-1"
+            disabled={processing}
+            className="text-sm font-medium border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50"
           >
             Rechazar
+          </button>
+          <button
+            onClick={accept}
+            disabled={processing}
+            className="text-sm font-semibold bg-primary-700 hover:bg-primary-800 text-white px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50"
+          >
+            Aceptar
           </button>
         </div>
       </div>
 
       <style>{`
         @keyframes cookie-in {
-          from { opacity: 0; transform: translateY(16px) scale(0.95); }
-          to   { opacity: 1; transform: translateY(0) scale(1); }
+          from { opacity: 0; transform: translateY(100%); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes cookie-out {
+          from { opacity: 1; transform: translateY(0); }
+          to   { opacity: 0; transform: translateY(100%); }
         }
       `}</style>
     </div>

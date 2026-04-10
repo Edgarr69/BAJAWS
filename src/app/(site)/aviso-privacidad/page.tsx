@@ -14,7 +14,7 @@ export default function AvisoPrivacidadPage() {
           <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Legal</p>
           <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Aviso de Privacidad</h1>
           <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          <p className="mt-3 text-sm text-gray-400">Última actualización: abril 2026</p>
+          <p className="mt-3 text-sm text-gray-400">Última actualización: abril de 2026</p>
         </div>
       </div>
 
