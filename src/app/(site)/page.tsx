@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
 import Section from "@/components/Section";
 import ServiceCard from "@/components/ServiceCard";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
@@ -8,6 +7,7 @@ import ContactForm from "@/components/ContactForm";
 import YoutubeEmbed from "@/components/YoutubeEmbed";
 import HeroContent from "@/components/HeroContent";
 import HeroVideo from "@/components/HeroVideo";
+import FaqSection from "@/components/FaqSection";
 import { siteContent, getYearsExperience } from "@/content/site";
 import { getAdminClient } from "@/lib/supabase/admin";
 
@@ -20,7 +20,7 @@ const razones = [
     descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR y SCT — sin riesgo de clausura para tu empresa.",
   },
   {
-    titulo:     "17+ años de trayectoria",
+    titulo:     `${getYearsExperience()}+ años de trayectoria`,
     descripcion:"Desde 2009 apoyando a industrias de alto perfil en Baja California con resultados comprobados.",
   },
   {
@@ -49,7 +49,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ── Hero Split ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden flex flex-col" style={{ height: 'calc(var(--dvh, 100svh) - var(--header-height, 4rem))' }}>
+      <section className="relative overflow-hidden flex flex-col" style={{ height: 'calc(var(--dvh, 100svh) - var(--header-height, 4rem) - var(--cookie-banner-height, 0px))', transition: 'height 0.35s ease' }}>
 
         <HeroVideo />
         {/* Overlay para legibilidad del texto */}
@@ -221,6 +221,9 @@ export default async function HomePage() {
           </AnimateOnScroll>
         </div>
       </section>
+
+      {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
+      <FaqSection />
     </>
   );
 }
