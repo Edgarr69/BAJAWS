@@ -80,7 +80,7 @@ function FaqItem({
         }}
       >
         <div className="overflow-hidden">
-          <p className="pb-5 text-sm text-gray-600 leading-relaxed">{respuesta}</p>
+          <p className="pb-5 text-sm text-gray-600 leading-relaxed text-justify">{respuesta}</p>
         </div>
       </div>
     </div>
