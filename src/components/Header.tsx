@@ -122,6 +122,13 @@ export default function Header() {
                               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
                               Cadena de valor
                             </Link>
+                            <Link
+                              href="/servicios/disposicion"
+                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-emerald-300 hover:bg-white/10 transition-colors"
+                            >
+                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
+                              Proceso de disposición
+                            </Link>
                           </div>
                         </div>
                       )}
@@ -176,7 +183,7 @@ export default function Header() {
 
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/50 md:hidden transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsOpen(false)}
@@ -226,17 +233,16 @@ export default function Header() {
             if (link.href === '/servicios') {
               return (
                 <div key={link.href}>
+                  <p className={`px-4 py-3 text-base font-medium ${active ? "text-white" : "text-white/75"}`}>
+                    {link.label}
+                  </p>
                   <Link
                     href="/servicios"
                     onClick={() => setIsOpen(false)}
-                    className={`flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-colors ${
-                      active
-                        ? "text-white bg-white/15"
-                        : "text-white/75 hover:text-white hover:bg-white/10"
-                    }`}
+                    className="flex items-center gap-2 px-4 py-2.5 pl-8 text-sm text-emerald-300/80 hover:text-emerald-200 rounded-xl transition-colors"
                   >
-                    {link.label}
-                    {active && <span className="w-1.5 h-1.5 rounded-full bg-teal-400" />}
+                    <span className="w-1 h-1 rounded-full bg-emerald-400/60" />
+                    Todos los servicios
                   </Link>
                   <Link
                     href="/servicios/integrales"
@@ -244,7 +250,15 @@ export default function Header() {
                     className="flex items-center gap-2 px-4 py-2.5 pl-8 text-sm text-emerald-300/80 hover:text-emerald-200 rounded-xl transition-colors"
                   >
                     <span className="w-1 h-1 rounded-full bg-emerald-400/60" />
-                    Servicios integrales
+                    Cadena de valor
+                  </Link>
+                  <Link
+                    href="/servicios/disposicion"
+                    onClick={() => setIsOpen(false)}
+                    className="flex items-center gap-2 px-4 py-2.5 pl-8 text-sm text-emerald-300/80 hover:text-emerald-200 rounded-xl transition-colors"
+                  >
+                    <span className="w-1 h-1 rounded-full bg-emerald-400/60" />
+                    Proceso de disposición
                   </Link>
                 </div>
               );
@@ -254,7 +268,7 @@ export default function Header() {
                 key={link.href}
                 href={link.href}
                 onClick={() => setIsOpen(false)}
-                className={`flex items-center justify-between px-4 py-3 text-sm font-medium rounded-xl transition-colors ${
+                className={`flex items-center justify-between px-4 py-3 text-base font-medium rounded-xl transition-colors ${
                   active
                     ? "text-white bg-white/15"
                     : "text-white/75 hover:text-white hover:bg-white/10"
