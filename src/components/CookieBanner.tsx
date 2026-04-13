@@ -8,6 +8,7 @@ export default function CookieBanner() {
   const [leaving, setLeaving]       = useState(false);
   const [processing, setProcessing] = useState(false);
   const dismissTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const bannerRef                   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
@@ -26,10 +27,17 @@ export default function CookieBanner() {
   }, []);
 
   useEffect(() => {
-    document.documentElement.style.setProperty(
-      "--cookie-banner-height",
-      visible ? "64px" : "0px"
-    );
+    if (!visible) {
+      document.documentElement.style.setProperty("--cookie-banner-height", "0px");
+      return;
+    }
+    const update = () => {
+      const h = bannerRef.current?.offsetHeight ?? 64;
+      document.documentElement.style.setProperty("--cookie-banner-height", `${h}px`);
+    };
+    update();
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, [visible]);
 
   const dismiss = (value: "accepted" | "rejected") => {
@@ -55,6 +63,7 @@ export default function CookieBanner() {
 
   return (
     <div
+      ref={bannerRef}
       className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
       style={{
         animation: leaving
