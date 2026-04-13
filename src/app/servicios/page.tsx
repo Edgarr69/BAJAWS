@@ -50,6 +50,9 @@ export default function ServiciosPage() {
               <Link href="/servicios/integrales" className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors duration-200 text-sm">
                 Ver servicios integrales
               </Link>
+              <Link href="/servicios/disposicion" className="bg-white/10 hover:bg-white/20 border border-white/20 text-white font-semibold px-6 py-2.5 rounded-xl transition-colors duration-200 text-sm">
+                Ver proceso de disposición
+              </Link>
             </div>
           </div>
           </AnimateOnScroll>
