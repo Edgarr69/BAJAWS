@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { LogIn, ChevronDown } from "lucide-react";
+import { LogIn, ChevronDown, LayoutGrid, Layers, ShieldCheck } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { siteContent } from "@/content/site";
 
@@ -105,33 +105,43 @@ export default function Header() {
                         {link.label}
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${dropOpen ? 'rotate-180' : ''}`} />
                       </button>
-                      {dropOpen && (
-                        <div className="absolute top-full left-0 pt-1.5 z-50">
-                          <div className="bg-primary-900/80 backdrop-blur-md rounded-xl shadow-xl border border-white/10 py-1.5 min-w-[200px] overflow-hidden">
-                            <Link
-                              href="/servicios"
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-white hover:bg-white/10 transition-colors"
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full bg-white/50 flex-shrink-0" />
-                              Todos los servicios
-                            </Link>
-                            <Link
-                              href="/servicios/integrales"
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-emerald-300 hover:bg-white/10 transition-colors"
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-                              Cadena de valor
-                            </Link>
-                            <Link
-                              href="/servicios/disposicion"
-                              className="flex items-center gap-2.5 px-4 py-2.5 text-sm text-white/75 hover:text-emerald-300 hover:bg-white/10 transition-colors"
-                            >
-                              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 flex-shrink-0" />
-                              Proceso de disposición
-                            </Link>
+
+                      {/* Dropdown — siempre en DOM, animado con CSS */}
+                      <div className={`absolute top-full left-1/2 pt-4 z-50 transition-[opacity,transform] duration-200 ease-out origin-top ${
+                        dropOpen
+                          ? "-translate-x-1/2 translate-y-0 scale-100 opacity-100 pointer-events-auto"
+                          : "-translate-x-1/2 -translate-y-2 scale-95 opacity-0 pointer-events-none"
+                      }`}>
+                        <div className="bg-[#060f1c] rounded-2xl border border-white/[0.12] w-[22rem] shadow-[0_32px_80px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.05)]">
+
+                          <div className="p-2.5 flex flex-col gap-1.5">
+                            {[
+                              { href: "/servicios",            Icon: LayoutGrid,  label: "Todos los servicios",    desc: "Visión general de soluciones",          openDelay: 60,  closeDelay: 60 },
+                              { href: "/servicios/integrales", Icon: Layers,      label: "Cadena de valor",         desc: "7 etapas de gestión integral",          openDelay: 110, closeDelay: 30 },
+                              { href: "/servicios/disposicion",Icon: ShieldCheck, label: "Proceso de disposición",  desc: "Recepción, tratamiento y confinamiento", openDelay: 160, closeDelay: 0  },
+                            ].map(({ href, Icon, label, desc, openDelay, closeDelay }) => (
+                              <Link
+                                key={href}
+                                href={href}
+                                onClick={() => setDropOpen(false)}
+                                style={{ transitionDelay: dropOpen ? `${openDelay}ms` : `${closeDelay}ms` }}
+                                className={`flex items-center gap-4 px-3.5 py-4 rounded-xl hover:bg-white/[0.07] active:scale-[0.98] transition-[opacity,transform,background-color] duration-200 ease-out group ${
+                                  dropOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
+                                }`}
+                              >
+                                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/35 group-hover:scale-110 transition-all duration-200">
+                                  <Icon className="w-4 h-4 text-emerald-300" />
+                                </div>
+                                <div>
+                                  <p className="text-sm font-semibold text-white leading-none mb-2">{label}</p>
+                                  <p className="text-xs text-white/55 group-hover:text-white/80 transition-colors leading-snug">{desc}</p>
+                                </div>
+                              </Link>
+                            ))}
                           </div>
+
                         </div>
-                      )}
+                      </div>
                     </div>
                   );
                 }
