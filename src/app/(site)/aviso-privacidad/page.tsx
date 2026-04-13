@@ -102,9 +102,33 @@ export default function AvisoPrivacidadPage() {
           </p>
         </section>
 
-        {/* VI. Cookies */}
+        {/* VI. Limitación de uso y revocación */}
         <section>
-          <h2 className="text-lg font-bold text-slate-800 mb-3">VI. Uso de cookies</h2>
+          <h2 className="text-lg font-bold text-slate-800 mb-3">VI. Limitación de uso, divulgación y revocación del consentimiento</h2>
+          <p>
+            Además de los derechos ARCO, usted puede en cualquier momento:
+          </p>
+          <ul className="mt-2 ml-5 list-disc space-y-1 text-sm">
+            <li><strong>Limitar el uso o divulgación</strong> de sus datos personales para finalidades secundarias o comunicaciones comerciales.</li>
+            <li><strong>Revocar el consentimiento</strong> otorgado para el tratamiento de sus datos, sin efecto retroactivo.</li>
+          </ul>
+          <p className="mt-3 text-sm">
+            Para ejercer cualquiera de estas opciones envíe un correo indicando su nombre, el dato o
+            finalidad que desea restringir y el motivo (opcional) a:
+          </p>
+          <ul className="mt-2 ml-5 list-disc space-y-1 text-sm">
+            <li><a href="mailto:damian@bajaws.com.mx" className="text-primary-600 hover:underline">damian@bajaws.com.mx</a></li>
+            <li><a href="mailto:yperalta@bajaws.com.mx" className="text-primary-600 hover:underline">yperalta@bajaws.com.mx</a></li>
+          </ul>
+          <p className="mt-3 text-sm">
+            Tenga en cuenta que revocar el consentimiento para finalidades primarias puede impedir que
+            podamos atender su solicitud o cotización.
+          </p>
+        </section>
+
+        {/* VII. Cookies */}
+        <section>
+          <h2 className="text-lg font-bold text-slate-800 mb-3">VII. Uso de cookies</h2>
           <p>
             Este sitio web utiliza únicamente <strong>cookies esenciales</strong> necesarias para su
             correcto funcionamiento. No utilizamos cookies de seguimiento, publicidad ni análisis de
@@ -135,9 +159,9 @@ export default function AvisoPrivacidadPage() {
           </div>
         </section>
 
-        {/* VII. Cambios */}
+        {/* VIII. Cambios */}
         <section>
-          <h2 className="text-lg font-bold text-slate-800 mb-3">VII. Cambios al aviso de privacidad</h2>
+          <h2 className="text-lg font-bold text-slate-800 mb-3">VIII. Cambios al aviso de privacidad</h2>
           <p>
             Nos reservamos el derecho de modificar este aviso en cualquier momento. Cualquier cambio
             será publicado en esta página con la fecha de actualización. Le recomendamos revisarlo
