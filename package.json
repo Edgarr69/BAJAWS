@@ -39,6 +39,13 @@
     "tailwindcss-animate": "^1.0.7",
     "zod": "^4.3.6"
   },
+  "browserslist": [
+    "chrome >= 109",
+    "firefox >= 115",
+    "safari >= 16",
+    "edge >= 109",
+    "not dead"
+  ],
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^19",
