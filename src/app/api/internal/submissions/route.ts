@@ -3,16 +3,26 @@
  * Query: date_from, date_to, topic_id
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { requireRole, serverError } from '@/lib/auth';
+import { z } from 'zod';
+import { requireRole, serverError, badRequest } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
+
+const dateSchema = z.object({
+  date_from: z.string().date().optional().nullable(),
+  date_to:   z.string().date().optional().nullable(),
+});
 
 export async function GET(req: NextRequest) {
   const { errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
   const { searchParams } = req.nextUrl;
-  const date_from = searchParams.get('date_from');
-  const date_to   = searchParams.get('date_to');
+  const dateParsed = dateSchema.safeParse({
+    date_from: searchParams.get('date_from'),
+    date_to:   searchParams.get('date_to'),
+  });
+  if (!dateParsed.success) return badRequest('Formato de fecha inválido (esperado YYYY-MM-DD)');
+  const { date_from, date_to } = dateParsed.data;
 
   const admin = getAdminClient();
 

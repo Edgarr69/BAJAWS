@@ -70,5 +70,10 @@ export const forbidden = (msg = 'Acceso denegado') =>
 export const badRequest = (msg: string, details?: unknown) =>
   err(400, 'BAD_REQUEST', msg, details);
 
-export const serverError = (msg = 'Error interno del servidor') =>
-  err(500, 'SERVER_ERROR', msg);
+export const serverError = (msgOrError?: string | { message: string }) => {
+  if (msgOrError) {
+    const msg = typeof msgOrError === 'string' ? msgOrError : msgOrError.message;
+    console.error('[Server Error]', msg);
+  }
+  return err(500, 'SERVER_ERROR', 'Error interno del servidor');
+};

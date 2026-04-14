@@ -58,7 +58,11 @@ export async function POST(req: NextRequest) {
   }
 
   // Hash de IP: no reversible (SHA-256 + secret de entorno)
-  const secret  = process.env.IP_HASH_SECRET ?? 'bajaws-fallback';
+  const secret = process.env.IP_HASH_SECRET;
+  if (!secret) {
+    console.error('IP_HASH_SECRET no está configurado');
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
   const ipHash  = createHash('sha256').update(ip + secret).digest('hex');
 
   const supabase = await createClient();

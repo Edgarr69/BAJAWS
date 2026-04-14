@@ -8,7 +8,7 @@ import { siteContent } from "@/content/site";
 import { getAdminClient } from "@/lib/supabase/admin";
 import type { Autorizacion } from "@/types/panel";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 export const metadata: Metadata = siteContent.autorizaciones.meta;
 
 const stats = [

@@ -11,7 +11,7 @@ import FaqSection from "@/components/FaqSection";
 import { siteContent, getYearsExperience } from "@/content/site";
 import { getAdminClient } from "@/lib/supabase/admin";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 export const metadata: Metadata = siteContent.home.meta;
 
 const razones = [

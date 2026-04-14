@@ -23,9 +23,15 @@ export default function Header() {
     // Actualiza --dvh cuando scroll llega a 0: la barra del navegador siempre
     // está visible en ese momento, así que innerHeight es el valor correcto.
     // Ignora resizes de solo-altura (barra animándose) para evitar el estirón.
+    // scrollY === 0 se maneja siempre inmediatamente; el resto va throttleado a 100ms.
+    let lastScrollTime = 0;
     const onScroll = () => {
-      setScrolled(window.scrollY > 20);
-      if (window.scrollY === 0) setDvh();
+      const scrollY = window.scrollY;
+      if (scrollY === 0) { setScrolled(false); setDvh(); return; }
+      const now = Date.now();
+      if (now - lastScrollTime < 100) return;
+      lastScrollTime = now;
+      setScrolled(scrollY > 20);
     };
 
     let prevWidth = window.innerWidth;

@@ -39,7 +39,11 @@ export async function POST(req: NextRequest) {
 
   const { nombre, telefono, correo, mensaje, fuente } = parsed.data;
 
-  const secret = process.env.IP_HASH_SECRET ?? 'bajaws-fallback';
+  const secret = process.env.IP_HASH_SECRET;
+  if (!secret) {
+    console.error('IP_HASH_SECRET no está configurado');
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
   const ipHash = createHash('sha256').update(ip + secret).digest('hex');
 
   const admin = getAdminClient();

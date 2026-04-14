@@ -2,8 +2,14 @@
  * GET /api/internal/links → listar enlaces (admin: todos, atencion: los propios)
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { requireRole, serverError } from '@/lib/auth';
+import { z } from 'zod';
+import { requireRole, serverError, badRequest } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
+
+const dateSchema = z.object({
+  date_from: z.string().date().optional().nullable(),
+  date_to:   z.string().date().optional().nullable(),
+});
 
 export async function GET(req: NextRequest) {
   const { session, errorResponse } = await requireRole('superadmin', 'admin', 'atencion');
@@ -11,8 +17,13 @@ export async function GET(req: NextRequest) {
 
   const supabase = await createClient();
   const statsOnly = req.nextUrl.searchParams.get('_stats') === '1';
-  const date_from = req.nextUrl.searchParams.get('date_from');
-  const date_to   = req.nextUrl.searchParams.get('date_to');
+
+  const dateParsed = dateSchema.safeParse({
+    date_from: req.nextUrl.searchParams.get('date_from'),
+    date_to:   req.nextUrl.searchParams.get('date_to'),
+  });
+  if (!dateParsed.success) return badRequest('Formato de fecha inválido (esperado YYYY-MM-DD)');
+  const { date_from, date_to } = dateParsed.data;
 
   let query = supabase
     .from('feedback_links')
