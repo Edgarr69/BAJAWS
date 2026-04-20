@@ -8,9 +8,9 @@ import { useState, useEffect, useRef } from "react";
 import { siteContent } from "@/content/site";
 
 const DROP_ITEMS = [
-  { href: "/servicios",             Icon: LayoutGrid,  label: "Todos los servicios",    desc: "Visión general de soluciones",          openDelay: 60,  closeDelay: 60 },
-  { href: "/servicios/integrales",  Icon: Layers,      label: "Cadena de valor",         desc: "7 etapas de gestión integral",          openDelay: 110, closeDelay: 30 },
-  { href: "/servicios/disposicion", Icon: ShieldCheck, label: "Proceso de disposición",  desc: "Recepción, tratamiento y confinamiento", openDelay: 160, closeDelay: 0  },
+  { href: "/servicios",             Icon: LayoutGrid,  label: "Todos los servicios",    desc: "Visión general de soluciones"           },
+  { href: "/servicios/integrales",  Icon: Layers,      label: "Cadena de valor",         desc: "7 etapas de gestión integral"           },
+  { href: "/servicios/disposicion", Icon: ShieldCheck, label: "Proceso de disposición",  desc: "Recepción, tratamiento y confinamiento" },
 ];
 
 export default function Header() {
@@ -145,9 +145,7 @@ export default function Header() {
                     <div
                       key={link.href}
                       ref={dropRef}
-                      className="relative"
-                      onMouseEnter={() => setDropOpen(true)}
-                      onMouseLeave={() => setDropOpen(false)}
+                      className="relative group/drop"
                     >
                       <button
                         ref={dropTriggerRef}
@@ -162,20 +160,19 @@ export default function Header() {
                         }`}
                       >
                         {link.label}
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${dropOpen ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover/drop:rotate-180 ${dropOpen ? 'rotate-180' : ''}`} />
                       </button>
 
                       <div
                         role="menu"
-                        className={`absolute top-full left-1/2 pt-4 z-50 transition-[opacity,transform] duration-200 ease-out origin-top ${
-                          dropOpen
-                            ? "-translate-x-1/2 translate-y-0 scale-100 opacity-100 pointer-events-auto"
-                            : "-translate-x-1/2 -translate-y-2 scale-95 opacity-0 pointer-events-none"
-                        }`}
+                        className={`absolute top-full left-1/2 -translate-x-1/2 z-50 transition-[opacity,transform] duration-200 ease-out origin-top
+                          opacity-0 -translate-y-2 scale-95 pointer-events-none
+                          group-hover/drop:opacity-100 group-hover/drop:translate-y-0 group-hover/drop:scale-100 group-hover/drop:pointer-events-auto
+                          ${dropOpen ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : ""}`}
                       >
-                        <div className="bg-[#060f1c] rounded-2xl border border-white/[0.12] w-[22rem] shadow-[0_32px_80px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.05)]">
+                        <div className="mt-4 bg-[#060f1c] rounded-2xl border border-white/[0.12] w-[22rem] shadow-[0_32px_80px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.05)]">
                           <div className="p-2.5 flex flex-col gap-1.5">
-                            {DROP_ITEMS.map(({ href, Icon, label, desc, openDelay, closeDelay }, idx) => (
+                            {DROP_ITEMS.map(({ href, Icon, label, desc }, idx) => (
                               <Link
                                 key={href}
                                 href={href}
@@ -183,10 +180,7 @@ export default function Header() {
                                 ref={(el) => { dropItemRefs.current[idx] = el; }}
                                 onClick={() => setDropOpen(false)}
                                 onKeyDown={(e) => handleDropItemKeyDown(e, idx)}
-                                style={{ transitionDelay: dropOpen ? `${openDelay}ms` : `${closeDelay}ms` }}
-                                className={`flex items-center gap-4 px-3.5 py-4 rounded-xl hover:bg-white/[0.07] active:scale-[0.98] transition-[opacity,transform,background-color] duration-200 ease-out group ${
-                                  dropOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
-                                }`}
+                                className="flex items-center gap-4 px-3.5 py-4 rounded-xl hover:bg-white/[0.07] active:scale-[0.98] transition-[background-color,transform] duration-200 ease-out group"
                               >
                                 <div className="w-10 h-10 rounded-xl bg-emerald-500/20 flex items-center justify-center shrink-0 group-hover:bg-emerald-500/35 group-hover:scale-110 transition-all duration-200">
                                   <Icon className="w-4 h-4 text-emerald-300" />
