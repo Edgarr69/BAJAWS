@@ -5,7 +5,12 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import FlotaGallery from "@/components/FlotaGallery";
 import { siteContent } from "@/content/site";
 
-export const metadata: Metadata = siteContent.nosotros.meta;
+export const metadata: Metadata = {
+  ...siteContent.nosotros.meta,
+  openGraph: {
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+};
 
 export default function NosotrosPage() {
   const { title, paragraphs, mision, vision } = siteContent.nosotros;
@@ -44,7 +49,7 @@ export default function NosotrosPage() {
                   alt="Análisis de calidad del agua en laboratorio"
                   width={600}
                   height={600}
-                  className="w-full h-56 lg:h-72 object-cover"
+                  className="w-full h-56 md:h-64 lg:h-72 object-cover"
                   priority
                 />
               </div>

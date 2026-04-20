@@ -19,6 +19,7 @@ export const metadata: Metadata = {
     siteName: "Baja Wastewater Solution",
     locale: "es_MX",
     type: "website",
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },
 };
 

@@ -83,7 +83,7 @@ export default function HeroTypewriter({ onComplete, onNearComplete }: Props) {
     // aria-label para lectores de pantalla — ven el texto completo
     <h1
       aria-label={`${LINE1} ${LINE2}`}
-      className="font-extrabold leading-[1.1] tracking-tight mb-5 text-white text-[2rem] sm:text-[2.8rem] lg:text-[3rem] xl:text-[3.4rem]"
+      className="font-extrabold leading-[1.1] tracking-tight mb-5 text-white text-[2rem] sm:text-[2.8rem] md:text-[2.9rem] lg:text-[3rem] xl:text-[3.4rem]"
     >
       {/* Línea 1: chars escritos → cursor → chars invisibles que reservan espacio */}
       {line1Visible}

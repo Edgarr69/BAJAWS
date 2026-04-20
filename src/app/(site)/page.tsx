@@ -12,7 +12,12 @@ import { siteContent, getYearsExperience } from "@/content/site";
 import { getAdminClient } from "@/lib/supabase/admin";
 
 export const revalidate = 3600;
-export const metadata: Metadata = siteContent.home.meta;
+export const metadata: Metadata = {
+  ...siteContent.home.meta,
+  openGraph: {
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+};
 
 const razones = [
   {
@@ -77,7 +82,7 @@ export default async function HomePage() {
           </div>
         </AnimateOnScroll>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 lg:gap-8">
           {services.map((service, i) => (
             <AnimateOnScroll key={service.id} delay={i * 130}>
               <ServiceCard
@@ -224,6 +229,27 @@ export default async function HomePage() {
 
       {/* ── FAQ ──────────────────────────────────────────────────────────────── */}
       <FaqSection />
+
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "LocalBusiness",
+            "name": siteContent.company.name,
+            "telephone": siteContent.contacto.info.telefono,
+            "url": "https://bajaws.mx",
+            "address": {
+              "@type": "PostalAddress",
+              "streetAddress": siteContent.contacto.info.direccion,
+              "addressLocality": "Tijuana",
+              "addressRegion": "Baja California",
+              "postalCode": "22430",
+              "addressCountry": "MX"
+            }
+          })
+        }}
+      />
     </>
   );
 }

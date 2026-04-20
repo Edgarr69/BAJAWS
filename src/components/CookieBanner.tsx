@@ -36,8 +36,16 @@ export default function CookieBanner() {
       document.documentElement.style.setProperty("--cookie-banner-height", `${h}px`);
     };
     update();
-    window.addEventListener("resize", update);
-    return () => window.removeEventListener("resize", update);
+    let resizeTimer: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(update, 150);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      clearTimeout(resizeTimer);
+      window.removeEventListener("resize", handleResize);
+    };
   }, [visible]);
 
   const dismiss = (value: "accepted" | "rejected") => {

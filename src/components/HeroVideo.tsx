@@ -21,19 +21,22 @@ export default function HeroVideo() {
   }, []);
 
   return (
-    // eslint-disable-next-line jsx-a11y/media-has-caption
-    <video
-      ref={ref}
-      className="absolute inset-0 w-full h-full object-cover z-0"
-      autoPlay
-      muted
-      loop
-      playsInline
-      preload="none"
-      style={{ backfaceVisibility: "hidden" }}
-    >
-      <source src="/videos/laboratorio.webm" type="video/webm" />
-      <source src="/videos/laboratorio.mp4" type="video/mp4" />
-    </video>
+    <>
+      <span className="sr-only">Video de fondo mostrando instalaciones de tratamiento de aguas residuales</span>
+      <video
+        ref={ref}
+        className="absolute inset-0 w-full h-full object-cover z-0"
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-hidden="true"
+        style={{ backfaceVisibility: "hidden" }}
+      >
+        <source src="/videos/laboratorio.webm" type="video/webm" />
+        <source src="/videos/laboratorio.mp4" type="video/mp4" />
+      </video>
+    </>
   );
 }

@@ -38,8 +38,13 @@ export default function AnimateOnScroll({
   return (
     <div
       ref={ref}
-      className={`transition-[transform,opacity] duration-500 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : hidden} ${className}`}
+      className={`transition-[transform,opacity] duration-500 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : `${hidden} will-change-transform`} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
+      onTransitionEnd={(e) => {
+        if (e.propertyName === "opacity") {
+          (e.currentTarget as HTMLDivElement).style.willChange = "auto";
+        }
+      }}
     >
       {children}
     </div>

@@ -5,7 +5,12 @@ import AnimateOnMount from "@/components/AnimateOnMount";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { siteContent } from "@/content/site";
 
-export const metadata: Metadata = siteContent.contacto.meta;
+export const metadata: Metadata = {
+  ...siteContent.contacto.meta,
+  openGraph: {
+    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
+  },
+};
 
 export default function ContactoPage() {
   const { title, intro, info } = siteContent.contacto;
@@ -97,7 +102,7 @@ export default function ContactoPage() {
                   alt="Recepción Baja Wastewater Solution"
                   width={700}
                   height={400}
-                  className="w-full h-36 object-cover"
+                  className="w-full h-36 sm:h-48 md:h-60 object-cover"
                   priority
                 />
               </div>

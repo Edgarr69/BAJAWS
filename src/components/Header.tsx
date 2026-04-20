@@ -7,11 +7,20 @@ import { LogIn, ChevronDown, LayoutGrid, Layers, ShieldCheck } from "lucide-reac
 import { useState, useEffect, useRef } from "react";
 import { siteContent } from "@/content/site";
 
+const DROP_ITEMS = [
+  { href: "/servicios",             Icon: LayoutGrid,  label: "Todos los servicios",    desc: "Visión general de soluciones",          openDelay: 60,  closeDelay: 60 },
+  { href: "/servicios/integrales",  Icon: Layers,      label: "Cadena de valor",         desc: "7 etapas de gestión integral",          openDelay: 110, closeDelay: 30 },
+  { href: "/servicios/disposicion", Icon: ShieldCheck, label: "Proceso de disposición",  desc: "Recepción, tratamiento y confinamiento", openDelay: 160, closeDelay: 0  },
+];
+
 export default function Header() {
   const [isOpen, setIsOpen]       = useState(false);
   const [scrolled, setScrolled]   = useState(false);
   const [dropOpen, setDropOpen]   = useState(false);
   const dropRef                   = useRef<HTMLDivElement>(null);
+  const dropTriggerRef            = useRef<HTMLButtonElement>(null);
+  const dropItemRefs              = useRef<(HTMLAnchorElement | null)[]>([]);
+  const mobileMenuRef             = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const { links } = siteContent.nav;
 
@@ -20,10 +29,6 @@ export default function Header() {
       document.documentElement.style.setProperty("--dvh", `${window.innerHeight}px`);
     setDvh();
 
-    // Actualiza --dvh cuando scroll llega a 0: la barra del navegador siempre
-    // está visible en ese momento, así que innerHeight es el valor correcto.
-    // Ignora resizes de solo-altura (barra animándose) para evitar el estirón.
-    // scrollY === 0 se maneja siempre inmediatamente; el resto va throttleado a 100ms.
     let lastScrollTime = 0;
     const onScroll = () => {
       const scrollY = window.scrollY;
@@ -48,22 +53,60 @@ export default function Header() {
     };
   }, []);
 
-  // Al cambiar de ruta, resetear a no-scrolled para que el hero quede alineado
   useEffect(() => {
     setScrolled(false);
     setIsOpen(false);
   }, [pathname]);
 
-  // --header-height siempre fija en 4rem (el header no encoge)
   useEffect(() => {
     document.documentElement.style.setProperty("--header-height", "4rem");
   }, []);
 
-  // Bloquea scroll del body cuando el menú móvil está abierto
   useEffect(() => {
     document.body.style.overflow = isOpen ? "hidden" : "";
     return () => { document.body.style.overflow = ""; };
   }, [isOpen]);
+
+  // Focus trap for mobile menu
+  useEffect(() => {
+    if (!isOpen) return;
+    const panel = mobileMenuRef.current;
+    if (!panel) return;
+    const focusable = panel.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const first = focusable[0];
+    const last  = focusable[focusable.length - 1];
+    first?.focus();
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") { setIsOpen(false); return; }
+      if (e.key !== "Tab") return;
+      if (e.shiftKey) {
+        if (document.activeElement === first) { e.preventDefault(); last?.focus(); }
+      } else {
+        if (document.activeElement === last) { e.preventDefault(); first?.focus(); }
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen]);
+
+  const handleDropTriggerKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (e.key === "Escape") { setDropOpen(false); dropTriggerRef.current?.focus(); return; }
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (!dropOpen) { setDropOpen(true); setTimeout(() => dropItemRefs.current[0]?.focus(), 50); }
+      else setDropOpen(false);
+    }
+    if (e.key === "ArrowDown") { e.preventDefault(); setDropOpen(true); setTimeout(() => dropItemRefs.current[0]?.focus(), 50); }
+  };
+
+  const handleDropItemKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, idx: number) => {
+    if (e.key === "Escape") { setDropOpen(false); dropTriggerRef.current?.focus(); return; }
+    if (e.key === "ArrowDown") { e.preventDefault(); dropItemRefs.current[idx + 1]?.focus(); }
+    if (e.key === "ArrowUp")   { e.preventDefault(); idx === 0 ? dropTriggerRef.current?.focus() : dropItemRefs.current[idx - 1]?.focus(); }
+    if (e.key === "Tab" && !e.shiftKey && idx === DROP_ITEMS.length - 1) setDropOpen(false);
+  };
 
   return (
     <>
@@ -76,7 +119,12 @@ export default function Header() {
           <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
-            <Link href="/" className="flex-shrink-0" onClick={() => window.scrollTo({ top: 0 })}>
+            <Link
+              href="/"
+              aria-label="Baja Wastewater Solution - Inicio"
+              className="flex-shrink-0"
+              onClick={() => { setIsOpen(false); window.scrollTo({ top: 0 }); }}
+            >
               <Image
                 src="/logoo.webp"
                 alt="Baja Wastewater Solution"
@@ -102,6 +150,11 @@ export default function Header() {
                       onMouseLeave={() => setDropOpen(false)}
                     >
                       <button
+                        ref={dropTriggerRef}
+                        aria-haspopup="true"
+                        aria-expanded={dropOpen}
+                        onFocus={() => setDropOpen(true)}
+                        onKeyDown={handleDropTriggerKeyDown}
                         className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
                           active
                             ? "text-white font-semibold bg-white/15"
@@ -112,24 +165,24 @@ export default function Header() {
                         <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${dropOpen ? 'rotate-180' : ''}`} />
                       </button>
 
-                      {/* Dropdown — siempre en DOM, animado con CSS */}
-                      <div className={`absolute top-full left-1/2 pt-4 z-50 transition-[opacity,transform] duration-200 ease-out origin-top ${
-                        dropOpen
-                          ? "-translate-x-1/2 translate-y-0 scale-100 opacity-100 pointer-events-auto"
-                          : "-translate-x-1/2 -translate-y-2 scale-95 opacity-0 pointer-events-none"
-                      }`}>
+                      <div
+                        role="menu"
+                        className={`absolute top-full left-1/2 pt-4 z-50 transition-[opacity,transform] duration-200 ease-out origin-top ${
+                          dropOpen
+                            ? "-translate-x-1/2 translate-y-0 scale-100 opacity-100 pointer-events-auto"
+                            : "-translate-x-1/2 -translate-y-2 scale-95 opacity-0 pointer-events-none"
+                        }`}
+                      >
                         <div className="bg-[#060f1c] rounded-2xl border border-white/[0.12] w-[22rem] shadow-[0_32px_80px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.05)]">
-
                           <div className="p-2.5 flex flex-col gap-1.5">
-                            {[
-                              { href: "/servicios",            Icon: LayoutGrid,  label: "Todos los servicios",    desc: "Visión general de soluciones",          openDelay: 60,  closeDelay: 60 },
-                              { href: "/servicios/integrales", Icon: Layers,      label: "Cadena de valor",         desc: "7 etapas de gestión integral",          openDelay: 110, closeDelay: 30 },
-                              { href: "/servicios/disposicion",Icon: ShieldCheck, label: "Proceso de disposición",  desc: "Recepción, tratamiento y confinamiento", openDelay: 160, closeDelay: 0  },
-                            ].map(({ href, Icon, label, desc, openDelay, closeDelay }) => (
+                            {DROP_ITEMS.map(({ href, Icon, label, desc, openDelay, closeDelay }, idx) => (
                               <Link
                                 key={href}
                                 href={href}
+                                role="menuitem"
+                                ref={(el) => { dropItemRefs.current[idx] = el; }}
                                 onClick={() => setDropOpen(false)}
+                                onKeyDown={(e) => handleDropItemKeyDown(e, idx)}
                                 style={{ transitionDelay: dropOpen ? `${openDelay}ms` : `${closeDelay}ms` }}
                                 className={`flex items-center gap-4 px-3.5 py-4 rounded-xl hover:bg-white/[0.07] active:scale-[0.98] transition-[opacity,transform,background-color] duration-200 ease-out group ${
                                   dropOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2'
@@ -145,7 +198,6 @@ export default function Header() {
                               </Link>
                             ))}
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -186,6 +238,7 @@ export default function Header() {
               className="md:hidden p-2 rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
               onClick={() => setIsOpen(true)}
               aria-label="Abrir menú"
+              aria-expanded={isOpen}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -194,8 +247,6 @@ export default function Header() {
           </div>
         </div>
       </header>
-
-      {/* ── Menú móvil — panel deslizante desde la derecha ─────────────────────── */}
 
       {/* Backdrop */}
       <div
@@ -208,7 +259,11 @@ export default function Header() {
 
       {/* Panel */}
       <div
-        className={`fixed top-0 right-0 z-[70] h-full w-72 bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 shadow-2xl md:hidden flex flex-col transition-transform duration-300 ease-out ${
+        ref={mobileMenuRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label="Menú de navegación"
+        className={`fixed top-0 right-0 z-[70] h-full w-[min(18rem,75vw)] bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 shadow-2xl md:hidden flex flex-col transition-transform duration-300 ease-out ${
           isOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >

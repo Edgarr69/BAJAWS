@@ -96,9 +96,9 @@ export default function FlotaGallery() {
           const isHovered = hoveredIdx === i;
 
           return (
-            <div
+            <button
               key={i}
-              className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer"
+              className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left"
               style={{
                 opacity:   visible ? 1 : 0,
                 transform: visible
@@ -112,6 +112,7 @@ export default function FlotaGallery() {
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
               onClick={() => setSelected(i)}
+              aria-label={`Ver foto ${i + 1} de la flota`}
             >
               <Image
                 src={img.src}
@@ -127,12 +128,12 @@ export default function FlotaGallery() {
               <div className="absolute inset-0 bg-gradient-to-t from-primary-900/50 via-primary-900/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
               {/* Ícono lupa */}
-              <div className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
+              <div aria-hidden="true" className="absolute bottom-3 right-3 w-8 h-8 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 flex items-center justify-center opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">
                 <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </div>
-            </div>
+            </button>
           );
         })}
       </div>
@@ -163,7 +164,7 @@ export default function FlotaGallery() {
             <button
               className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto"
               onClick={(e) => { e.stopPropagation(); prev(); }}
-              aria-label="Anterior"
+              aria-label="Ver foto anterior de la flota"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -228,7 +229,7 @@ export default function FlotaGallery() {
             <button
               className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto"
               onClick={(e) => { e.stopPropagation(); next(); }}
-              aria-label="Siguiente"
+              aria-label="Ver foto siguiente de la flota"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

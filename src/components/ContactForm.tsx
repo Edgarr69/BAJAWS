@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { siteContent } from "@/content/site";
 
 interface ContactFormProps {
@@ -10,7 +10,6 @@ interface ContactFormProps {
 
 type FormStatus = "idle" | "sending" | "success" | "error" | "rate_limited";
 
-// ── Límites de longitud para prevenir payloads excesivos ────────────────────
 const LIMITS = {
   nombre:   80,
   telefono: 20,
@@ -18,13 +17,8 @@ const LIMITS = {
   mensaje:  1000,
 } as const;
 
-// ── Patrón para correo electrónico (validación client-side básica) ──────────
 const EMAIL_RE = /^[^\s@<>"']{1,64}@[^\s@<>"']{1,200}\.[a-zA-Z]{2,}$/;
-
-// ── Patrón para teléfono: solo dígitos, espacios, guiones y paréntesis ──────
 const PHONE_RE = /^[\d\s()\-+.]{7,20}$/;
-
-// ── Rate limit: mínimo 45 s entre envíos ────────────────────────────────────
 const RATE_LIMIT_MS = 45_000;
 
 export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }: ContactFormProps) {
@@ -40,9 +34,31 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
 
   const [errors, setErrors]   = useState<Partial<typeof form>>({});
   const [status, setStatus]   = useState<FormStatus>("idle");
-  const lastSubmitRef         = useRef<number>(0);
+  const [countdown, setCountdown] = useState(0);
+  const lastSubmitRef = useRef<number>(0);
 
-  // ── Cambio de campo con límite de longitud ─────────────────────────────────
+  const nombreRef   = useRef<HTMLInputElement>(null);
+  const telefonoRef = useRef<HTMLInputElement>(null);
+  const correoRef   = useRef<HTMLInputElement>(null);
+  const mensajeRef  = useRef<HTMLTextAreaElement>(null);
+
+  useEffect(() => {
+    if (status !== "rate_limited") return;
+    const remaining = Math.ceil((RATE_LIMIT_MS - (Date.now() - lastSubmitRef.current)) / 1000);
+    setCountdown(remaining > 0 ? remaining : 0);
+    const interval = setInterval(() => {
+      setCountdown((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          setStatus("idle");
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [status]);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -53,8 +69,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
     setErrors((prev) => ({ ...prev, [name]: undefined }));
   };
 
-  // ── Validación client-side ─────────────────────────────────────────────────
-  const validate = (): boolean => {
+  const validate = (): Partial<typeof form> => {
     const errs: Partial<typeof form> = {};
 
     if (!form.nombre.trim() || form.nombre.trim().length < 2)
@@ -69,26 +84,33 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
     if (!form.mensaje.trim() || form.mensaje.trim().length < 10)
       errs.mensaje = "El mensaje debe tener al menos 10 caracteres.";
 
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
+    return errs;
   };
 
-  // ── Envío del formulario ───────────────────────────────────────────────────
+  const focusFirstError = (errs: Partial<typeof form>) => {
+    if (errs.nombre)   { nombreRef.current?.focus();   return; }
+    if (errs.telefono) { telefonoRef.current?.focus(); return; }
+    if (errs.correo)   { correoRef.current?.focus();   return; }
+    if (errs.mensaje)  { mensajeRef.current?.focus();  return; }
+  };
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    // 1. Honeypot — bots que completan campos ocultos son bloqueados silenciosamente
     if (form.hp) return;
 
-    // 2. Rate limiting cliente
     const now = Date.now();
     if (now - lastSubmitRef.current < RATE_LIMIT_MS) {
       setStatus("rate_limited");
       return;
     }
 
-    // 3. Validación de campos
-    if (!validate()) return;
+    const errs = validate();
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      focusFirstError(errs);
+      return;
+    }
 
     setStatus("sending");
     lastSubmitRef.current = now;
@@ -113,7 +135,6 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
     }
   };
 
-  // ── Estado: enviado con éxito ──────────────────────────────────────────────
   if (status === "success") {
     return (
       <div className="bg-accent-50 border border-accent-200 rounded-xl p-8 text-center">
@@ -122,7 +143,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h3 className="text-xl font-bold text-accent-800 mb-2">¡Mensaje enviado!</h3>
+        <h3 className="text-xl font-bold text-accent-800 mb-2">Mensaje enviado</h3>
         <p className="text-accent-700 text-sm">Nos pondremos en contacto contigo a la brevedad.</p>
         <button
           onClick={() => setStatus("idle")}
@@ -162,6 +183,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
             Nombre <span className="text-primary-600">*</span>
           </label>
           <input
+            ref={nombreRef}
             type="text"
             id="nombre"
             name="nombre"
@@ -171,9 +193,13 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
             onChange={handleChange}
             placeholder="Tu nombre completo"
             autoComplete="name"
+            aria-invalid={!!errors.nombre}
+            aria-describedby={errors.nombre ? "nombre-error" : undefined}
             className={`input-base ${errors.nombre ? "border-red-400 focus:ring-red-400 focus:border-red-400" : ""}`}
           />
-          {errors.nombre && <p className="text-xs text-red-600 mt-1">{errors.nombre}</p>}
+          {errors.nombre && (
+            <p id="nombre-error" role="alert" className="text-xs text-red-600 mt-1">{errors.nombre}</p>
+          )}
         </div>
 
         {/* Teléfono */}
@@ -182,6 +208,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
             Teléfono
           </label>
           <input
+            ref={telefonoRef}
             type="tel"
             id="telefono"
             name="telefono"
@@ -190,9 +217,13 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
             onChange={handleChange}
             placeholder="(664) 000-0000"
             autoComplete="tel"
+            aria-invalid={!!errors.telefono}
+            aria-describedby={errors.telefono ? "telefono-error" : undefined}
             className={`input-base ${errors.telefono ? "border-red-400 focus:ring-red-400 focus:border-red-400" : ""}`}
           />
-          {errors.telefono && <p className="text-xs text-red-600 mt-1">{errors.telefono}</p>}
+          {errors.telefono && (
+            <p id="telefono-error" role="alert" className="text-xs text-red-600 mt-1">{errors.telefono}</p>
+          )}
         </div>
       </div>
 
@@ -202,6 +233,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           Correo electrónico <span className="text-primary-600">*</span>
         </label>
         <input
+          ref={correoRef}
           type="email"
           id="correo"
           name="correo"
@@ -211,9 +243,13 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           onChange={handleChange}
           placeholder="tu@empresa.com"
           autoComplete="email"
+          aria-invalid={!!errors.correo}
+          aria-describedby={errors.correo ? "correo-error" : undefined}
           className={`input-base ${errors.correo ? "border-red-400 focus:ring-red-400 focus:border-red-400" : ""}`}
         />
-        {errors.correo && <p className="text-xs text-red-600 mt-1">{errors.correo}</p>}
+        {errors.correo && (
+          <p id="correo-error" role="alert" className="text-xs text-red-600 mt-1">{errors.correo}</p>
+        )}
       </div>
 
       {/* Mensaje */}
@@ -222,6 +258,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           Mensaje <span className="text-primary-600">*</span>
         </label>
         <textarea
+          ref={mensajeRef}
           id="mensaje"
           name="mensaje"
           required
@@ -230,28 +267,29 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           value={form.mensaje}
           onChange={handleChange}
           placeholder="Describe tu necesidad o consulta…"
+          aria-invalid={!!errors.mensaje}
+          aria-describedby={errors.mensaje ? "mensaje-error" : undefined}
           className={`input-base resize-none ${errors.mensaje ? "border-red-400 focus:ring-red-400 focus:border-red-400" : ""}`}
         />
         <div className="flex justify-between items-center mt-1">
           {errors.mensaje
-            ? <p className="text-xs text-red-600">{errors.mensaje}</p>
+            ? <p id="mensaje-error" role="alert" className="text-xs text-red-600">{errors.mensaje}</p>
             : <span />}
-          <p className="text-xs text-gray-400 ml-auto">
+          <p className="text-xs text-gray-400 ml-auto" aria-live="polite">
             {form.mensaje.length}/{LIMITS.mensaje}
           </p>
         </div>
       </div>
 
-      {/* Errores generales */}
       {status === "error" && (
-        <p className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-          Ocurrió un error. Por favor intenta de nuevo o contáctanos directamente.
+        <p role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+          Error al enviar. Por favor intenta de nuevo.
         </p>
       )}
 
       {status === "rate_limited" && (
-        <p className="text-amber-700 text-sm bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
-          Por favor espera unos momentos antes de enviar otro mensaje.
+        <p role="alert" aria-live="polite" className="text-amber-700 text-sm bg-amber-50 border border-amber-200 rounded-lg px-4 py-3">
+          {countdown > 0 ? `Intenta de nuevo en ${countdown}s` : "Por favor espera antes de enviar otro mensaje."}
         </p>
       )}
 
@@ -260,6 +298,9 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
         disabled={status === "sending"}
         className="w-full bg-primary-700 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
       >
+        {status === "sending" && (
+          <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle" />
+        )}
         {status === "sending" ? "Enviando…" : ctaLabel}
       </button>
 
