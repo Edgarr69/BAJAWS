@@ -67,7 +67,7 @@ function AutorizacionForm({
               [key]: key === 'display_order' ? Number(e.target.value) : e.target.value,
             })
           }
-          className={`w-full text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 text-slate-700 placeholder:text-slate-300 ${
+          className={`w-full text-base md:text-sm border rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 text-slate-700 placeholder:text-slate-300 ${
             hasError
               ? 'border-red-400 focus:ring-red-400 bg-red-50'
               : 'border-slate-200 focus:ring-primary-500'
@@ -102,7 +102,7 @@ export default function AutorizacionesPage() {
   const [newForm, setNewForm]       = useState<FormData | null>(null);
   const [newSubmitted, setNewSubmitted] = useState(false);
   // Dialog editar
-  const [editTarget, setEditTarget] = useState<{ id: string; form: FormData } | null>(null);
+  const [editTarget, setEditTarget] = useState<{ id: string; form: FormData; original: FormData } | null>(null);
   const [editSubmitted, setEditSubmitted] = useState(false);
   // Dialog eliminar
   const [delTarget, setDelTarget]   = useState<Autorizacion | null>(null);
@@ -171,19 +171,18 @@ export default function AutorizacionesPage() {
     }
   }
 
-  const openEdit = (row: Autorizacion) =>
-    setEditTarget({
-      id: row.id,
-      form: {
-        clasificacion:       row.clasificacion,
-        dependencia:         row.dependencia,
-        modalidad:           row.modalidad,
-        residuo:             row.residuo,
-        numero_autorizacion: row.numero_autorizacion,
-        vigencia:            row.vigencia,
-        display_order:       row.display_order,
-      },
-    });
+  const openEdit = (row: Autorizacion) => {
+    const form: FormData = {
+      clasificacion:       row.clasificacion,
+      dependencia:         row.dependencia,
+      modalidad:           row.modalidad,
+      residuo:             row.residuo,
+      numero_autorizacion: row.numero_autorizacion,
+      vigencia:            row.vigencia,
+      display_order:       row.display_order,
+    };
+    setEditTarget({ id: row.id, form, original: form });
+  };
 
   return (
     <div className="space-y-6">
@@ -270,7 +269,7 @@ export default function AutorizacionesPage() {
 
       {/* ── Dialog nueva autorización ─────────────────────────────────── */}
       <Dialog open={!!newForm} onOpenChange={open => { if (!open) { setNewForm(null); setNewSubmitted(false); } }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" onOpenAutoFocus={e => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>Nueva autorización</DialogTitle>
           </DialogHeader>
@@ -294,7 +293,7 @@ export default function AutorizacionesPage() {
 
       {/* ── Dialog editar autorización ────────────────────────────────── */}
       <Dialog open={!!editTarget} onOpenChange={open => { if (!open) { setEditTarget(null); setEditSubmitted(false); } }}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md" onOpenAutoFocus={e => e.preventDefault()}>
           <DialogHeader>
             <DialogTitle>Editar autorización</DialogTitle>
           </DialogHeader>
@@ -311,7 +310,7 @@ export default function AutorizacionesPage() {
             </Button>
             <Button
               onClick={handleUpdate}
-              disabled={saving}
+              disabled={saving || JSON.stringify(editTarget?.form) === JSON.stringify(editTarget?.original)}
               className="bg-primary-700 hover:bg-primary-600"
             >
               {saving ? 'Guardando…' : 'Guardar cambios'}

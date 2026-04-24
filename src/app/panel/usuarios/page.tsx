@@ -254,7 +254,7 @@ export default function UsuariosPage() {
                 placeholder="Correo electrónico *"
                 value={newUser.email}
                 onChange={e => setNewUser(p => p && ({ ...p, email: e.target.value }))}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+                className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
                 autoFocus
               />
               <input
@@ -262,7 +262,7 @@ export default function UsuariosPage() {
                 placeholder="Contraseña * (mín. 6 caracteres)"
                 value={newUser.password}
                 onChange={e => setNewUser(p => p && ({ ...p, password: e.target.value }))}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+                className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
               />
               <input
                 type="text"
@@ -270,13 +270,13 @@ export default function UsuariosPage() {
                 value={newUser.full_name}
                 onChange={e => setNewUser(p => p && ({ ...p, full_name: e.target.value }))}
                 maxLength={80}
-                className="w-full text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+                className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
               />
               <Select
                 value={newUser.role}
                 onValueChange={v => setNewUser(p => p && ({ ...p, role: v as 'admin' | 'atencion' | 'pending' }))}
               >
-                <SelectTrigger className="text-sm h-10">
+                <SelectTrigger className="text-base md:text-sm h-10">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
