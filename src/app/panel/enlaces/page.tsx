@@ -31,7 +31,6 @@ export default function EnlacesPage() {
   const [role, setRole]         = useState<string>('atencion');
 
   // form
-  const [folio, setFolio]     = useState('');
   const [fecha, setFecha]     = useState('');
   const [ttl, setTtl]         = useState('3600');
 
@@ -59,8 +58,8 @@ export default function EnlacesPage() {
     setCreating(true);
     try {
       let service_id: string | undefined;
-      if (folio || fecha) {
-        const svc = await createService({ folio: folio || undefined, service_date: fecha || undefined });
+      if (fecha) {
+        const svc = await createService({ service_date: fecha || undefined });
         service_id = svc.service.id;
       }
       const ttlSeconds = role === 'admin' ? Number(ttl) : 3600;
@@ -126,10 +125,6 @@ export default function EnlacesPage() {
             <CardTitle className="text-sm font-semibold text-slate-700">Datos del servicio (opcional)</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="space-y-1.5">
-              <Label htmlFor="folio" className="text-xs">Folio / referencia</Label>
-              <Input id="folio" placeholder="ej. BWS-2025-001" value={folio} onChange={e => setFolio(e.target.value)} />
-            </div>
             <div className="space-y-1.5">
               <Label htmlFor="fecha" className="text-xs">Fecha del servicio</Label>
               <Input
@@ -268,48 +263,48 @@ export default function EnlacesPage() {
             <p className="text-sm text-slate-400 text-center py-10">Sin enlaces generados</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Código</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Folio</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Generado</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Expira</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Estado</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {links.map(link => {
-                    const status = getLinkStatus(link);
-                    return (
-                      <tr key={link.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                        <td className="px-4 py-3 font-mono text-xs text-primary-700">{link.code}</td>
-                        <td className="px-4 py-3 text-slate-600">{link.services?.folio ?? '—'}</td>
-                        <td className="px-4 py-3 text-slate-500 text-xs">{new Date(link.created_at).toLocaleDateString('es-MX')}</td>
-                        <td className="px-4 py-3 text-slate-500 text-xs">{new Date(link.expires_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}</td>
-                        <td className="px-4 py-3">
-                          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${statusColor[status]}`}>
-                            {status.charAt(0).toUpperCase() + status.slice(1)}
-                          </span>
-                        </td>
-                        <td className="px-4 py-3">
-                          {status !== 'usado' && (
-                            <div className="flex gap-1">
-                              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => copyLink(link.code)}>
-                                <Copy className="w-3 h-3" />
-                              </Button>
-                              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-green-600" onClick={() => shareWhatsApp(link.code)}>
-                                <Share2 className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+              <div className="max-h-[420px] overflow-y-auto">
+                <table className="w-full text-sm">
+                  <thead className="sticky top-0 z-10 bg-slate-50">
+                    <tr className="border-b border-slate-100">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Código</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Generado</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Expira</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Estado</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Acciones</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {links.map(link => {
+                      const status = getLinkStatus(link);
+                      return (
+                        <tr key={link.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                          <td className="px-4 py-3 font-mono text-xs text-primary-700">{link.code}</td>
+                          <td className="px-4 py-3 text-slate-500 text-xs">{new Date(link.created_at).toLocaleDateString('es-MX')}</td>
+                          <td className="px-4 py-3 text-slate-500 text-xs">{new Date(link.expires_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}</td>
+                          <td className="px-4 py-3">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium border ${statusColor[status]}`}>
+                              {status.charAt(0).toUpperCase() + status.slice(1)}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3">
+                            {status !== 'usado' && (
+                              <div className="flex gap-1">
+                                <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => copyLink(link.code)}>
+                                  <Copy className="w-3 h-3" />
+                                </Button>
+                                <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-green-600" onClick={() => shareWhatsApp(link.code)}>
+                                  <Share2 className="w-3 h-3" />
+                                </Button>
+                              </div>
+                            )}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </CardContent>
