@@ -17,7 +17,7 @@ export default function SiteLayout({
       </a>
       <Header />
       {/* Spacer que compensa el header fixed — sincroniza altura con --header-height */}
-      <div aria-hidden="true" className="bg-primary-900" style={{ height: "var(--header-height, 4rem)" }} />
+      <div aria-hidden="true" style={{ height: "var(--header-height, 4rem)" }} />
       <main id="main-content" className="flex-1">{children}</main>
       <Footer />
       <CookieBanner />
