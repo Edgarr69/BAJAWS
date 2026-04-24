@@ -188,107 +188,96 @@ async function buildMultiReport(
   };
 }
 
+// ── Batch fetcher (evita saturar la API con N requests simultáneas) ───────────
+
+async function fetchBatched<T>(
+  ids: string[],
+  fetcher: (id: string) => Promise<T>,
+  batchSize = 10,
+): Promise<T[]> {
+  const results: T[] = [];
+  for (let i = 0; i < ids.length; i += batchSize) {
+    const batch = ids.slice(i, i + batchSize);
+    results.push(...await Promise.all(batch.map(fetcher)));
+  }
+  return results;
+}
+
 // ── Flujo single ──────────────────────────────────────────────────────────────
 
 async function buildSingleReport(
   companyName: string,
   dateFrom: string | null,
   dateTo: string | null,
+  submissionIds?: string[],
 ): Promise<ReportData> {
-  const params: Record<string, string> = {};
-  if (dateFrom) params.date_from = dateFrom;
-  if (dateTo)   params.date_to   = dateTo;
+  const emptyResult: ReportData = {
+    meta: { generatedAt: new Date().toISOString(), dateFrom, dateTo, scope: 'single', companyName },
+    summary: { globalScore: 0, globalScorePct: 0, totalResponses: 0, totalSubmissions: 0, status: 'bad' },
+    byCategory: [],
+    byQuestion: [],
+    trends: [],
+    diagnostics: { topStrong: [], topWeak: [], findings: ['No hay evaluaciones para esta empresa en el período.'], actionPlans: [] },
+  };
 
-  const allSubs = await getSubmissions(Object.keys(params).length ? params : undefined) as SubmissionRow[];
-  const filtered = allSubs.filter(s =>
-    s.company_name?.toLowerCase() === companyName.toLowerCase()
-  );
+  let ids: string[];
 
-  if (filtered.length === 0) {
-    return {
-      meta: { generatedAt: new Date().toISOString(), dateFrom, dateTo, scope: 'single', companyName },
-      summary: { globalScore: 0, globalScorePct: 0, totalResponses: 0, totalSubmissions: 0, status: 'bad' },
-      byCategory: [],
-      byQuestion: [],
-      trends: [],
-      diagnostics: { topStrong: [], topWeak: [], findings: ['No hay evaluaciones para esta empresa en el período.'], actionPlans: [] },
-    };
+  if (submissionIds?.length) {
+    ids = submissionIds;
+  } else {
+    const params: Record<string, string> = {};
+    if (dateFrom) params.date_from = dateFrom;
+    if (dateTo)   params.date_to   = dateTo;
+    const allSubs = await getSubmissions(Object.keys(params).length ? params : undefined) as SubmissionRow[];
+    const filtered = allSubs.filter(s => s.company_name?.toLowerCase() === companyName.toLowerCase());
+    if (filtered.length === 0) return emptyResult;
+    ids = filtered.map(s => s.id);
   }
 
-  const details = await Promise.all(
-    filtered.map(s => getSubmission(s.id) as Promise<SubmissionDetail>)
-  );
+  if (ids.length === 0) return emptyResult;
 
-  // Acumular por topic y por question
+  const details = await fetchBatched(ids, id => getSubmission(id) as Promise<SubmissionDetail>);
+
   const byCategoryMap = new Map<string, { sum: number; count: number; d: [number,number,number,number,number] }>();
   const byQuestionMap = new Map<number, { text: string; topic: string; answers: { fecha: string; score: number }[] }>();
   const privateComments: PrivateComment[] = [];
-
   const trends: TrendPoint[] = [];
 
-  details.forEach((detail, idx) => {
-    const fecha = filtered[idx].submitted_at.slice(0, 10);
+  for (const detail of details) {
+    const fecha = detail.submission.submitted_at.slice(0, 10);
     const subAnswers = detail.answers ?? [];
 
-    // Comentario privado a nivel de submission
     const pc = detail.submission?.private_comment?.trim();
-    if (pc) {
-      privateComments.push({
-        fecha,
-        companyName: filtered[idx].company_name ?? undefined,
-        comment: pc,
-      });
-    }
+    if (pc) privateComments.push({ fecha, companyName, comment: pc });
 
     let subSum = 0;
-    subAnswers.forEach(a => {
+    for (const a of subAnswers) {
       const score = a.value_int;
       subSum += score;
+      const topic = a.questions?.topics?.name ?? 'Sin categoría';
+      const qId   = a.questions?.id ?? -1;
+      const qText = a.questions?.text ?? '';
 
-      const topic    = a.questions?.topics?.name ?? 'Sin categoría';
-      const qId      = a.questions?.id ?? -1;
-      const qText    = a.questions?.text ?? '';
-
-      // byCategory
-      if (!byCategoryMap.has(topic)) {
-        byCategoryMap.set(topic, { sum: 0, count: 0, d: [0,0,0,0,0] });
-      }
+      if (!byCategoryMap.has(topic)) byCategoryMap.set(topic, { sum: 0, count: 0, d: [0,0,0,0,0] });
       const cat = byCategoryMap.get(topic)!;
-      cat.sum   += score;
-      cat.count += 1;
+      cat.sum += score; cat.count += 1;
       if (score >= 1 && score <= 5) cat.d[score - 1]++;
 
-      // byQuestion
-      if (!byQuestionMap.has(qId)) {
-        byQuestionMap.set(qId, { text: qText, topic, answers: [] });
-      }
+      if (!byQuestionMap.has(qId)) byQuestionMap.set(qId, { text: qText, topic, answers: [] });
       byQuestionMap.get(qId)!.answers.push({ fecha, score });
-    });
-
-    if (subAnswers.length > 0) {
-      trends.push({ fecha, avgScore: subSum / subAnswers.length });
     }
-  });
+    if (subAnswers.length > 0) trends.push({ fecha, avgScore: subSum / subAnswers.length });
+  }
 
   const byCategory: CategoryStat[] = Array.from(byCategoryMap.entries()).map(([category, v]) => {
-    const avg        = v.sum / v.count;
-    const pos        = (v.d[3] + v.d[4]) / v.count;
-    const neg        = (v.d[0] + v.d[1]) / v.count;
-    return {
-      category,
-      avgScore:       avg,
-      totalResponses: v.count,
-      pctPositive:    pos * 100,
-      pctNegative:    neg * 100,
-      dist:           v.d,
-      status:         scoreStatus(avg),
-    };
+    const avg = v.sum / v.count;
+    const pos = (v.d[3] + v.d[4]) / v.count;
+    const neg = (v.d[0] + v.d[1]) / v.count;
+    return { category, avgScore: avg, totalResponses: v.count, pctPositive: pos * 100, pctNegative: neg * 100, dist: v.d, status: scoreStatus(avg) };
   });
 
   const byQuestion: QuestionDetail[] = Array.from(byQuestionMap.values()).map(q => ({
-    questionText: q.text,
-    topicName:    q.topic,
-    answers:      q.answers,
+    questionText: q.text, topicName: q.topic, answers: q.answers,
   }));
 
   const totalResponses = byCategory.reduce((s, c) => s + c.totalResponses, 0);
@@ -300,13 +289,7 @@ async function buildSingleReport(
 
   return {
     meta: { generatedAt: new Date().toISOString(), dateFrom, dateTo, scope: 'single', companyName },
-    summary: {
-      globalScore,
-      globalScorePct: ((globalScore - 1) / 4) * 100,
-      totalResponses,
-      totalSubmissions: filtered.length,
-      status: scoreStatus(globalScore),
-    },
+    summary: { globalScore, globalScorePct: ((globalScore - 1) / 4) * 100, totalResponses, totalSubmissions: ids.length, status: scoreStatus(globalScore) },
     byCategory,
     byQuestion,
     privateComments: privateComments.length ? privateComments : undefined,
@@ -321,10 +304,11 @@ export async function buildReportData(filters: {
   companyName?: string;
   dateFrom: string | null;
   dateTo: string | null;
+  submissionIds?: string[];
 }): Promise<ReportData> {
-  const { companyName, dateFrom, dateTo } = filters;
+  const { companyName, dateFrom, dateTo, submissionIds } = filters;
   if (companyName) {
-    return buildSingleReport(companyName, dateFrom, dateTo);
+    return buildSingleReport(companyName, dateFrom, dateTo, submissionIds);
   }
   return buildMultiReport(dateFrom, dateTo);
 }
