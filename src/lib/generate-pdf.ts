@@ -27,6 +27,7 @@ export async function generatePdf(pageIds: string[], filename: string): Promise<
       useCORS: true,
       logging: false,
       backgroundColor: '#ffffff',
+      windowWidth: 794,
     });
 
     const pageImgH = (usableH / usableW) * canvas.width; // alto de página en px de canvas

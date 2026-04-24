@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReportData, CategoryStat, StatusLevel, PrivateComment } from '@/types/report';
+import type { ReportData, CategoryStat, PrivateComment } from '@/types/report';
 
 // ── Constantes de estilo ──────────────────────────────────────────────────────
 
@@ -14,22 +14,6 @@ const PAGE: React.CSSProperties = {
 };
 
 // ── Helpers ──────────────────────────────────────────────────────────────────
-
-const STATUS_LABEL: Record<StatusLevel, string> = {
-  ok:   'Satisfactorio',
-  warn: 'En atención',
-  bad:  'Requiere mejora',
-};
-const STATUS_COLOR: Record<StatusLevel, string> = {
-  ok:   '#3D8B36',
-  warn: '#d97706',
-  bad:  '#dc2626',
-};
-const STATUS_BG: Record<StatusLevel, string> = {
-  ok:   '#f0fdf4',
-  warn: '#fffbeb',
-  bad:  '#fef2f2',
-};
 
 function fmt(n: number, d = 2) { return n.toFixed(d); }
 
@@ -48,34 +32,15 @@ function catColor(avg: number) {
 
 // ── Componentes reutilizables ─────────────────────────────────────────────────
 
-function StatusBadge({ status }: { status: StatusLevel }) {
-  return (
-    <span style={{
-      display: 'inline-block',
-      backgroundColor: STATUS_BG[status],
-      color: STATUS_COLOR[status],
-      border: `1px solid ${STATUS_COLOR[status]}40`,
-      padding: '3px 10px',
-      borderRadius: 6,
-      fontSize: 11,
-      fontWeight: 600,
-      whiteSpace: 'nowrap',
-      lineHeight: 1.4,
-    }}>
-      {STATUS_LABEL[status]}
-    </span>
-  );
-}
-
 function ScoreBar({ value }: { value: number }) {
   const pct   = Math.max(0, Math.min(100, (value / 5) * 100));
   const color = catColor(value);
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, minWidth: 110 }}>
-      <div style={{ flex: 1, height: 6, backgroundColor: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <div style={{ width: 110, flexShrink: 0, height: 6, backgroundColor: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: 3 }} />
       </div>
-      <span style={{ fontSize: 12, fontWeight: 700, color }}>{fmt(value)}</span>
+      <span style={{ fontSize: 12, fontWeight: 700, color, width: 34, flexShrink: 0, textAlign: 'right' }}>{fmt(value)}</span>
     </div>
   );
 }
@@ -205,15 +170,13 @@ function Page1({ data }: { data: ReportData }) {
             </div>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <StatusBadge status={summary.status} />
-            <div style={{ fontSize: 10, color: '#94a3b8', marginTop: 5 }}>
+            <div style={{ fontSize: 10, color: '#94a3b8' }}>
               Generado: {new Date(meta.generatedAt).toLocaleString('es-MX')}
             </div>
           </div>
         </div>
         <div style={{ marginTop: 12, display: 'flex', gap: 28, fontSize: 12, color: '#475569', flexWrap: 'wrap' }}>
           {meta.companyName && <span><strong>Empresa:</strong> {meta.companyName}</span>}
-          <span><strong>Período:</strong> {fmtDate(meta.dateFrom)} – {fmtDate(meta.dateTo)}</span>
           <span><strong>Modo:</strong> {meta.scope === 'single' ? 'Evaluación individual' : 'Resumen general'}</span>
         </div>
       </div>
@@ -243,28 +206,32 @@ function Page1({ data }: { data: ReportData }) {
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0B3C5D', marginBottom: 10, borderBottom: '1px solid #e2e8f0', paddingBottom: 6 }}>
             Resultados por categoría
           </div>
-          <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11, marginBottom: 16 }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f1f5f9' }}>
-                <th style={{ textAlign: 'left',   padding: '7px 10px', color: '#64748b', fontWeight: 600 }}>Categoría</th>
-                <th style={{ textAlign: 'left',   padding: '7px 10px', color: '#64748b', fontWeight: 600, width: 150 }}>Promedio</th>
-                <th style={{ textAlign: 'right',  padding: '7px 10px', color: '#64748b', fontWeight: 600 }}>% Positivo</th>
-                <th style={{ textAlign: 'right',  padding: '7px 10px', color: '#64748b', fontWeight: 600 }}>Respuestas</th>
-                <th style={{ textAlign: 'center', padding: '7px 10px', color: '#64748b', fontWeight: 600 }}>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {byCategory.map((c, i) => (
-                <tr key={c.category} style={{ backgroundColor: i % 2 === 0 ? '#fff' : '#f8fafc' }}>
-                  <td style={{ padding: '8px 10px', fontWeight: 600, color: '#334155' }}>{c.category}</td>
-                  <td style={{ padding: '8px 10px' }}><ScoreBar value={c.avgScore} /></td>
-                  <td style={{ padding: '8px 10px', textAlign: 'right', color: '#3D8B36', fontWeight: 600 }}>{fmt(c.pctPositive, 1)}%</td>
-                  <td style={{ padding: '8px 10px', textAlign: 'right', color: '#64748b' }}>{c.totalResponses}</td>
-                  <td style={{ padding: '8px 10px', textAlign: 'center' }}><StatusBadge status={c.status} /></td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <div style={{ fontSize: 11, marginBottom: 16, border: '1px solid #f1f5f9', borderRadius: 6, overflow: 'hidden' }}>
+            {/* Header */}
+            <div style={{
+              display: 'grid', gridTemplateColumns: '2fr 3fr 90px 72px',
+              alignItems: 'center', backgroundColor: '#f1f5f9', padding: '7px 10px',
+            }}>
+              <span style={{ color: '#64748b', fontWeight: 600 }}>Categoría</span>
+              <span style={{ color: '#64748b', fontWeight: 600 }}>Promedio</span>
+              <span style={{ color: '#64748b', fontWeight: 600, textAlign: 'right' }}>% Positivo</span>
+              <span style={{ color: '#64748b', fontWeight: 600, textAlign: 'right' }}>Respuestas</span>
+            </div>
+            {/* Filas */}
+            {byCategory.map((c, i) => (
+              <div key={c.category} style={{
+                display: 'grid', gridTemplateColumns: '2fr 3fr 90px 72px',
+                alignItems: 'center', padding: '8px 10px',
+                backgroundColor: i % 2 === 0 ? '#fff' : '#f8fafc',
+                borderTop: '1px solid #f1f5f9',
+              }}>
+                <span style={{ fontWeight: 600, color: '#334155' }}>{c.category}</span>
+                <ScoreBar value={c.avgScore} />
+                <span style={{ textAlign: 'right', color: '#3D8B36', fontWeight: 600 }}>{fmt(c.pctPositive, 1)}%</span>
+                <span style={{ textAlign: 'right', color: '#64748b' }}>{c.totalResponses}</span>
+              </div>
+            ))}
+          </div>
 
           {/* Gráfica */}
           <div style={{ backgroundColor: '#fafafa', border: '1px solid #f1f5f9', borderRadius: 8, padding: '12px 0 6px 0', overflow: 'visible' }}>
@@ -350,7 +317,7 @@ function Page2({ data }: { data: ReportData }) {
 // PÁGINAS DE DETALLE — agrupadas por tema, máx. 7 preguntas por página
 // ══════════════════════════════════════════════════════════════════════════════
 
-const QUESTIONS_PER_PAGE = 7;
+const QUESTIONS_PER_PAGE = 5;
 
 type QDetail = NonNullable<ReportData['byQuestion']>[number];
 
@@ -376,38 +343,64 @@ function buildQuestionChunks(questions: QDetail[]): QDetail[][] {
   return chunks;
 }
 
-/** Tarjeta de una pregunta con su tabla de respuestas */
+/** Tarjeta de una pregunta — promedio si hay 2+ respuestas, individual si hay 1 */
 function QuestionCard({ q }: { q: QDetail }) {
+  const count = q.answers.length;
+  const avgScore = count > 0
+    ? q.answers.reduce((s, a) => s + a.score, 0) / count
+    : 0;
+
   return (
-    <div style={{ border: '1px solid #e2e8f0', borderRadius: 8, overflow: 'hidden', marginBottom: 14 }}>
+    <div style={{
+      border: '1px solid #e2e8f0', borderRadius: 8,
+      overflow: 'hidden', marginBottom: 20,
+    }}>
       <div style={{
         fontSize: 11, fontWeight: 600, color: '#334155',
-        backgroundColor: '#f8fafc', padding: '8px 12px',
-        borderBottom: '1px solid #e2e8f0',
+        backgroundColor: '#f8fafc', padding: '10px 14px',
+        borderBottom: '1px solid #e2e8f0', lineHeight: 1.5,
       }}>
         {q.questionText}
       </div>
-      <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
-        <thead>
-          <tr style={{ backgroundColor: '#f1f5f9' }}>
-            <th style={{ textAlign: 'left',   padding: '6px 12px', color: '#64748b', fontWeight: 600, width: '40%' }}>Fecha</th>
-            <th style={{ textAlign: 'center', padding: '6px 12px', color: '#64748b', fontWeight: 600 }}>Calificación</th>
-          </tr>
-        </thead>
-        <tbody>
-          {q.answers.map((a, ai) => (
-            <tr key={ai} style={{ backgroundColor: ai % 2 === 0 ? '#fff' : '#f8fafc' }}>
-              <td style={{ padding: '7px 12px', color: '#475569' }}>{a.fecha}</td>
-              <td style={{
-                padding: '7px 12px', textAlign: 'center', fontWeight: 700,
-                color: a.score >= 4 ? '#3D8B36' : a.score >= 3 ? '#d97706' : '#dc2626',
-              }}>
-                {a.score} / 5
-              </td>
+
+      {count >= 2 ? (
+        /* Múltiples respuestas → mostrar solo promedio */
+        <div style={{
+          padding: '12px 14px', display: 'flex', alignItems: 'center',
+          justifyContent: 'space-between', fontSize: 11, backgroundColor: '#fff',
+        }}>
+          <span style={{ color: '#64748b' }}>Promedio de {count} respuestas</span>
+          <span style={{
+            fontWeight: 700, fontSize: 16,
+            color: avgScore >= 4 ? '#3D8B36' : avgScore >= 3 ? '#d97706' : '#dc2626',
+          }}>
+            {fmt(avgScore)} / 5
+          </span>
+        </div>
+      ) : (
+        /* Una sola respuesta → fila individual con fecha */
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 11 }}>
+          <thead>
+            <tr style={{ backgroundColor: '#f1f5f9' }}>
+              <th style={{ textAlign: 'left',   padding: '8px 14px', color: '#64748b', fontWeight: 600, width: '40%' }}>Fecha</th>
+              <th style={{ textAlign: 'center', padding: '8px 14px', color: '#64748b', fontWeight: 600 }}>Calificación</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {q.answers.map((a, ai) => (
+              <tr key={ai} style={{ backgroundColor: ai % 2 === 0 ? '#fff' : '#f8fafc' }}>
+                <td style={{ padding: '8px 14px', color: '#475569' }}>{a.fecha}</td>
+                <td style={{
+                  padding: '8px 14px', textAlign: 'center', fontWeight: 700,
+                  color: a.score >= 4 ? '#3D8B36' : a.score >= 3 ? '#d97706' : '#dc2626',
+                }}>
+                  {a.score} / 5
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </div>
   );
 }
@@ -437,8 +430,8 @@ function QuestionPage({
       {/* Encabezado de tema */}
       <div style={{
         fontSize: 13, fontWeight: 700, color: '#2980B9',
-        marginBottom: 16, backgroundColor: '#f0f7ff',
-        padding: '8px 12px', borderRadius: 6,
+        marginBottom: 20, backgroundColor: '#f0f7ff',
+        padding: '10px 14px', borderRadius: 6,
         borderLeft: '4px solid #2980B9',
       }}>
         {topicName}
