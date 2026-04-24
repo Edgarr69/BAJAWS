@@ -21,6 +21,7 @@ export default function Header() {
   const dropTriggerRef            = useRef<HTMLButtonElement>(null);
   const dropItemRefs              = useRef<(HTMLAnchorElement | null)[]>([]);
   const mobileMenuRef             = useRef<HTMLDivElement>(null);
+  const closeBtnRef               = useRef<HTMLButtonElement>(null);
   const pathname = usePathname();
   const { links } = siteContent.nav;
 
@@ -77,7 +78,7 @@ export default function Header() {
     );
     const first = focusable[0];
     const last  = focusable[focusable.length - 1];
-    first?.focus();
+    closeBtnRef.current?.focus();
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") { setIsOpen(false); return; }
       if (e.key !== "Tab") return;
@@ -281,6 +282,7 @@ export default function Header() {
               <LogIn className="w-3.5 h-3.5" />
             </Link>
             <button
+              ref={closeBtnRef}
               onClick={() => setIsOpen(false)}
               aria-label="Cerrar menú"
               className="p-2 text-white/75 hover:text-white hover:bg-white/10 rounded-md transition-colors"
