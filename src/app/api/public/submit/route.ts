@@ -28,7 +28,10 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
+  const ip = req.headers.get('x-real-ip')
+           ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
+           ?? 'unknown';
 
   // Rate limit: 5 envíos por IP por 10 minutos
   const rl = checkRateLimit(`submit:${ip}`, 5, 600_000);
@@ -73,7 +76,8 @@ export async function POST(req: NextRequest) {
   });
 
   if (error) {
-    return NextResponse.json({ error: 'SERVER_ERROR', message: error.message }, { status: 500 });
+    console.error('submit_feedback RPC error:', error.message);
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
   }
 
   if (data?.error) {
@@ -90,13 +94,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(data, { status: statusMap[data.error] ?? 400 });
   }
 
-  // Si se proporcionaron campos adicionales, actualizamos la submission recién creada
+  // Si se proporcionaron campos adicionales, actualizamos la submission recién creada.
+  // La ventana de 10s reduce el riesgo de race condition con envíos concurrentes del mismo IP.
   if (company_name?.trim() || private_comment?.trim()) {
     const admin = getAdminClient();
+    const windowStart = new Date(Date.now() - 10_000).toISOString();
     const { data: latest } = await admin
       .from('feedback_submissions')
       .select('id')
       .eq('ip_hash', ipHash)
+      .gte('submitted_at', windowStart)
       .order('submitted_at', { ascending: false })
       .limit(1)
       .single();

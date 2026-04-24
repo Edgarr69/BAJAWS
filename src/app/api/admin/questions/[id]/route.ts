@@ -22,6 +22,9 @@ export async function PUT(
   if (errorResponse) return errorResponse;
 
   const { id } = await params;
+  const numId = parseInt(id, 10);
+  if (!Number.isInteger(numId) || numId <= 0) return badRequest('ID inválido');
+
   const body = await req.json().catch(() => null);
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return badRequest('Payload inválido', parsed.error.flatten());
@@ -30,7 +33,7 @@ export async function PUT(
   const { data, error } = await admin
     .from('questions')
     .update({ ...parsed.data, updated_at: new Date().toISOString() })
-    .eq('id', Number(id))
+    .eq('id', numId)
     .select()
     .single();
 
@@ -46,11 +49,14 @@ export async function DELETE(
   if (errorResponse) return errorResponse;
 
   const { id } = await params;
+  const numId = parseInt(id, 10);
+  if (!Number.isInteger(numId) || numId <= 0) return badRequest('ID inválido');
+
   const admin = getAdminClient();
   const { error } = await admin
     .from('questions')
     .delete()
-    .eq('id', Number(id));
+    .eq('id', numId);
 
   if (error) return serverError(error.message);
   return NextResponse.json({ ok: true });

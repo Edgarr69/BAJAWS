@@ -10,7 +10,11 @@ import { createServerClient } from '@supabase/ssr';
 export async function GET(req: NextRequest) {
   const { searchParams, origin } = req.nextUrl;
   const code = searchParams.get('code');
-  const next = searchParams.get('next') ?? '/';
+  // Validar que next sea ruta relativa segura — previene open redirect via @host o //host
+  const rawNext = searchParams.get('next') ?? '/';
+  const next = rawNext.startsWith('/') && !rawNext.startsWith('//') && !rawNext.includes('@')
+    ? rawNext
+    : '/';
 
   if (code) {
     // Respuesta de redirección que recibirá las cookies de sesión

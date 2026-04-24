@@ -12,7 +12,10 @@ import { validateShortCode } from '@/utils/shortcode';
 
 export async function GET(req: NextRequest) {
   // Rate limiting por IP
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ?? 'unknown';
+  // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
+  const ip = req.headers.get('x-real-ip')
+           ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
+           ?? 'unknown';
   const rl = checkRateLimit(`form:${ip}`, 30, 60_000);
 
   if (!rl.allowed) {
@@ -40,7 +43,8 @@ export async function GET(req: NextRequest) {
   const { data, error } = await supabase.rpc('get_public_form', { p_code: code });
 
   if (error) {
-    return NextResponse.json({ error: 'SERVER_ERROR', message: error.message }, { status: 500 });
+    console.error('get_public_form RPC error:', error.message);
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
   }
 
   if (data?.error) {

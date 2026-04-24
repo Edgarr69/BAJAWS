@@ -143,7 +143,7 @@ export const getRawAnswers = (params?: Record<string, string>) => {
 
 // ── Reset ─────────────────────────────────────────────────────────────────────
 export const resetAllData = () =>
-  apiFetch<{ ok: boolean }>('/api/admin/reset-all', { method: 'DELETE' });
+  apiFetch<{ ok: boolean }>('/api/admin/reset-all?confirm=RESET_ALL', { method: 'DELETE' });
 
 export const deleteLinkByCode = (code: string) =>
   apiFetch<{ ok: boolean }>(`/api/admin/reset-all?code=${encodeURIComponent(code)}`, { method: 'DELETE' });

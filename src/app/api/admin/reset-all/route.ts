@@ -1,7 +1,8 @@
 /**
- * DELETE /api/admin/reset-all        → elimina todos los enlaces, submissions y servicios
- * DELETE /api/admin/reset-all?code=X → elimina un enlace individual por código
+ * DELETE /api/admin/reset-all?confirm=RESET_ALL → elimina todos los enlaces, submissions y servicios
+ * DELETE /api/admin/reset-all?code=X            → elimina un enlace individual por código
  * Solo accesible para admin y superadmin.
+ * El borrado masivo requiere ?confirm=RESET_ALL para prevenir ejecución accidental.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { requireRole, serverError, badRequest } from '@/lib/auth';
@@ -11,8 +12,9 @@ export async function DELETE(req: NextRequest) {
   const { errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
-  const code = req.nextUrl.searchParams.get('code')?.toUpperCase().trim();
-  const admin = getAdminClient();
+  const code    = req.nextUrl.searchParams.get('code')?.toUpperCase().trim();
+  const confirm = req.nextUrl.searchParams.get('confirm');
+  const admin   = getAdminClient();
 
   // ── Eliminar enlace individual por código ─────────────────────────────────
   if (code) {
@@ -67,7 +69,14 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  // ── Eliminar todo ─────────────────────────────────────────────────────────
+  // ── Eliminar todo — requiere token de confirmación explícito ────────────────
+  if (confirm !== 'RESET_ALL') {
+    return NextResponse.json(
+      { error: 'CONFIRMATION_REQUIRED', message: 'Se requiere ?confirm=RESET_ALL para borrar todos los datos' },
+      { status: 400 }
+    );
+  }
+
   const { error: subError } = await admin
     .from('feedback_submissions')
     .delete()

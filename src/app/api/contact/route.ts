@@ -18,8 +18,10 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
-  const ip = req.headers.get('x-forwarded-for')?.split(',')[0]?.trim()
-           ?? req.headers.get('x-real-ip')
+  // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
+  // x-forwarded-for puede inyectarse; usar último valor como fallback
+  const ip = req.headers.get('x-real-ip')
+           ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
            ?? 'unknown';
 
   // Rate limit: 3 envíos por IP cada 10 minutos
