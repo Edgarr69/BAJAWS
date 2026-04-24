@@ -92,6 +92,22 @@ export default function Header() {
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen]);
 
+  // Cierra dropdown al hacer click fuera (tablet/touch)
+  useEffect(() => {
+    if (!dropOpen) return;
+    const handler = (e: MouseEvent | TouchEvent) => {
+      if (dropRef.current && !dropRef.current.contains(e.target as Node)) {
+        setDropOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handler);
+    document.addEventListener('touchstart', handler);
+    return () => {
+      document.removeEventListener('mousedown', handler);
+      document.removeEventListener('touchstart', handler);
+    };
+  }, [dropOpen]);
+
   const handleDropTriggerKeyDown = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (e.key === "Escape") { setDropOpen(false); dropTriggerRef.current?.focus(); return; }
     if (e.key === "Enter" || e.key === " ") {
@@ -152,6 +168,7 @@ export default function Header() {
                         ref={dropTriggerRef}
                         aria-haspopup="true"
                         aria-expanded={dropOpen}
+                        onClick={() => setDropOpen(v => !v)}
                         onKeyDown={handleDropTriggerKeyDown}
                         className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${
                           active
