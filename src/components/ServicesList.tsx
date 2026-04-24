@@ -47,7 +47,7 @@ export default function ServicesList({ className = '' }: { className?: string })
               style={{ borderTopColor: c.border }}
             >
               {/* Número de agua */}
-              <span className={`absolute bottom-1 right-1 text-5xl sm:text-7xl font-black leading-none select-none pointer-events-none ${c.num}`}>
+              <span className={`absolute bottom-1 right-1 text-4xl sm:text-5xl md:text-7xl font-black leading-none select-none pointer-events-none ${c.num}`}>
                 {String(i + 1).padStart(2, '0')}
               </span>
 

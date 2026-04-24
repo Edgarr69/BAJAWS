@@ -19,10 +19,10 @@ export default function LandingPage() {
       {/* ── Minimal Header ─────────────────────────────────────────────────── */}
       <header className="bg-white shadow-sm sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-          <Link href="/" className="flex-shrink-0">
+          <Link href="/" aria-label="Baja Wastewater Solution — Inicio" className="flex-shrink-0">
             <Image
               src="/logoo.webp"
-              alt="Baja Wastewater Solution"
+              alt=""
               width={160}
               height={62}
               className="h-10 w-auto object-contain"
@@ -31,7 +31,7 @@ export default function LandingPage() {
           </Link>
           <a
             href="#cotizacion"
-            className="bg-primary-700 hover:bg-primary-600 text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors duration-200"
+            className="bg-primary-700 hover:bg-primary-600 text-white font-semibold px-5 py-2 rounded-lg text-sm transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2"
           >
             Solicitar cotización
           </a>
@@ -47,6 +47,7 @@ export default function LandingPage() {
             muted
             loop
             playsInline
+            aria-hidden="true"
             className="absolute inset-0 w-full h-full object-cover"
           >
             <source src="/videos/recepcion.mov" type="video/mp4" />
@@ -73,7 +74,7 @@ export default function LandingPage() {
 
             <a
               href={hero.ctaHref}
-              className="inline-block bg-white text-primary-700 hover:bg-primary-50 font-bold px-10 py-4 rounded-xl text-lg transition-colors duration-200 shadow-xl shadow-primary-900/30"
+              className="inline-block bg-white text-primary-700 hover:bg-primary-50 font-bold px-10 py-4 rounded-xl text-lg transition-colors duration-200 shadow-xl shadow-primary-900/30 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/70"
             >
               {hero.cta}
             </a>
@@ -88,7 +89,7 @@ export default function LandingPage() {
                 {problema.title}
               </h2>
             </AnimateOnScroll>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
               {problema.items.map((item, i) => (
                 <AnimateOnScroll key={i} delay={i * 130}>
                   <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-7 hover:shadow-md transition-shadow h-full">
@@ -166,7 +167,7 @@ export default function LandingPage() {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
               {autorizaciones.items.map((item, i) => (
                 <AnimateOnScroll key={i} delay={i * 100}>
-                  <div className="bg-white/8 border border-white/15 rounded-2xl p-5 hover:bg-white/15 hover:border-secondary-400/30 transition-all duration-300 h-full">
+                  <div className="bg-white/8 border border-white/15 rounded-2xl p-5 hover:bg-white/15 hover:border-secondary-400/30 transition-[background-color,border-color] duration-300 h-full">
                     <p className="text-secondary-300 font-bold text-xl mb-2">{item.dependencia}</p>
                     <p className="text-slate-300 text-xs leading-relaxed">{item.descripcion}</p>
                   </div>
@@ -213,7 +214,7 @@ export default function LandingPage() {
       {/* ── Minimal Footer ─────────────────────────────────────────────────── */}
       <footer className="bg-slate-900 py-7 text-center">
         <p className="text-gray-500 text-sm">
-          © {year} {name}. Todos los derechos reservados.
+          © {year} <span translate="no">{name}</span>. Todos los derechos reservados.
         </p>
         <p className="text-gray-600 text-xs mt-1">
           <Link href="/" className="hover:text-gray-400 transition-colors">Sitio corporativo</Link>

@@ -4,14 +4,15 @@ import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import HeroTypewriter from './HeroTypewriter';
 import HeroStats from './HeroStats';
+import { useReducedMotion } from '@/hooks/useReducedMotion';
 
 interface Props {
   yearsExperience:     number;
   authorizationsCount: number;
 }
 
-// Helper para construir el inline style de cada elemento animado
-function fadeStyle(visible: boolean, delayMs: number): React.CSSProperties {
+function fadeStyle(visible: boolean, delayMs: number, reduced: boolean): React.CSSProperties {
+  if (reduced) return {};
   return {
     opacity:    visible ? 1 : 0,
     transform:  visible ? 'translateY(0)' : 'translateY(10px)',
@@ -24,6 +25,7 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
   const [eyebrowVisible,  setEyebrowVisible]  = useState(false);
   const [contentVisible,  setContentVisible]  = useState(false);
   const [statsReady,      setStatsReady]      = useState(false);
+  const reducedMotion = useReducedMotion();
 
   // Eyebrow aparece primero, al montar
   useEffect(() => {
@@ -34,15 +36,15 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
   return (
     <>
       {/* Contenido */}
-      <div className="relative z-10 flex flex-1 items-center px-4 sm:px-12 lg:px-20 py-10 min-h-0">
+      <div className="relative z-10 flex flex-1 items-center px-4 sm:px-8 md:px-12 lg:px-20 py-10 min-h-0">
         <div className="max-w-2xl">
 
           {/* Eyebrow + línea — aparecen primero */}
           <div
             className="flex items-center gap-3 mb-5"
-            style={fadeStyle(eyebrowVisible, 0)}
+            style={fadeStyle(eyebrowVisible, 0, reducedMotion)}
           >
-            <span className="text-teal-300 text-xs font-bold tracking-[0.25em] uppercase">
+            <span className="text-teal-300 text-xs font-bold tracking-[0.25em] uppercase" translate="no">
               Baja Wastewater Solutions
             </span>
             <span className="h-px w-12 bg-teal-400/60" />
@@ -57,13 +59,13 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
           {/* Divisor */}
           <div
             className="w-14 h-[3px] bg-teal-400 rounded-full mb-6"
-            style={fadeStyle(contentVisible, 0)}
+            style={fadeStyle(contentVisible, 0, reducedMotion)}
           />
 
           {/* Subtítulo */}
           <p
             className="text-white/75 text-base sm:text-lg leading-relaxed mb-8 max-w-lg"
-            style={fadeStyle(contentVisible, 200)}
+            style={fadeStyle(contentVisible, 200, reducedMotion)}
           >
             Diseñamos, implementamos y operamos sistemas de tratamiento con
             enfoque ambiental, eficiencia operativa y cumplimiento normativo.
@@ -72,11 +74,11 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
           {/* Autorizaciones */}
           <div
             className="flex items-center gap-x-4 flex-wrap gap-y-2 mb-9"
-            style={fadeStyle(contentVisible, 450)}
+            style={fadeStyle(contentVisible, 450, reducedMotion)}
           >
             {['SEMARNAT', 'CESPT', 'SEMAR', 'SCT'].map((org, i) => (
               <div key={org} className="flex items-center gap-x-3">
-                {i > 0 && <span className="w-px h-3.5 bg-white/20 flex-shrink-0" />}
+                {i > 0 && <span className="hidden sm:block w-px h-3.5 bg-white/20 flex-shrink-0" />}
                 <div className="flex items-center gap-1.5">
                   <svg className="w-3.5 h-3.5 text-teal-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
@@ -91,7 +93,7 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
           {/* CTAs */}
           <div
             className="flex flex-wrap gap-3"
-            style={fadeStyle(contentVisible, 700)}
+            style={fadeStyle(contentVisible, 700, reducedMotion)}
           >
             <Link
               href="#cotizacion"

@@ -131,7 +131,7 @@ export default function Footer() {
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-6 pt-3 border-t border-primary-800 flex flex-row items-center justify-between gap-3">
+        <div className="mt-6 pt-3 border-t border-primary-800 flex flex-col items-center gap-3 sm:flex-row sm:justify-between text-center sm:text-left">
           {/* Redes sociales */}
           <div className="flex gap-5">
             <a
@@ -172,7 +172,7 @@ export default function Footer() {
 
           {/* Copyright */}
           <p className="text-gray-500 text-sm">
-            Copyright © {year} {name} | Todos los derechos reservados | Hecho por Edgar Cabrera
+            Copyright © {year} <span translate="no">{name}</span> | Todos los derechos reservados | Hecho por Edgar Cabrera
           </p>
         </div>
 

@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
 import { siteContent } from "@/content/site";
 
 interface ContactFormProps {
@@ -275,7 +276,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           {errors.mensaje
             ? <p id="mensaje-error" role="alert" className="text-xs text-red-600">{errors.mensaje}</p>
             : <span />}
-          <p className="text-xs text-gray-400 ml-auto" aria-live="polite">
+          <p className="text-xs text-gray-400 ml-auto tabular-nums" aria-live="polite">
             {form.mensaje.length}/{LIMITS.mensaje}
           </p>
         </div>
@@ -283,7 +284,14 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
 
       {status === "error" && (
         <p role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
-          Error al enviar. Por favor intenta de nuevo.
+          Error al enviar. Intenta de nuevo o llámanos al{" "}
+          <a
+            href={`tel:${siteContent.contacto.info.telefono.replace(/\D/g, "")}`}
+            className="font-semibold underline hover:text-red-800"
+          >
+            {siteContent.contacto.info.telefono}
+          </a>
+          .
         </p>
       )}
 

@@ -82,7 +82,7 @@ export default async function AutorizacionesPage() {
         </AnimateOnScroll>
 
         {/* Tabla — aparece al hacer scroll, se oculta al subir */}
-        <AnimateOnScroll direction="up" once={false}>
+        <AnimateOnScroll direction="up">
           {rows.length === 0 ? (
             <div className="text-center py-12">
               <p className="text-gray-500 text-base">No hay autorizaciones registradas actualmente.</p>

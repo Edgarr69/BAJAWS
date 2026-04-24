@@ -60,7 +60,7 @@ export default function NosotrosPage() {
           </div>
 
           {/* Separador — aparece al hacer scroll, se oculta al subir */}
-          <AnimateOnScroll direction="fade" once={false} className="flex items-center gap-4 mb-8">
+          <AnimateOnScroll direction="fade" className="flex items-center gap-4 mb-8">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="text-xs font-semibold text-primary-600 uppercase tracking-widest bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full">
               Desde 2009
@@ -70,7 +70,7 @@ export default function NosotrosPage() {
 
           {/* Misión + Visión — animación al hacer scroll, se oculta al subir */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <AnimateOnScroll direction="left" delay={50} once={false}>
+            <AnimateOnScroll direction="left" delay={50}>
               <div className="bg-primary-50 border border-primary-100 rounded-2xl p-7">
                 <div className="w-10 h-10 bg-primary-200 rounded-lg flex items-center justify-center mb-4">
                   <svg className="w-5 h-5 text-primary-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ export default function NosotrosPage() {
               </div>
             </AnimateOnScroll>
 
-            <AnimateOnScroll direction="right" delay={150} once={false}>
+            <AnimateOnScroll direction="right" delay={150}>
               <div className="bg-slate-50 border border-slate-200 rounded-2xl p-7">
                 <div className="w-10 h-10 bg-slate-200 rounded-lg flex items-center justify-center mb-4">
                   <svg className="w-5 h-5 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@ export default function NosotrosPage() {
           </div>
 
           {/* Flota — galería */}
-          <AnimateOnScroll direction="fade" once={false} className="mt-12">
+          <AnimateOnScroll direction="fade" className="mt-12">
             <div className="flex items-center gap-4 mb-7">
               <div className="flex-1 h-px bg-gray-200" />
               <span className="text-xs font-semibold text-primary-600 uppercase tracking-widest bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full">

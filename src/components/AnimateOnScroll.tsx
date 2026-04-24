@@ -7,7 +7,7 @@ interface Props {
   className?: string;
   delay?: number; // ms
   direction?: "up" | "fade" | "left" | "right";
-  once?: boolean; // false = se revierte al salir del viewport
+  once?: boolean; // true = queda visible tras la primera entrada
 }
 
 /**
@@ -22,23 +22,23 @@ export default function AnimateOnScroll({
   className = "",
   delay = 0,
   direction = "up",
-  once = true,
+  once = false,
 }: Props) {
   const { ref, inView } = useInView(0, once);
 
   const hiddenMap: Record<string, string> = {
-    up:    "opacity-0 translate-y-4",
-    fade:  "opacity-0",
-    left:  "opacity-0 -translate-x-4",
-    right: "opacity-0 translate-x-4",
+    up:    "motion-safe:opacity-0 motion-safe:translate-y-4",
+    fade:  "motion-safe:opacity-0",
+    left:  "motion-safe:opacity-0 motion-safe:-translate-x-4",
+    right: "motion-safe:opacity-0 motion-safe:translate-x-4",
   };
 
-  const hidden = hiddenMap[direction] ?? "opacity-0";
+  const hidden = hiddenMap[direction] ?? "motion-safe:opacity-0";
 
   return (
     <div
       ref={ref}
-      className={`transition-[transform,opacity] duration-500 ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : `${hidden} will-change-transform`} ${className}`}
+      className={`motion-safe:transition-[transform,opacity] motion-safe:duration-500 motion-safe:ease-out ${inView ? "opacity-100 translate-y-0 translate-x-0" : `${hidden} motion-safe:will-change-transform`} ${className}`}
       style={{ transitionDelay: `${delay}ms` }}
       onTransitionEnd={(e) => {
         if (e.propertyName === "opacity") {

@@ -173,7 +173,7 @@ export default async function HomePage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
             {agencias.map((a, i) => (
               <AnimateOnScroll key={a.dependencia} delay={i * 100}>
-                <div className="bg-white/8 border border-white/15 rounded-2xl p-5 hover:bg-white/15 hover:border-secondary-400/30 transition-all duration-300 h-full">
+                <div className="bg-white/8 border border-white/15 rounded-2xl p-5 hover:bg-white/15 hover:border-secondary-400/30 transition-[background-color,border-color] duration-300 h-full">
                   <p className="text-secondary-300 font-bold text-xl mb-2">{a.dependencia}</p>
                   <p className="text-slate-300 text-xs leading-relaxed">{a.descripcion}</p>
                 </div>

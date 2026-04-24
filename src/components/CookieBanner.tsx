@@ -93,14 +93,14 @@ export default function CookieBanner() {
           <button
             onClick={reject}
             disabled={processing}
-            className="text-sm font-medium border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50"
+            className="text-sm font-medium border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
           >
             Rechazar
           </button>
           <button
             onClick={accept}
             disabled={processing}
-            className="text-sm font-semibold bg-primary-700 hover:bg-primary-800 text-white px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50"
+            className="text-sm font-semibold bg-primary-700 hover:bg-primary-800 text-white px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-2"
           >
             Aceptar
           </button>
@@ -115,6 +115,10 @@ export default function CookieBanner() {
         @keyframes cookie-out {
           from { opacity: 1; transform: translateY(0); }
           to   { opacity: 0; transform: translateY(100%); }
+        }
+        @media (prefers-reduced-motion: reduce) {
+          @keyframes cookie-in  { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes cookie-out { from { opacity: 1; } to { opacity: 0; } }
         }
       `}</style>
     </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 // Intercaladas portrait/landscape para balance visual en columnas masonry
 const IMAGES = [
@@ -33,7 +34,10 @@ export default function FlotaGallery() {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [visible, setVisible]       = useState(false);
   const [mounted, setMounted]       = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
+  const ref         = useRef<HTMLDivElement>(null);
+  const lightboxRef = useRef<HTMLDivElement>(null);
+  const openerRef   = useRef<HTMLButtonElement | null>(null);
+  const reduced     = useReducedMotion();
 
   useEffect(() => setMounted(true), []);
 
@@ -48,12 +52,12 @@ export default function FlotaGallery() {
     return () => observer.disconnect();
   }, []);
 
-  // Cierre con animación de salida
   const close = useCallback(() => {
     setIsClosing(true);
     setTimeout(() => {
       setSelected(null);
       setIsClosing(false);
+      openerRef.current?.focus();
     }, 220);
   }, []);
 
@@ -85,6 +89,29 @@ export default function FlotaGallery() {
     return () => { document.body.style.overflow = ""; };
   }, [selected]);
 
+  // Focus trap + focus management for lightbox
+  useEffect(() => {
+    if (selected === null) return;
+    const container = lightboxRef.current;
+    if (!container) return;
+    const focusable = Array.from(
+      container.querySelectorAll<HTMLElement>('button:not([disabled])')
+    );
+    // Focus the close button (second button: prev, close, next)
+    focusable[1]?.focus();
+    const trap = (e: KeyboardEvent) => {
+      if (e.key !== 'Tab') return;
+      const idx = focusable.indexOf(document.activeElement as HTMLElement);
+      if (e.shiftKey) {
+        if (idx <= 0) { e.preventDefault(); focusable[focusable.length - 1]?.focus(); }
+      } else {
+        if (idx >= focusable.length - 1) { e.preventDefault(); focusable[0]?.focus(); }
+      }
+    };
+    container.addEventListener('keydown', trap);
+    return () => container.removeEventListener('keydown', trap);
+  }, [selected]);
+
   return (
     <>
       {/* ── Masonry — CSS columns, cada foto a su proporción natural ── */}
@@ -98,20 +125,18 @@ export default function FlotaGallery() {
           return (
             <button
               key={i}
-              className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left"
-              style={{
+              className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              style={reduced ? {
+                boxShadow: isHovered ? "0 10px 28px rgba(11,60,93,0.13)" : "0 1px 3px rgba(0,0,0,0.07)",
+              } : {
                 opacity:   visible ? 1 : 0,
-                transform: visible
-                  ? isHovered ? "translateY(-3px)" : "translateY(0)"
-                  : "translateY(18px)",
-                boxShadow: isHovered
-                  ? "0 10px 28px rgba(11,60,93,0.13)"
-                  : "0 1px 3px rgba(0,0,0,0.07)",
+                transform: visible ? (isHovered ? "translateY(-3px)" : "translateY(0)") : "translateY(18px)",
+                boxShadow: isHovered ? "0 10px 28px rgba(11,60,93,0.13)" : "0 1px 3px rgba(0,0,0,0.07)",
                 transition: `opacity 0.55s ease ${i * 60}ms, transform 0.3s ease, box-shadow 0.3s ease`,
               }}
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
-              onClick={() => setSelected(i)}
+              onClick={(e) => { openerRef.current = e.currentTarget; setSelected(i); }}
               aria-label={`Ver foto ${i + 1} de la flota`}
             >
               <Image
@@ -119,7 +144,7 @@ export default function FlotaGallery() {
                 alt={img.alt}
                 width={img.width}
                 height={img.height}
-                className="w-full h-auto block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                className="w-full h-auto block motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
                 sizes="(max-width: 768px) 50vw, 33vw"
                 priority={i < 3}
               />
@@ -141,9 +166,12 @@ export default function FlotaGallery() {
       {/* ── Lightbox — portal al body (evita bug de transform/fixed) ── */}
       {mounted && selected !== null && createPortal(
         <>
-          {/* Backdrop con blur — difumina todo lo visible detrás */}
-          <div
-            className="fixed inset-0 z-40"
+          {/* Backdrop */}
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-hidden="true"
+            className="fixed inset-0 z-40 cursor-default focus:outline-none"
             style={{
               background: "rgba(8, 18, 35, 0.5)",
               backdropFilter: "blur(12px)",
@@ -157,12 +185,16 @@ export default function FlotaGallery() {
 
           {/* Ventana: centrada en el área BAJO el header (top: 4rem) */}
           <div
+            ref={lightboxRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Foto ${(selected ?? 0) + 1} de ${images.length} de la flota`}
             className="fixed left-0 right-0 bottom-0 z-50 flex items-center justify-center gap-4 p-4 pointer-events-none"
             style={{ top: "var(--header-height, 4rem)" }}
           >
             {/* Flecha izquierda — fuera del modal */}
             <button
-              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto"
+              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               onClick={(e) => { e.stopPropagation(); prev(); }}
               aria-label="Ver foto anterior de la flota"
             >
@@ -172,7 +204,7 @@ export default function FlotaGallery() {
             </button>
 
             <div
-              className="bg-white rounded-2xl overflow-hidden pointer-events-auto flex flex-col border border-gray-200"
+              className="bg-white rounded-2xl overflow-hidden overscroll-contain pointer-events-auto flex flex-col border border-gray-200"
               style={{
                 maxWidth: "min(900px, 92vw)",
                 maxHeight: "85vh",
@@ -189,9 +221,9 @@ export default function FlotaGallery() {
                   {selected + 1} / {images.length}
                 </span>
                 <button
-                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150"
+                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   onClick={(e) => { e.stopPropagation(); close(); }}
-                  aria-label="Cerrar"
+                  aria-label="Cerrar galería"
                 >
                   <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -227,7 +259,7 @@ export default function FlotaGallery() {
 
             {/* Flecha derecha — fuera del modal */}
             <button
-              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto"
+              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               onClick={(e) => { e.stopPropagation(); next(); }}
               aria-label="Ver foto siguiente de la flota"
             >
@@ -244,6 +276,12 @@ export default function FlotaGallery() {
             @keyframes lb-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.93) translateY(8px); } }
             @keyframes lb-img-next { from { opacity: 0; transform: scale(0.96) translateX(16px); } to { opacity: 1; transform: scale(1) translateX(0); } }
             @keyframes lb-img-prev { from { opacity: 0; transform: scale(0.96) translateX(-16px); } to { opacity: 1; transform: scale(1) translateX(0); } }
+            @media (prefers-reduced-motion: reduce) {
+              @keyframes lb-in       { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes lb-out      { from { opacity: 1; } to { opacity: 0; } }
+              @keyframes lb-img-next { from { opacity: 0; } to { opacity: 1; } }
+              @keyframes lb-img-prev { from { opacity: 0; } to { opacity: 1; } }
+            }
           `}</style>
         </>,
         document.body

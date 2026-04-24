@@ -115,7 +115,7 @@ export default function Header() {
           scrolled ? "shadow-md" : "shadow-sm"
         }`}
       >
-        <div className="px-8 sm:px-12 lg:px-16">
+        <div className="px-4 sm:px-8 lg:px-12">
           <div className="flex items-center justify-between h-16">
 
             {/* Logo */}
@@ -151,9 +151,8 @@ export default function Header() {
                         ref={dropTriggerRef}
                         aria-haspopup="true"
                         aria-expanded={dropOpen}
-                        onFocus={() => setDropOpen(true)}
                         onKeyDown={handleDropTriggerKeyDown}
-                        className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                        className={`flex items-center gap-1 px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${
                           active
                             ? "text-white font-semibold bg-white/15"
                             : "text-white/75 hover:text-white hover:bg-white/10"
@@ -201,7 +200,7 @@ export default function Header() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 ${
+                    className={`px-3 py-1.5 text-sm font-medium rounded-md transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 ${
                       active
                         ? "text-white font-semibold bg-white/15"
                         : "text-white/75 hover:text-white hover:bg-white/10"
@@ -213,7 +212,7 @@ export default function Header() {
               })}
               <Link
                 href="/#cotizacion"
-                className="ml-4 bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2 rounded-full transition-all duration-150 shadow-sm hover:shadow-md"
+                className="ml-4 bg-emerald-700 hover:bg-emerald-600 text-white text-sm font-semibold px-5 py-2 rounded-full transition-all duration-150 shadow-sm hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-primary-900"
               >
                 Solicitar cotización
               </Link>
@@ -222,14 +221,14 @@ export default function Header() {
             <Link
               href="/login"
               aria-label="Acceso interno"
-              className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-white/25 hover:text-white/60 transition-colors duration-200"
+              className="hidden md:flex absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-white/25 hover:text-white/60 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
             >
               <LogIn className="w-4 h-4" />
             </Link>
 
             {/* Hamburger — móvil */}
             <button
-              className="md:hidden p-2 rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+              className="md:hidden p-2.5 rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
               onClick={() => setIsOpen(true)}
               aria-label="Abrir menú"
               aria-expanded={isOpen}
@@ -243,12 +242,14 @@ export default function Header() {
       </header>
 
       {/* Backdrop */}
-      <div
-        className={`fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300 ${
+      <button
+        type="button"
+        tabIndex={-1}
+        aria-hidden="true"
+        className={`fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm md:hidden transition-opacity duration-300 cursor-default focus:outline-none ${
           isOpen ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsOpen(false)}
-        aria-hidden="true"
       />
 
       {/* Panel */}
@@ -292,7 +293,7 @@ export default function Header() {
         </div>
 
         {/* Links del panel */}
-        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-0.5">
+        <nav className="flex-1 overflow-y-auto overscroll-contain px-3 py-4 space-y-0.5">
           {links.map((link) => {
             const active = pathname === link.href || pathname.startsWith(link.href + '/');
             if (link.href === '/servicios') {
@@ -351,7 +352,7 @@ export default function Header() {
           <Link
             href="/#cotizacion"
             onClick={() => setIsOpen(false)}
-            className="block w-full text-center px-4 py-3 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-600 rounded-full transition-colors"
+            className="block w-full text-center px-4 py-3 text-sm font-semibold text-white bg-emerald-700 hover:bg-emerald-600 rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
           >
             Solicitar cotización
           </Link>

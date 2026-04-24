@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
+import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 const faqs = [
   {
@@ -37,22 +38,27 @@ const faqs = [
 ];
 
 function FaqItem({
+  id,
   pregunta,
   respuesta,
   isOpen,
   onToggle,
 }: {
+  id: string;
   pregunta: string;
   respuesta: string;
   isOpen: boolean;
   onToggle: () => void;
 }) {
+  const reduced = useReducedMotion();
+
   return (
     <div className="border-b border-gray-200 last:border-0">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 py-5 text-left group"
+        className="w-full flex items-center justify-between gap-4 py-5 text-left group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 rounded-sm"
         aria-expanded={isOpen}
+        aria-controls={id}
       >
         <span className="text-sm sm:text-base font-semibold text-gray-900 group-hover:text-primary-700 transition-colors duration-150 leading-snug">
           {pregunta}
@@ -61,7 +67,7 @@ function FaqItem({
           className="flex-shrink-0 w-5 h-5 text-primary-600"
           style={{
             transform: isOpen ? "rotate(90deg)" : "rotate(0deg)",
-            transition: "transform 0.35s cubic-bezier(0.34,1.08,0.64,1)",
+            transition: reduced ? "none" : "transform 0.35s cubic-bezier(0.34,1.08,0.64,1)",
           }}
           fill="none"
           stroke="currentColor"
@@ -71,10 +77,11 @@ function FaqItem({
         </svg>
       </button>
       <div
+        id={id}
         className="grid"
         style={{
           gridTemplateRows: isOpen ? "1fr" : "0fr",
-          transition: isOpen
+          transition: reduced ? "none" : isOpen
             ? "grid-template-rows 0.45s cubic-bezier(0.34,1.08,0.64,1)"
             : "grid-template-rows 0.3s ease",
         }}
@@ -112,6 +119,7 @@ export default function FaqSection() {
             {faqs.map((faq, i) => (
               <FaqItem
                 key={i}
+                id={`faq-answer-${i}`}
                 pregunta={faq.pregunta}
                 respuesta={faq.respuesta}
                 isOpen={openIndex === i}

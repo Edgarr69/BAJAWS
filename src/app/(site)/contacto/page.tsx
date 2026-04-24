@@ -145,7 +145,7 @@ export default function ContactoPage() {
           </div>
 
           {/* Google Maps — aparece al hacer scroll, se oculta al subir */}
-          <AnimateOnScroll direction="up" once={false} className="mt-8">
+          <AnimateOnScroll direction="up" className="mt-8">
             <h2 className="text-base font-bold text-gray-900 mb-3">Cómo llegarnos</h2>
             <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200 w-full h-72 sm:h-80">
               <iframe

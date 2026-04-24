@@ -29,7 +29,7 @@ export default function YoutubeEmbed({ videoId, title }: Props) {
   return (
     <button
       onClick={() => setActive(true)}
-      className="relative w-full h-full group focus:outline-none"
+      className="relative w-full h-full group focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/70 focus-visible:ring-inset"
       aria-label={`Reproducir: ${title}`}
     >
       {/* Thumbnail */}
