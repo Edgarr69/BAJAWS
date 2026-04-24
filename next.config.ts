@@ -41,6 +41,10 @@ const securityHeaders = [
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=()" },
   // HTTPS obligatorio por 2 años (solo en producción con HTTPS real)
   { key: "Strict-Transport-Security", value: "max-age=63072000; includeSubDomains; preload" },
+  // Aísla el contexto del navegador — previene ataques de timing cross-origin (Spectre)
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  // Bloquea que Adobe Flash/Reader accedan a datos del dominio (legacy)
+  { key: "X-Permitted-Cross-Domain-Policies", value: "none" },
   // Política de contenido — la más importante
   { key: "Content-Security-Policy", value: CSP },
 ];
@@ -53,6 +57,22 @@ const nextConfig: NextConfig = {
   },
   async headers() {
     return [
+      // API routes — CORS + sin caché + solo cargables desde el mismo origen
+      {
+        source: "/api/:path*",
+        headers: [
+          // CORS: solo el origen de producción puede llamar desde otro dominio
+          { key: "Access-Control-Allow-Origin",      value: "https://bajaws.mx" },
+          { key: "Access-Control-Allow-Methods",     value: "GET, POST, PUT, DELETE, OPTIONS" },
+          { key: "Access-Control-Allow-Headers",     value: "Content-Type, Authorization" },
+          { key: "Access-Control-Allow-Credentials", value: "true" },
+          // Impide que proxies o el navegador cacheen respuestas con datos sensibles
+          { key: "Cache-Control",                    value: "no-store, max-age=0" },
+          // Bloquea que otros sitios carguen este endpoint directamente (fetch desde otra web)
+          { key: "Cross-Origin-Resource-Policy",     value: "same-origin" },
+        ],
+      },
+      // Seguridad HTTP — aplica a todas las rutas
       {
         source: "/(.*)",
         headers: securityHeaders,
