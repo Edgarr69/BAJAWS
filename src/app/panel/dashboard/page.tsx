@@ -13,11 +13,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton';
 import { KpiCard } from '@/components/panel/KpiCard';
 import { getMetrics, getLinkStats } from '@/lib/api';
+import { createClient } from '@/lib/supabase/client';
 import type { AggregateMetric } from '@/types/panel';
 import { NumberTicker } from '@/components/ui/number-ticker';
 
-const today    = new Date().toISOString().slice(0, 10);
-const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+const today     = new Date().toISOString().slice(0, 10);
+const yearStart = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
+
+const KEYS = { from: 'dash_dateFrom', to: 'dash_dateTo', group: 'dash_groupBy' } as const;
+
+function savedDate(key: string): string | null {
+  try {
+    const v = localStorage.getItem(key);
+    return v && /^\d{4}-\d{2}-\d{2}$/.test(v) && v <= today ? v : null;
+  } catch { return null; }
+}
 
 // ── KPI animado ───────────────────────────────────────────────────────────────
 
@@ -55,17 +65,19 @@ export default function DashboardPage() {
   const [topicData, setTopicData] = useState<AggregateMetric[]>([]);
   const [trendData, setTrendData] = useState<AggregateMetric[]>([]);
   const [linkStats, setLinkStats] = useState({ total: 0, used: 0, pct: 0 });
-  const [dateFrom, setDateFrom]   = useState(monthAgo);
-  const [dateTo, setDateTo]       = useState(today);
-  const [groupBy, setGroupBy]     = useState<'day' | 'week'>('day');
+  const [dateFrom, setDateFrom]   = useState(() => savedDate(KEYS.from) ?? yearStart);
+  const [dateTo, setDateTo]       = useState(() => savedDate(KEYS.to)   ?? today);
+  const [groupBy, setGroupBy]     = useState<'day' | 'week'>(() => {
+    try { return localStorage.getItem(KEYS.group) === 'week' ? 'week' : 'day'; } catch { return 'day'; }
+  });
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (from: string, to: string, group: 'day' | 'week') => {
     setLoading(true);
     try {
       const [topicRes, trendRes, stats] = await Promise.all([
-        getMetrics({ date_from: dateFrom, date_to: dateTo, group_by: 'topic' }),
-        getMetrics({ date_from: dateFrom, date_to: dateTo, group_by: groupBy }),
-        getLinkStats({ date_from: dateFrom, date_to: dateTo }),
+        getMetrics({ date_from: from, date_to: to, group_by: 'topic' }),
+        getMetrics({ date_from: from, date_to: to, group_by: group }),
+        getLinkStats({ date_from: from, date_to: to }),
       ]);
       setTopicData(topicRes.data ?? []);
       setTrendData(trendRes.data ?? []);
@@ -75,9 +87,29 @@ export default function DashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [dateFrom, dateTo, groupBy]);
+  }, []);
 
-  useEffect(() => { load(); }, [load]);
+  useEffect(() => { load(dateFrom, dateTo, groupBy); }, [load]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  // Persistencia de filtros en localStorage
+  useEffect(() => { try { localStorage.setItem(KEYS.from,  dateFrom); } catch {} }, [dateFrom]);
+  useEffect(() => { try { localStorage.setItem(KEYS.to,    dateTo);   } catch {} }, [dateTo]);
+  useEffect(() => { try { localStorage.setItem(KEYS.group, groupBy);  } catch {} }, [groupBy]);
+
+  // Limpiar al cerrar sesión
+  useEffect(() => {
+    const supabase = createClient();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
+      if (event === 'SIGNED_OUT') {
+        try {
+          localStorage.removeItem(KEYS.from);
+          localStorage.removeItem(KEYS.to);
+          localStorage.removeItem(KEYS.group);
+        } catch {}
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, []);
 
   const totalResponses = topicData.reduce((s, d) => s + (d.total_responses ?? 0), 0);
   const globalAvg = topicData.length
@@ -120,16 +152,16 @@ export default function DashboardPage() {
           <input
             type="date" value={dateFrom} max={dateTo || today}
             onChange={e => setDateFrom(e.target.value)}
-            className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="text-base md:text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
           <span className="text-slate-400 text-sm">—</span>
           <input
             type="date" value={dateTo} min={dateFrom} max={today}
             onChange={e => setDateTo(e.target.value)}
-            className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
+            className="text-base md:text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
           <Select value={groupBy} onValueChange={v => setGroupBy(v as 'day' | 'week')}>
-            <SelectTrigger className="w-28 h-9 text-sm">
+            <SelectTrigger className="w-28 h-9 text-base md:text-sm">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -137,11 +169,12 @@ export default function DashboardPage() {
               <SelectItem value="week">Por semana</SelectItem>
             </SelectContent>
           </Select>
-          <Button size="sm" onClick={load} className="bg-primary-700 hover:bg-primary-600">
+          <Button size="sm" onClick={() => load(dateFrom, dateTo, groupBy)} className="bg-primary-700 hover:bg-primary-600">
             Aplicar
           </Button>
           <Button size="sm" variant="outline" onClick={() => {
-            setDateFrom(monthAgo); setDateTo(today); setGroupBy('day');
+            setDateFrom(yearStart); setDateTo(today); setGroupBy('day');
+            load(yearStart, today, 'day');
           }}>
             Reset
           </Button>
