@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import ContactForm from "@/components/ContactForm";
-import AnimateOnMount from "@/components/AnimateOnMount";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { siteContent } from "@/content/site";
 
@@ -73,11 +72,11 @@ export default function ContactoPage() {
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnMount direction="fade">
+          <AnimateOnScroll direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Habla con nosotros</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
             <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnMount>
+          </AnimateOnScroll>
         </div>
       </div>
 
@@ -85,17 +84,17 @@ export default function ContactoPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Intro */}
-          <AnimateOnMount direction="up" delay={50}>
+          <AnimateOnScroll direction="up" delay={50}>
             <p className="text-center text-gray-600 text-sm max-w-2xl mx-auto mb-5 leading-relaxed">
               {intro}
             </p>
-          </AnimateOnMount>
+          </AnimateOnScroll>
 
           {/* Grid principal */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
 
             {/* Columna izquierda — imagen + info */}
-            <AnimateOnMount direction="left" delay={100}>
+            <AnimateOnScroll direction="left" delay={100}>
               <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 mb-4">
                 <Image
                   src="/images/contacto.jpeg"
@@ -103,6 +102,7 @@ export default function ContactoPage() {
                   width={700}
                   height={400}
                   className="w-full h-36 sm:h-48 md:h-60 object-cover"
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   priority
                 />
               </div>
@@ -133,18 +133,18 @@ export default function ContactoPage() {
                   </li>
                 ))}
               </ul>
-            </AnimateOnMount>
+            </AnimateOnScroll>
 
             {/* Columna derecha — formulario */}
-            <AnimateOnMount direction="right" delay={200}>
+            <AnimateOnScroll direction="right" delay={200}>
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5">
                 <h2 className="text-base font-bold text-gray-900 mb-3">Envíanos un mensaje</h2>
                 <ContactForm />
               </div>
-            </AnimateOnMount>
+            </AnimateOnScroll>
           </div>
 
-          {/* Google Maps — aparece al hacer scroll, se oculta al subir */}
+          {/* Google Maps */}
           <AnimateOnScroll direction="up" className="mt-8">
             <h2 className="text-base font-bold text-gray-900 mb-3">Cómo llegarnos</h2>
             <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200 w-full h-72 sm:h-80">

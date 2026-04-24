@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Section from "@/components/Section";
 import AuthorizationsTable from "@/components/AuthorizationsTable";
-import AnimateOnMount from "@/components/AnimateOnMount";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { siteContent } from "@/content/site";
 import { getAdminClient } from "@/lib/supabase/admin";
@@ -33,25 +32,25 @@ export default async function AutorizacionesPage() {
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnMount direction="fade">
+          <AnimateOnScroll direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Cumplimiento legal</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
             <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnMount>
+          </AnimateOnScroll>
         </div>
       </div>
 
       <Section>
-        {/* Intro — texto + foto, visibles sin scroll */}
+        {/* Intro — texto + foto */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-center mb-10">
 
-          <AnimateOnMount direction="left" delay={100} className="lg:col-span-3">
+          <AnimateOnScroll direction="left" delay={100} className="lg:col-span-3">
             <p className="text-gray-600 text-base leading-relaxed text-justify">
               {intro}
             </p>
-          </AnimateOnMount>
+          </AnimateOnScroll>
 
-          <AnimateOnMount direction="right" delay={200} className="lg:col-span-2">
+          <AnimateOnScroll direction="right" delay={200} className="lg:col-span-2">
             <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100">
               <Image
                 src="/images/autorizaciones.jpg"
@@ -59,16 +58,17 @@ export default async function AutorizacionesPage() {
                 width={600}
                 height={600}
                 className="w-full h-56 lg:h-64 object-cover"
+                sizes="(max-width: 1024px) 100vw, 40vw"
                 priority
               />
             </div>
             <p className="text-xs text-gray-400 text-center mt-2">
               Autorizaciones físicas emitidas por CESPT, SEMAR y SEMARNAT
             </p>
-          </AnimateOnMount>
+          </AnimateOnScroll>
         </div>
 
-        {/* Stats — aparecen al hacer scroll */}
+        {/* Stats */}
         <AnimateOnScroll direction="fade" className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
           {stats.map((s) => (
             <div
@@ -81,7 +81,7 @@ export default async function AutorizacionesPage() {
           ))}
         </AnimateOnScroll>
 
-        {/* Tabla — aparece al hacer scroll, se oculta al subir */}
+        {/* Tabla */}
         <AnimateOnScroll direction="up">
           {rows.length === 0 ? (
             <div className="text-center py-12">

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import AnimateOnMount from "@/components/AnimateOnMount";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import FlotaGallery from "@/components/FlotaGallery";
 import { siteContent } from "@/content/site";
@@ -20,29 +19,29 @@ export default function NosotrosPage() {
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnMount direction="fade">
+          <AnimateOnScroll direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Baja Wastewater Solution</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
             <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnMount>
+          </AnimateOnScroll>
         </div>
       </div>
 
       <section className="py-6 sm:py-8">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
-          {/* Historia — texto + imagen, visibles sin scroll */}
+          {/* Historia — texto + imagen */}
           <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-start mb-8">
 
-            <AnimateOnMount direction="left" delay={100} className="lg:col-span-3 space-y-4">
+            <AnimateOnScroll direction="left" delay={100} className="lg:col-span-3 space-y-4">
               {paragraphs.map((p, i) => (
                 <p key={i} className="text-gray-700 leading-relaxed text-base text-justify">
                   {p}
                 </p>
               ))}
-            </AnimateOnMount>
+            </AnimateOnScroll>
 
-            <AnimateOnMount direction="right" delay={200} className="lg:col-span-2">
+            <AnimateOnScroll direction="right" delay={200} className="lg:col-span-2">
               <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100">
                 <Image
                   src="/images/nosotros.png"
@@ -50,16 +49,17 @@ export default function NosotrosPage() {
                   width={600}
                   height={600}
                   className="w-full h-56 md:h-64 lg:h-72 object-cover"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
                   priority
                 />
               </div>
               <p className="text-xs text-gray-400 text-center mt-2">
                 Monitoreo de calidad del agua en nuestras instalaciones
               </p>
-            </AnimateOnMount>
+            </AnimateOnScroll>
           </div>
 
-          {/* Separador — aparece al hacer scroll, se oculta al subir */}
+          {/* Separador */}
           <AnimateOnScroll direction="fade" className="flex items-center gap-4 mb-8">
             <div className="flex-1 h-px bg-gray-200" />
             <span className="text-xs font-semibold text-primary-600 uppercase tracking-widest bg-primary-50 border border-primary-100 px-3 py-1.5 rounded-full">
@@ -68,7 +68,7 @@ export default function NosotrosPage() {
             <div className="flex-1 h-px bg-gray-200" />
           </AnimateOnScroll>
 
-          {/* Misión + Visión — animación al hacer scroll, se oculta al subir */}
+          {/* Misión + Visión */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <AnimateOnScroll direction="left" delay={50}>
               <div className="bg-primary-50 border border-primary-100 rounded-2xl p-7">
@@ -96,7 +96,7 @@ export default function NosotrosPage() {
             </AnimateOnScroll>
           </div>
 
-          {/* Flota — galería */}
+          {/* Flota */}
           <AnimateOnScroll direction="fade" className="mt-12">
             <div className="flex items-center gap-4 mb-7">
               <div className="flex-1 h-px bg-gray-200" />

@@ -4,10 +4,20 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Dispara `inView` cuando el elemento entra/sale del viewport.
- * - once=true (default): se queda visible tras la primera entrada.
- * - once=false: sigue el estado real de intersección (reversible).
+ * - once=false (default): bidireccional — oculta al subir, muestra al bajar.
+ * - once=true: se queda visible tras la primera entrada.
+ *
+ * rootMargin:
+ *   top  -40px → el elemento empieza a ocultarse mientras los últimos 40px
+ *                aún son visibles (el usuario ve la animación de salida).
+ *   bottom -30px → el elemento empieza a aparecer cuando 30px ya entraron
+ *                  al viewport (sin zona muerta visible al fondo).
  */
-export function useInView(threshold = 0, once = true) {
+export function useInView(
+  threshold = 0,
+  once = false,
+  rootMargin = "-40px 0px -200px 0px",
+) {
   const ref = useRef<HTMLDivElement>(null);
   const [inView, setInView] = useState(false);
 
@@ -28,7 +38,7 @@ export function useInView(threshold = 0, once = true) {
       },
       {
         threshold,
-        rootMargin: "-30px 0px -80px 0px",
+        rootMargin,
       }
     );
 
@@ -38,3 +48,6 @@ export function useInView(threshold = 0, once = true) {
 
   return { ref, inView };
 }
+
+/** rootMargin para páginas sin scroll (overflow-hidden): zona de detección más permisiva */
+export const ROOT_MARGIN_FIXED = "-40px 0px -50px 0px";

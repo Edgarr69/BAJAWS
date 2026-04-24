@@ -4,7 +4,7 @@ import {
   ShieldCheck, RefreshCcw, Award,
 } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import AnimateOnMount from "@/components/AnimateOnMount";
+import { ROOT_MARGIN_FIXED } from "@/hooks/useInView";
 import Section from "@/components/Section";
 
 export const metadata: Metadata = {
@@ -93,7 +93,7 @@ const colorMap: Record<StepColor, { icon: string; num: string; dot: string; line
 function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }) {
   const c = colorMap[step.color];
   return (
-    <AnimateOnScroll delay={delay} direction="up" once={false}>
+    <AnimateOnScroll delay={delay} direction="up" once={false} rootMargin={ROOT_MARGIN_FIXED}>
       <div
         className="group relative bg-white rounded-2xl border-t-4 shadow-sm hover:-translate-y-1.5 hover:shadow-[0_10px_28px_rgba(0,0,0,0.09)] transition-[transform,box-shadow] duration-[250ms] ease-out p-3 sm:p-5 h-full flex flex-col gap-2 sm:gap-3 overflow-hidden"
         style={{ borderTopColor: step.color === 'emerald' ? '#059669' : '#0B3C5D' }}
@@ -119,11 +119,11 @@ export default function ServiciosIntegralesPage() {
 
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnMount direction="fade">
+          <AnimateOnScroll direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Proceso de gestión</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">Servicios Integrales</h1>
             <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnMount>
+          </AnimateOnScroll>
         </div>
       </div>
 

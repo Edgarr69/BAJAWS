@@ -111,8 +111,8 @@ export default function Header() {
   return (
     <>
       <header
-        className={`fixed top-0 left-0 right-0 z-50 w-full bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-shadow duration-300 ${
-          scrolled ? "shadow-md" : "shadow-sm"
+        className={`fixed top-0 left-0 right-0 z-50 w-full will-change-transform bg-gradient-to-br from-primary-900 via-primary-800 to-slate-900 transition-[box-shadow,border-color] duration-300 border-b ${
+          scrolled ? "border-white/10 md:border-transparent md:shadow-md" : "border-transparent md:shadow-sm"
         }`}
       >
         <div className="px-4 sm:px-8 lg:px-12">
