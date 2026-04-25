@@ -91,7 +91,7 @@ export default function ContactoPage() {
           </AnimateOnScroll>
 
           {/* Grid principal */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-10 items-start">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-start">
 
             {/* Columna izquierda — imagen + info */}
             <AnimateOnScroll direction="left" delay={100}>

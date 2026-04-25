@@ -42,7 +42,7 @@ export default async function AutorizacionesPage() {
 
       <Section>
         {/* Intro — texto + foto */}
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-center mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-10 items-center mb-10">
 
           <AnimateOnScroll direction="left" delay={100} className="lg:col-span-3">
             <p className="text-gray-600 text-base leading-relaxed text-justify">
@@ -57,7 +57,7 @@ export default async function AutorizacionesPage() {
                 alt="Autorizaciones oficiales de Baja Wastewater Solution"
                 width={600}
                 height={600}
-                className="w-full h-56 lg:h-64 object-cover"
+                className="w-full h-56 md:h-60 lg:h-64 object-cover"
                 sizes="(max-width: 1024px) 100vw, 40vw"
                 priority
               />

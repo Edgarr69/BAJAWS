@@ -31,7 +31,7 @@ export default function NosotrosPage() {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
 
           {/* Historia — texto + imagen */}
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-10 items-start mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-6 lg:gap-10 items-start mb-8">
 
             <AnimateOnScroll direction="left" delay={100} className="lg:col-span-3 space-y-4">
               {paragraphs.map((p, i) => (
