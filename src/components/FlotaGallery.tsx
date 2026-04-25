@@ -147,6 +147,7 @@ export default function FlotaGallery() {
                 className="w-full h-auto block motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
                 sizes="(max-width: 768px) 50vw, 33vw"
                 priority={i < 3}
+                loading={i >= 3 ? "eager" : undefined}
               />
 
               {/* Overlay hover */}
