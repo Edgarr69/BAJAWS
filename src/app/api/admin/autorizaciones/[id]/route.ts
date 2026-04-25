@@ -3,6 +3,7 @@
  * DELETE /api/admin/autorizaciones/[id] → eliminar
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
@@ -38,6 +39,7 @@ export async function PUT(
     .single();
 
   if (error) return serverError(error.message);
+  revalidatePath('/autorizaciones');
   return NextResponse.json(data);
 }
 
@@ -56,5 +58,6 @@ export async function DELETE(
     .eq('id', id);
 
   if (error) return serverError(error.message);
+  revalidatePath('/autorizaciones');
   return NextResponse.json({ ok: true });
 }

@@ -3,6 +3,7 @@
  * POST /api/admin/autorizaciones → crear nueva
  */
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
@@ -47,5 +48,6 @@ export async function POST(req: NextRequest) {
     .single();
 
   if (error) return serverError(error.message);
+  revalidatePath('/autorizaciones');
   return NextResponse.json(data, { status: 201 });
 }
