@@ -24,7 +24,7 @@ export default function Footer() {
               className="h-9 w-auto object-contain object-left"
             />
             <p className="text-gray-400 text-sm leading-relaxed max-w-xs">
-              Empresa tratadora de aguas industriales residuales con más de {getYearsExperience()} años de experiencia en Baja California.
+              Empresa tratadora de aguas industriales residuales con más de {getYearsExperience()} años de experiencia en todo México.
             </p>
             <Link
               href="/tratamiento-aguas-residuales"
