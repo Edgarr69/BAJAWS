@@ -36,7 +36,7 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
   return (
     <>
       {/* Contenido */}
-      <div className="relative z-10 flex flex-1 items-center px-4 sm:px-8 md:px-12 lg:px-20 py-10 min-h-0">
+      <div className="relative z-10 flex flex-1 items-center px-4 sm:px-8 md:px-12 lg:px-20 py-5 sm:py-10 min-h-0">
         <div className="max-w-2xl">
 
           {/* Eyebrow + línea — aparecen primero */}

@@ -24,10 +24,7 @@ export default function HeroStats({ yearsExperience, authorizationsCount, ready 
   }, [ready]);
 
   return (
-    <div
-      className="relative z-10 text-white"
-      style={{ paddingBottom: 'var(--cookie-banner-height, 0px)', transition: 'padding-bottom 0.35s ease' }}
-    >
+    <div className="relative z-10 text-white">
       <div className="grid grid-cols-3">
         {stats.map((s, i) => (
           <div key={s.label} className="py-4 sm:py-5 px-2 sm:px-6 lg:px-10 text-center">
