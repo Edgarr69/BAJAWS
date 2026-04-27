@@ -34,8 +34,7 @@ export default function HeroVideo() {
         aria-hidden="true"
         style={{ backfaceVisibility: "hidden" }}
       >
-        <source src="/videos/laboratorio.webm" type="video/webm" />
-        <source src="/videos/laboratorio.mp4" type="video/mp4" />
+        <source src="/videos/loop1.webm" type="video/webm" />
       </video>
     </>
   );
