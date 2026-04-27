@@ -54,7 +54,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ── Hero Split ───────────────────────────────────────────────────────── */}
-      <section className="relative overflow-hidden flex flex-col" style={{ height: 'calc(var(--dvh, 100svh) - var(--header-height, 4rem) - var(--cookie-banner-height, 0px))', transition: 'height 0.35s ease' }}>
+      <section className="relative overflow-hidden flex flex-col" style={{ height: 'calc(var(--dvh, 100svh) - var(--header-height, 4rem))' }}>
 
         <HeroVideo />
         {/* Overlay para legibilidad del texto */}

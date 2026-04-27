@@ -18,35 +18,11 @@ export default function CookieBanner() {
     }
   }, []);
 
-  // Bug #2 + #3: limpiar timer y CSS var en desmontaje
   useEffect(() => {
     return () => {
       if (dismissTimer.current) clearTimeout(dismissTimer.current);
-      document.documentElement.style.setProperty("--cookie-banner-height", "0px");
     };
   }, []);
-
-  useEffect(() => {
-    if (!visible) {
-      document.documentElement.style.setProperty("--cookie-banner-height", "0px");
-      return;
-    }
-    const update = () => {
-      const h = bannerRef.current?.offsetHeight ?? 64;
-      document.documentElement.style.setProperty("--cookie-banner-height", `${h}px`);
-    };
-    update();
-    let resizeTimer: ReturnType<typeof setTimeout>;
-    const handleResize = () => {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(update, 150);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => {
-      clearTimeout(resizeTimer);
-      window.removeEventListener("resize", handleResize);
-    };
-  }, [visible]);
 
   const dismiss = (value: "accepted" | "rejected") => {
     // Bug #5: evitar clicks múltiples
