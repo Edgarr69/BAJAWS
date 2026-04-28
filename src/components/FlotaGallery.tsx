@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
+import { useInView } from "@/hooks/useInView";
 
 // Intercaladas portrait/landscape para balance visual en columnas masonry
 const IMAGES = [
@@ -26,6 +27,7 @@ const IMAGES = [
 const images = IMAGES;
 
 export default function FlotaGallery() {
+  const { ref: gridRef, inView: gridInView } = useInView(0, true);
   const [selected, setSelected]     = useState<number | null>(null);
   const [isClosing, setIsClosing]   = useState(false);
   const [imgKey, setImgKey]         = useState(0);
@@ -105,7 +107,13 @@ export default function FlotaGallery() {
   return (
     <>
       {/* ── Masonry — CSS columns, cada foto a su proporción natural ── */}
-      <div className="columns-2 md:columns-3 gap-3">
+      {/* Sin opacity para que los browsers móviles siempre decodifiquen las imágenes.
+          Solo transform para la animación de entrada. */}
+      <div
+        ref={gridRef}
+        className="columns-2 md:columns-3 gap-3 motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out"
+        style={{ transform: gridInView ? "translateY(0)" : "translateY(28px)" }}
+      >
         {images.map((img, i) => {
           const isHovered = hoveredIdx === i;
 
