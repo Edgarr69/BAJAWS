@@ -14,6 +14,10 @@ export default function PanelLayout({ children }: { children: React.ReactNode })
   const [sideOpen, setSide]   = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // El middleware (src/middleware.ts) ya bloquea /panel/* server-side para
+  // usuarios no autenticados o con rol "pending". Este chequeo client-side se
+  // mantiene como defensa en profundidad y para hidratar el estado del usuario
+  // en el layout (Sidebar/Topbar consumen `user`).
   useEffect(() => {
     getMe()
       .then(data => {
