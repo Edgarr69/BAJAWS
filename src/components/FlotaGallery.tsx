@@ -3,20 +3,20 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { useInView } from "@/hooks/useInView";
 
-// Orden calculado para balance de columnas en 2-col (móvil) y 3-col (tablet/desktop).
-// Col 1 móvil (items 1-5): P+L+P+L+L = 4.91 | Col 2 (items 6-10): P+L+P+Sq+L = 5.09
+// Orden calculado para balance visual en 2-col (móvil) y 3-col (tablet/desktop).
+// Col 1 móvil (items 1-5): P+L+P+sL+P = 5.30 | Col 2 (items 6-11): L+P+L+Sq+L+L = 5.26
 const IMAGES = [
   { n: 1,  w: 1200, h: 1600 }, // portrait
-  { n: 9,  w: 1600, h: 1204 }, // landscape
-  { n: 2,  w: 960,  h: 1280 }, // portrait
   { n: 7,  w: 1296, h: 972  }, // landscape
-  { n: 14, w: 1600, h: 1204 }, // landscape
+  { n: 2,  w: 960,  h: 1280 }, // portrait
+  { n: 11, w: 1600, h: 900  }, // landscape corto
   { n: 3,  w: 1200, h: 1600 }, // portrait
   { n: 12, w: 1600, h: 1204 }, // landscape
   { n: 10, w: 960,  h: 1280 }, // portrait
+  { n: 9,  w: 1600, h: 1204 }, // landscape
   { n: 8,  w: 1600, h: 1600 }, // cuadrada
+  { n: 14, w: 1600, h: 1204 }, // landscape
   { n: 15, w: 1352, h: 918  }, // landscape
 ].map(({ n, w, h }) => ({
   src: `/galeria/${n}.webp`,
@@ -27,7 +27,6 @@ const IMAGES = [
 const images = IMAGES;
 
 export default function FlotaGallery() {
-  const { ref: gridRef, inView: gridInView } = useInView(0, true);
   const [selected, setSelected]     = useState<number | null>(null);
   const [isClosing, setIsClosing]   = useState(false);
   const [imgKey, setImgKey]         = useState(0);
@@ -38,11 +37,6 @@ export default function FlotaGallery() {
   const openerRef   = useRef<HTMLButtonElement | null>(null);
 
   useEffect(() => setMounted(true), []);
-  // Nota: la animación de entrada la maneja el <AnimateOnScroll direction="fade">
-  // que envuelve toda la galería en /nosotros. No se usa un IntersectionObserver
-  // por-item ni transition-delay escalonado porque, combinado con el reflow del
-  // masonry (CSS columns) cuando las imágenes terminan de decodificar, ciertos
-  // items en tablet/móvil quedan con opacity:0 (la transición se interrumpe).
 
   const close = useCallback(() => {
     setIsClosing(true);
@@ -107,13 +101,7 @@ export default function FlotaGallery() {
   return (
     <>
       {/* ── Masonry — CSS columns, cada foto a su proporción natural ── */}
-      {/* Sin opacity para que los browsers móviles siempre decodifiquen las imágenes.
-          Solo transform para la animación de entrada. */}
-      <div
-        ref={gridRef}
-        className="columns-2 md:columns-3 gap-3 motion-safe:transition-transform motion-safe:duration-700 motion-safe:ease-out"
-        style={{ transform: gridInView ? "translateY(0)" : "translateY(28px)" }}
-      >
+      <div className="columns-2 md:columns-3 gap-3">
         {images.map((img, i) => {
           const isHovered = hoveredIdx === i;
 
@@ -122,7 +110,7 @@ export default function FlotaGallery() {
               key={i}
               className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               style={{
-                transform: isHovered ? "translateY(-3px)" : "translateY(0)",
+                ...(isHovered && { transform: "translateY(-3px)" }),
                 boxShadow: isHovered ? "0 10px 28px rgba(11,60,93,0.13)" : "0 1px 3px rgba(0,0,0,0.07)",
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
               }}
