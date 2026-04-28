@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
-      { error: 'INVALID_PAYLOAD', message: 'Datos inválidos', details: parsed.error.flatten() },
+      { error: 'INVALID_PAYLOAD', message: 'Datos inválidos' },
       { status: 400 }
     );
   }
@@ -95,26 +95,47 @@ export async function POST(req: NextRequest) {
   }
 
   // Si se proporcionaron campos adicionales, actualizamos la submission recién creada.
-  // La ventana de 10s reduce el riesgo de race condition con envíos concurrentes del mismo IP.
+  // El enlace es de un solo uso → su link_id identifica unívocamente la submission, sin
+  // riesgo de race condition con envíos concurrentes desde la misma NAT IP.
   if (company_name?.trim() || private_comment?.trim()) {
     const admin = getAdminClient();
-    const windowStart = new Date(Date.now() - 10_000).toISOString();
-    const { data: latest } = await admin
-      .from('feedback_submissions')
+    const { data: link } = await admin
+      .from('feedback_links')
       .select('id')
-      .eq('ip_hash', ipHash)
-      .gte('submitted_at', windowStart)
-      .order('submitted_at', { ascending: false })
-      .limit(1)
+      .eq('code', code.toUpperCase())
       .single();
-    if (latest?.id) {
-      await admin
+
+    if (link?.id) {
+      // Buscar la submission por link_id; fallback a feedback_link_id si la columna usa ese nombre
+      let { data: latest } = await admin
         .from('feedback_submissions')
-        .update({
-          ...(company_name?.trim() ? { company_name: company_name.trim() } : {}),
-          ...(private_comment?.trim() ? { private_comment: private_comment.trim() } : {}),
-        })
-        .eq('id', latest.id);
+        .select('id')
+        .eq('link_id', link.id)
+        .eq('ip_hash', ipHash)
+        .order('submitted_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (!latest?.id) {
+        ({ data: latest } = await admin
+          .from('feedback_submissions')
+          .select('id')
+          .eq('feedback_link_id', link.id)
+          .eq('ip_hash', ipHash)
+          .order('submitted_at', { ascending: false })
+          .limit(1)
+          .maybeSingle());
+      }
+
+      if (latest?.id) {
+        await admin
+          .from('feedback_submissions')
+          .update({
+            ...(company_name?.trim() ? { company_name: company_name.trim() } : {}),
+            ...(private_comment?.trim() ? { private_comment: private_comment.trim() } : {}),
+          })
+          .eq('id', latest.id);
+      }
     }
   }
 
