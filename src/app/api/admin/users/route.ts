@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
+import { checkRateLimit } from '@/lib/rate-limit';
 
 export async function GET() {
   const { errorResponse } = await requireRole('superadmin', 'admin');
@@ -23,7 +24,7 @@ export async function GET() {
 
 const createSchema = z.object({
   email:     z.string().email('Email inválido'),
-  password:  z.string().min(6, 'Mínimo 6 caracteres'),
+  password:  z.string().min(8, 'Mínimo 8 caracteres').max(72, 'Máximo 72 caracteres'),
   full_name: z.string().max(80).optional(),
   role:      z.enum(['admin', 'atencion', 'pending']).default('atencion'),
 });
@@ -31,6 +32,18 @@ const createSchema = z.object({
 export async function POST(req: NextRequest) {
   const { session, errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
+
+  // Rate limit: máximo 10 creaciones de usuario por hora por actor
+  const rl = checkRateLimit(`user-create:${session.userId}`, 10, 3600_000);
+  if (!rl.allowed) {
+    return NextResponse.json(
+      { error: 'RATE_LIMIT', message: 'Demasiadas creaciones de usuario. Intenta más tarde.' },
+      {
+        status: 429,
+        headers: { 'Retry-After': String(Math.ceil((rl.resetAt - Date.now()) / 1000)) },
+      }
+    );
+  }
 
   const body = await req.json().catch(() => null);
   const parsed = createSchema.safeParse(body);

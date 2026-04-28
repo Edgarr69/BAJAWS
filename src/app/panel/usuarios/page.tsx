@@ -259,7 +259,7 @@ export default function UsuariosPage() {
               />
               <input
                 type="password"
-                placeholder="Contraseña * (mín. 6 caracteres)"
+                placeholder="Contraseña * (mín. 8 caracteres)"
                 value={newUser.password}
                 onChange={e => setNewUser(p => p && ({ ...p, password: e.target.value }))}
                 className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
