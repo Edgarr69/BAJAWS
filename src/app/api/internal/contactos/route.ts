@@ -8,7 +8,7 @@ import { requireRole, serverError, badRequest } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
 
 export async function GET() {
-  const { errorResponse } = await requireRole('superadmin', 'admin', 'atencion');
+  const { errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
   const admin = getAdminClient();

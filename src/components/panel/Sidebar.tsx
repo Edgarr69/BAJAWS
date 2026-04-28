@@ -23,7 +23,7 @@ const NAV: NavItem[] = [
   { href: '/panel/preguntas',    label: 'Preguntas',    icon: HelpCircle,      roles: ['superadmin', 'admin'] },
   { href: '/panel/usuarios',        label: 'Usuarios',        icon: Users,      roles: ['superadmin', 'admin'] },
   { href: '/panel/autorizaciones',  label: 'Autorizaciones',  icon: FileCheck,  roles: ['superadmin', 'admin'] },
-  { href: '/panel/contactos',       label: 'Contactos',       icon: Mail,       roles: ['superadmin', 'admin', 'atencion'] },
+  { href: '/panel/contactos',       label: 'Contactos',       icon: Mail,       roles: ['superadmin', 'admin'] },
   { href: '/panel/exportaciones',label: 'Exportaciones',icon: Download,        roles: ['superadmin', 'admin', 'atencion'] },
 ];
 
