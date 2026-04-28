@@ -3,7 +3,6 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
-import { useReducedMotion } from "@/hooks/useReducedMotion";
 
 // Intercaladas portrait/landscape para balance visual en columnas masonry
 const IMAGES = [
@@ -32,25 +31,16 @@ export default function FlotaGallery() {
   const [imgKey, setImgKey]         = useState(0);
   const [direction, setDirection]   = useState<"next" | "prev">("next");
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-  const [visible, setVisible]       = useState(false);
   const [mounted, setMounted]       = useState(false);
-  const ref         = useRef<HTMLDivElement>(null);
   const lightboxRef = useRef<HTMLDivElement>(null);
   const openerRef   = useRef<HTMLButtonElement | null>(null);
-  const reduced     = useReducedMotion();
 
   useEffect(() => setMounted(true), []);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) setVisible(true); },
-      { rootMargin: "-40px 0px" }
-    );
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+  // Nota: la animación de entrada la maneja el <AnimateOnScroll direction="fade">
+  // que envuelve toda la galería en /nosotros. No se usa un IntersectionObserver
+  // por-item ni transition-delay escalonado porque, combinado con el reflow del
+  // masonry (CSS columns) cuando las imágenes terminan de decodificar, ciertos
+  // items en tablet/móvil quedan con opacity:0 (la transición se interrumpe).
 
   const close = useCallback(() => {
     setIsClosing(true);
@@ -115,10 +105,7 @@ export default function FlotaGallery() {
   return (
     <>
       {/* ── Masonry — CSS columns, cada foto a su proporción natural ── */}
-      <div
-        ref={ref}
-        className="columns-2 md:columns-3 gap-3"
-      >
+      <div className="columns-2 md:columns-3 gap-3">
         {images.map((img, i) => {
           const isHovered = hoveredIdx === i;
 
@@ -126,13 +113,10 @@ export default function FlotaGallery() {
             <button
               key={i}
               className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-              style={reduced ? {
+              style={{
+                transform: isHovered ? "translateY(-3px)" : "translateY(0)",
                 boxShadow: isHovered ? "0 10px 28px rgba(11,60,93,0.13)" : "0 1px 3px rgba(0,0,0,0.07)",
-              } : {
-                opacity:   visible ? 1 : 0,
-                transform: visible ? (isHovered ? "translateY(-3px)" : "translateY(0)") : "translateY(18px)",
-                boxShadow: isHovered ? "0 10px 28px rgba(11,60,93,0.13)" : "0 1px 3px rgba(0,0,0,0.07)",
-                transition: `opacity 0.55s ease ${i * 60}ms, transform 0.3s ease, box-shadow 0.3s ease`,
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
               }}
               onMouseEnter={() => setHoveredIdx(i)}
               onMouseLeave={() => setHoveredIdx(null)}
