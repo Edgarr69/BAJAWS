@@ -1,16 +1,16 @@
 /**
- * DELETE /api/admin/reset-all?confirm=RESET_ALL → elimina todos los enlaces, submissions y servicios
- * DELETE /api/admin/reset-all?code=X            → elimina un enlace individual por código
- * Solo accesible para admin y superadmin.
+ * DELETE /api/admin/reset-all?confirm=RESET_ALL → elimina todos los enlaces, submissions y servicios (SOLO superadmin)
+ * DELETE /api/admin/reset-all?code=X            → elimina un enlace individual por código (admin y superadmin)
  * El borrado masivo requiere ?confirm=RESET_ALL para prevenir ejecución accidental.
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { requireRole, serverError, badRequest } from '@/lib/auth';
+import { getSessionInfo, unauthorized, forbidden, serverError, badRequest } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
 
 export async function DELETE(req: NextRequest) {
-  const { errorResponse } = await requireRole('superadmin', 'admin');
-  if (errorResponse) return errorResponse;
+  const session = await getSessionInfo();
+  if (!session) return unauthorized();
+  if (session.role !== 'superadmin' && session.role !== 'admin') return forbidden();
 
   const code    = req.nextUrl.searchParams.get('code')?.toUpperCase().trim();
   const confirm = req.nextUrl.searchParams.get('confirm');
@@ -69,7 +69,10 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  // ── Eliminar todo — requiere token de confirmación explícito ────────────────
+  // ── Eliminar todo — solo superadmin + token de confirmación explícito ──────
+  if (session.role !== 'superadmin') {
+    return forbidden('El borrado masivo de datos está reservado a superadmin');
+  }
   if (confirm !== 'RESET_ALL') {
     return NextResponse.json(
       { error: 'CONFIRMATION_REQUIRED', message: 'Se requiere ?confirm=RESET_ALL para borrar todos los datos' },
