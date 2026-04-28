@@ -65,6 +65,14 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Admin no puede modificar a otro admin (ni siquiera para demoterlo)
+  if (session.role === 'admin' && target.role === 'admin') {
+    return NextResponse.json(
+      { error: 'FORBIDDEN', message: 'Solo el superadmin puede modificar a otro administrador' },
+      { status: 403 }
+    );
+  }
+
   const { error: updateError } = await admin
     .from('profiles')
     .update({ role, updated_at: new Date().toISOString() })
