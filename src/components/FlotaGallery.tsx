@@ -5,18 +5,18 @@ import { createPortal } from "react-dom";
 import Image from "next/image";
 import { useInView } from "@/hooks/useInView";
 
-// Intercaladas portrait/landscape para balance visual en columnas masonry
+// Orden calculado para balance de columnas en 2-col (móvil) y 3-col (tablet/desktop).
+// Col 1 móvil (items 1-5): P+L+P+L+L = 4.91 | Col 2 (items 6-10): P+L+P+Sq+L = 5.09
 const IMAGES = [
   { n: 1,  w: 1200, h: 1600 }, // portrait
-  { n: 7,  w: 1296, h: 972  }, // landscape
-  { n: 2,  w: 960,  h: 1280 }, // portrait
   { n: 9,  w: 1600, h: 1204 }, // landscape
+  { n: 2,  w: 960,  h: 1280 }, // portrait
+  { n: 7,  w: 1296, h: 972  }, // landscape
+  { n: 14, w: 1600, h: 1204 }, // landscape
   { n: 3,  w: 1200, h: 1600 }, // portrait
-  { n: 11, w: 1600, h: 900  }, // landscape
-  { n: 8,  w: 1600, h: 1600 }, // cuadrada
   { n: 12, w: 1600, h: 1204 }, // landscape
   { n: 10, w: 960,  h: 1280 }, // portrait
-  { n: 14, w: 1600, h: 1204 }, // landscape
+  { n: 8,  w: 1600, h: 1600 }, // cuadrada
   { n: 15, w: 1352, h: 918  }, // landscape
 ].map(({ n, w, h }) => ({
   src: `/galeria/${n}.webp`,
