@@ -177,14 +177,15 @@ export default function Header() {
                         }`}
                       >
                         {link.label}
-                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 group-hover/drop:rotate-180 ${dropOpen ? 'rotate-180' : ''}`} />
+                        {/* Solo aplicar rotación por hover en dispositivos con hover real (excluye tablets táctiles) */}
+                        <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 [@media(hover:hover)]:group-hover/drop:rotate-180 ${dropOpen ? 'rotate-180' : ''}`} />
                       </button>
 
                       <div
                         role="menu"
                         className={`absolute top-full left-1/2 -translate-x-1/2 z-50 transition-[opacity,transform] duration-200 ease-out origin-top
                           opacity-0 -translate-y-2 scale-95 pointer-events-none
-                          group-hover/drop:opacity-100 group-hover/drop:translate-y-0 group-hover/drop:scale-100 group-hover/drop:pointer-events-auto
+                          [@media(hover:hover)]:group-hover/drop:opacity-100 [@media(hover:hover)]:group-hover/drop:translate-y-0 [@media(hover:hover)]:group-hover/drop:scale-100 [@media(hover:hover)]:group-hover/drop:pointer-events-auto
                           ${dropOpen ? "opacity-100 translate-y-0 scale-100 pointer-events-auto" : ""}`}
                       >
                         <div className="mt-4 bg-[#060f1c] rounded-2xl border border-white/[0.12] w-[22rem] shadow-[0_32px_80px_rgba(0,0,0,0.75),0_0_0_1px_rgba(255,255,255,0.05)]">
