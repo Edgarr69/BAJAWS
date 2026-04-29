@@ -7,33 +7,35 @@ import { useReducedMotion } from "@/hooks/useReducedMotion";
 const faqs = [
   {
     pregunta: "¿Qué tipos de aguas residuales industriales tratan?",
-    respuesta:
-      "Tratamos aguas residuales con aceites, grasas, metales pesados, solventes, detergentes y otros contaminantes industriales. Nuestros procesos incluyen separación físico-química, flotación por aire disuelto (DAF), neutralización y tratamiento biológico, adaptados al perfil de cada industria.",
+    respuesta: "Tratamos aguas residuales con aceites, grasas, metales pesados, solventes y detergentes. Nuestros procesos incluyen separación físico-química, flotación por aire disuelto (DAF), neutralización y tratamiento biológico, adaptados a cada industria.",
   },
   {
-    pregunta: "¿En qué zonas de Baja California ofrecen el servicio?",
-    respuesta:
-      "Cubrimos toda la región de Baja California: Tijuana, Tecate, Mexicali, Ensenada y zonas industriales adyacentes. Contamos con unidades propias de recolección y transporte con permisos vigentes de la SCT para el manejo de residuos peligrosos.",
+    pregunta: "¿En qué zonas ofrecen el servicio?",
+    respuesta: "Operamos en toda la región de Baja California: Tijuana, Tecate, Mexicali, Ensenada y zonas industriales adyacentes. Adicionalmente, brindamos servicio a nivel nacional para empresas que requieran atención en otros estados de la República Mexicana. Contamos con unidades propias de recolección y transporte.",
+  },
+  {
+    pregunta: "¿Qué tipos de residuos manejan?",
+    respuesta: "Manejamos aguas residuales industriales y residuos peligrosos sólidos, conforme a normativa vigente, minimizando el riesgo ambiental y operativo de tu empresa.",
   },
   {
     pregunta: "¿Cuánto tiempo toma obtener una cotización?",
-    respuesta:
-      "Respondemos en menos de 24 horas hábiles. Una vez que recibes la cotización, podemos coordinar una visita técnica sin costo para evaluar el volumen, la composición del residuo y definir la frecuencia óptima del servicio.",
+    respuesta: "El proceso inicia con una visita técnica sin costo para evaluar el volumen, la composición del residuo y las condiciones del sitio. Con esa información elaboramos una cotización precisa que te entregamos en menos de 24 horas después de la visita técnica.",
   },
   {
     pregunta: "¿Qué documentación recibo después del tratamiento?",
-    respuesta:
-      "Al concluir cada servicio emitimos un manifiesto de entrega-recepción de residuos peligrosos, certificados de análisis fisicoquímicos y, cuando aplica, reportes a las autoridades competentes. Esta documentación protege a tu empresa ante auditorías de SEMARNAT o CESPT.",
+    respuesta: "Al concluir cada servicio entregamos: manifiesto de entrega-recepción de residuos peligrosos, certificados de análisis fisicoquímicos y reportes a las autoridades según corresponda. Esto respalda tu cumplimiento normativo.",
+  },
+  {
+    pregunta: "¿Con qué equipo de transporte cuentan para el traslado de residuos?",
+    respuesta: "Contamos con una flota versátil que nos permite atender desde pequeños hasta grandes volúmenes, tanto de residuos líquidos como sólidos. Disponemos de pipas para traslado de líquidos, camiones tipo rabón y tractocamiones, todos con permisos vigentes para el manejo de residuos peligrosos.",
   },
   {
     pregunta: "¿Con qué frecuencia se realiza la recolección?",
-    respuesta:
-      "La frecuencia depende del volumen generado por tu proceso. Podemos programar servicios semanales, quincenales o mensuales, así como atención de emergencias fuera de calendario cuando se requiera.",
+    respuesta: "La frecuencia depende del volumen generado por tu proceso. Nos ajustamos a lo que necesite tu operación, incluyendo atención de emergencias fuera de calendario, para que tu producción no se detenga.",
   },
   {
-    pregunta: "¿Por qué es importante contratar un tratador autorizado por SEMARNAT?",
-    respuesta:
-      "La ley obliga a las empresas generadoras a entregar sus residuos peligrosos únicamente a empresas con autorización federal vigente. Contratar un prestador no autorizado expone a tu empresa a multas, clausura y responsabilidad penal. Nuestras autorizaciones de SEMARNAT, CESPT, SEMAR y SCT garantizan pleno cumplimiento normativo.",
+    pregunta: "¿Por qué es importante contratar un prestador de servicios autorizado?",
+    respuesta: "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT y SCT garantizan pleno cumplimiento normativo.",
   },
 ];
 
