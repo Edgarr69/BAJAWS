@@ -4,20 +4,18 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 
-// Orden calculado para balance visual en 2-col (móvil) y 3-col (tablet/desktop).
-// Col 1 móvil (items 1-5): P+L+P+sL+P = 5.30 | Col 2 (items 6-11): L+P+L+Sq+L+L = 5.26
 const IMAGES = [
-  { n: 1,  w: 1200, h: 1600 }, // portrait
-  { n: 7,  w: 1296, h: 972  }, // landscape
-  { n: 2,  w: 960,  h: 1280 }, // portrait
-  { n: 11, w: 1600, h: 900  }, // landscape corto
-  { n: 3,  w: 1200, h: 1600 }, // portrait
-  { n: 12, w: 1600, h: 1204 }, // landscape
-  { n: 10, w: 960,  h: 1280 }, // portrait
-  { n: 9,  w: 1600, h: 1204 }, // landscape
-  { n: 8,  w: 1600, h: 1600 }, // cuadrada
-  { n: 14, w: 1600, h: 1204 }, // landscape
-  { n: 15, w: 1352, h: 918  }, // landscape
+  { n: 1,  w: 1200, h: 1600 },
+  { n: 7,  w: 1296, h: 972  },
+  { n: 2,  w: 960,  h: 1280 },
+  { n: 11, w: 1600, h: 900  },
+  { n: 3,  w: 1200, h: 1600 },
+  { n: 12, w: 1600, h: 1204 },
+  { n: 10, w: 960,  h: 1280 },
+  { n: 9,  w: 1600, h: 1204 },
+  { n: 8,  w: 1600, h: 1600 },
+  { n: 14, w: 1600, h: 1204 },
+  { n: 15, w: 1352, h: 918  },
 ].map(({ n, w, h }) => ({
   src: `/galeria/${n}.webp`,
   alt: `Unidad Baja Wastewater Solution ${n}`,
@@ -26,6 +24,19 @@ const IMAGES = [
 }));
 const images = IMAGES;
 
+// grid-auto-rows value and gap-3 (0.75rem = 12px at 16px base)
+const ROW_SIZE = 10;
+const ROW_GAP  = 12;
+
+function calcSpans(colWidth: number): number[] {
+  return images.map(({ width, height }) => {
+    const rh = (height / width) * colWidth;
+    // span × ROW_SIZE + (span - 1) × ROW_GAP >= rh
+    // span >= (rh + ROW_GAP) / (ROW_SIZE + ROW_GAP)
+    return Math.ceil((rh + ROW_GAP) / (ROW_SIZE + ROW_GAP));
+  });
+}
+
 export default function FlotaGallery() {
   const [selected, setSelected]     = useState<number | null>(null);
   const [isClosing, setIsClosing]   = useState(false);
@@ -33,10 +44,28 @@ export default function FlotaGallery() {
   const [direction, setDirection]   = useState<"next" | "prev">("next");
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [mounted, setMounted]       = useState(false);
+  // 370px ≈ typical column width across all breakpoints (1-col mobile ~375, 2-col ~376, 3-col ~384)
+  const [spans, setSpans]           = useState<number[]>(() => calcSpans(370));
   const lightboxRef = useRef<HTMLDivElement>(null);
   const openerRef   = useRef<HTMLButtonElement | null>(null);
+  const gridRef     = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
+
+  // Recalculate spans whenever the grid resizes (breakpoint changes, orientation, etc.)
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const compute = () => {
+      const colWidth = (grid.firstElementChild as HTMLElement | null)?.offsetWidth;
+      if (!colWidth) return;
+      setSpans(calcSpans(colWidth));
+    };
+    const ro = new ResizeObserver(compute);
+    ro.observe(grid);
+    compute();
+    return () => ro.disconnect();
+  }, []);
 
   const close = useCallback(() => {
     setIsClosing(true);
@@ -75,7 +104,6 @@ export default function FlotaGallery() {
     return () => { document.body.style.overflow = ""; };
   }, [selected]);
 
-  // Focus trap + focus management for lightbox
   useEffect(() => {
     if (selected === null) return;
     const container = lightboxRef.current;
@@ -83,7 +111,6 @@ export default function FlotaGallery() {
     const focusable = Array.from(
       container.querySelectorAll<HTMLElement>('button:not([disabled])')
     );
-    // Focus the close button (second button: prev, close, next)
     focusable[1]?.focus();
     const trap = (e: KeyboardEvent) => {
       if (e.key !== 'Tab') return;
@@ -100,16 +127,21 @@ export default function FlotaGallery() {
 
   return (
     <>
-      {/* ── Masonry — CSS columns, cada foto a su proporción natural ── */}
-      <div className="columns-2 md:columns-3 gap-3">
+      {/* ── Masonry — CSS Grid con grid-auto-rows y span dinámico ── */}
+      <div
+        ref={gridRef}
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3"
+        style={{ gridAutoRows: `${ROW_SIZE}px` }}
+      >
         {images.map((img, i) => {
           const isHovered = hoveredIdx === i;
 
           return (
             <button
               key={i}
-              className="break-inside-avoid mb-3 group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              className="group relative overflow-hidden rounded-2xl border border-gray-100 cursor-pointer w-full text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               style={{
+                gridRow: `span ${spans[i]}`,
                 ...(isHovered && { transform: "translateY(-3px)" }),
                 boxShadow: isHovered ? "0 10px 28px rgba(11,60,93,0.13)" : "0 1px 3px rgba(0,0,0,0.07)",
                 transition: "transform 0.3s ease, box-shadow 0.3s ease",
@@ -124,8 +156,8 @@ export default function FlotaGallery() {
                 alt={img.alt}
                 width={img.width}
                 height={img.height}
-                className="w-full h-auto block motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
-                sizes="(max-width: 768px) 50vw, 33vw"
+                className="w-full h-full object-cover block motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
               />
 
               {/* Overlay hover */}
@@ -232,7 +264,6 @@ export default function FlotaGallery() {
                     sizes="(max-width: 768px) 92vw, 900px"
                   />
                 </div>
-
               </div>
             </div>
 
