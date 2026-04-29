@@ -24,6 +24,28 @@ export default function CookieBanner() {
     };
   }, []);
 
+  // Mantener el banner pegado al borde inferior del visual viewport.
+  // En iOS, `fixed bottom-0` usa el layout viewport — cuando la barra de Chrome
+  // se oculta el visual viewport crece pero el banner no se mueve, quedando flotando.
+  // VisualViewport API reporta el tamaño real visible y permite corregirlo.
+  useEffect(() => {
+    if (!visible || !bannerRef.current) return;
+    const vv = window.visualViewport;
+    if (!vv) return;
+    const update = () => {
+      if (!bannerRef.current) return;
+      const gap = Math.max(0, window.innerHeight - vv.offsetTop - vv.height);
+      bannerRef.current.style.bottom = `${gap}px`;
+    };
+    vv.addEventListener("resize", update);
+    vv.addEventListener("scroll", update);
+    update();
+    return () => {
+      vv.removeEventListener("resize", update);
+      vv.removeEventListener("scroll", update);
+    };
+  }, [visible]);
+
   const dismiss = (value: "accepted" | "rejected") => {
     // Bug #5: evitar clicks múltiples
     if (processing) return;
