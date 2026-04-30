@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
+import { parseUuid } from '@/lib/validation';
 
 const updateSchema = z.object({
   full_name: z.string().max(80).optional(),
@@ -18,7 +19,10 @@ export async function PUT(
   const { errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = parseUuid(rawId);
+  if (!id) return badRequest('ID inválido');
+
   const body = await req.json().catch(() => null);
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return badRequest('Payload inválido', parsed.error.flatten());
@@ -40,7 +44,9 @@ export async function DELETE(
   const { session, errorResponse } = await requireRole('superadmin');
   if (errorResponse) return errorResponse;
 
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = parseUuid(rawId);
+  if (!id) return badRequest('ID inválido');
 
   if (id === session.userId) {
     return NextResponse.json(
@@ -74,6 +80,14 @@ export async function DELETE(
   // Eliminar de auth.users (ON DELETE CASCADE borra profiles automáticamente)
   const { error: deleteError } = await admin.auth.admin.deleteUser(id);
   if (deleteError) return serverError(deleteError.message);
+
+  await admin.from('audit_log').insert({
+    actor_id:   session.userId,
+    action:     'delete',
+    table_name: 'profiles',
+    record_id:  id,
+    old_data:   target,
+  });
 
   return NextResponse.json({ ok: true });
 }

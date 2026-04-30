@@ -45,7 +45,7 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { errorResponse } = await requireRole('superadmin', 'admin');
+  const { session, errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
   const { id } = await params;
@@ -53,11 +53,31 @@ export async function DELETE(
   if (!Number.isInteger(numId) || numId <= 0) return badRequest('ID inválido');
 
   const admin = getAdminClient();
+
+  const { data: prev, error: findError } = await admin
+    .from('questions')
+    .select('*')
+    .eq('id', numId)
+    .single();
+
+  if (findError || !prev) {
+    return NextResponse.json({ error: 'NOT_FOUND', message: 'Pregunta no encontrada' }, { status: 404 });
+  }
+
   const { error } = await admin
     .from('questions')
     .delete()
     .eq('id', numId);
 
   if (error) return serverError(error.message);
+
+  await admin.from('audit_log').insert({
+    actor_id:   session.userId,
+    action:     'delete',
+    table_name: 'questions',
+    record_id:  String(numId),
+    old_data:   prev,
+  });
+
   return NextResponse.json({ ok: true });
 }

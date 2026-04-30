@@ -7,6 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
+import { parseUuid } from '@/lib/validation';
 
 const updateSchema = z.object({
   clasificacion:       z.string().min(1).max(100).optional(),
@@ -25,7 +26,10 @@ export async function PUT(
   const { errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = parseUuid(rawId);
+  if (!id) return badRequest('ID inválido');
+
   const body = await req.json().catch(() => null);
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return badRequest('Payload inválido', parsed.error.flatten());
@@ -47,17 +51,40 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  const { errorResponse } = await requireRole('superadmin', 'admin');
+  const { session, errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
-  const { id } = await params;
+  const { id: rawId } = await params;
+  const id = parseUuid(rawId);
+  if (!id) return badRequest('ID inválido');
+
   const admin = getAdminClient();
+
+  const { data: prev, error: findError } = await admin
+    .from('autorizaciones')
+    .select('*')
+    .eq('id', id)
+    .single();
+
+  if (findError || !prev) {
+    return NextResponse.json({ error: 'NOT_FOUND', message: 'Autorización no encontrada' }, { status: 404 });
+  }
+
   const { error } = await admin
     .from('autorizaciones')
     .delete()
     .eq('id', id);
 
   if (error) return serverError(error.message);
+
+  await admin.from('audit_log').insert({
+    actor_id:   session.userId,
+    action:     'delete',
+    table_name: 'autorizaciones',
+    record_id:  id,
+    old_data:   prev,
+  });
+
   revalidatePath('/autorizaciones');
   return NextResponse.json({ ok: true });
 }
