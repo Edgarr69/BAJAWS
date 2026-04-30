@@ -48,10 +48,21 @@ export async function GET(req: NextRequest) {
   }
 
   if (data?.error) {
+    // Anti-enumeración: unificar respuestas de INVALID/EXPIRED/USED bajo un mismo
+    // status 404 y mensaje genérico, para impedir que un atacante deduzca si un
+    // código existió alguna vez. El estado real se conserva en logs server-side.
+    const enumerableStates = new Set(['INVALID', 'EXPIRED', 'USED']);
+
+    if (enumerableStates.has(data.error)) {
+      console.warn('[public/form] estado:', data.error);
+      return NextResponse.json(
+        { error: 'INVALID', message: 'Código inválido o ya utilizado' },
+        { status: 404 }
+      );
+    }
+
+    // Otros estados (p. ej. BLOCKED) mantienen su status original
     const statusMap: Record<string, number> = {
-      INVALID:  404,
-      EXPIRED:  410,
-      USED:     409,
       BLOCKED:  403,
     };
     return NextResponse.json(data, { status: statusMap[data.error] ?? 400 });
