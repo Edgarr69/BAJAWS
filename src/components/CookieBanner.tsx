@@ -32,17 +32,32 @@ export default function CookieBanner() {
     if (!visible || !bannerRef.current) return;
     const vv = window.visualViewport;
     if (!vv) return;
+
+    let pending = false;
     const update = () => {
+      pending = false;
       if (!bannerRef.current) return;
       const gap = Math.max(0, window.innerHeight - vv.offsetTop - vv.height);
       bannerRef.current.style.bottom = `${gap}px`;
     };
-    vv.addEventListener("resize", update);
-    vv.addEventListener("scroll", update);
+    // Agrupa actualizaciones en un RAF para no escribir el DOM 60×/seg
+    const schedule = () => {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(update);
+    };
+
+    vv.addEventListener("resize", schedule);
+    vv.addEventListener("scroll", schedule);
+    // window.scroll captura cuando la barra de Chrome se oculta/muestra al
+    // hacer scroll normal, ya que en iOS vv.resize no siempre dispara en ese caso
+    window.addEventListener("scroll", schedule, { passive: true });
     update();
+
     return () => {
-      vv.removeEventListener("resize", update);
-      vv.removeEventListener("scroll", update);
+      vv.removeEventListener("resize", schedule);
+      vv.removeEventListener("scroll", schedule);
+      window.removeEventListener("scroll", schedule);
     };
   }, [visible]);
 
