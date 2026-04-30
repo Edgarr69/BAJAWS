@@ -5,8 +5,8 @@ import type { NextConfig } from "next";
 // ─────────────────────────────────────────────────────────────────────────────
 const CSP = [
   "default-src 'self'",
-  // Next.js App Router requiere unsafe-inline / unsafe-eval para hidratación
-  "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://www.googletagmanager.com",
+  // Next.js App Router requiere unsafe-inline para hidratación
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
   "style-src 'self' 'unsafe-inline'",
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
@@ -17,7 +17,7 @@ const CSP = [
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
   "frame-src https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com",
   // Peticiones fetch/XHR: mismo origen + Supabase (requerido para signInWithPassword y realtime)
-  "connect-src 'self' https://*.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
+  "connect-src 'self' https://dlgergnuqxzexsjeuztg.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
   // El formulario solo puede enviar datos al mismo origen
   "form-action 'self'",
   // Evita inyección de <base>
