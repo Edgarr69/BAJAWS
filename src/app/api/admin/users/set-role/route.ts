@@ -78,7 +78,11 @@ export async function POST(req: NextRequest) {
     .update({ role, updated_at: new Date().toISOString() })
     .eq('id', user_id);
 
-  if (updateError) return serverError(updateError.message);
+  if (updateError) {
+    // Log interno; no se expone el mensaje crudo de Supabase al cliente
+    console.error('[admin/users/set-role] update failed:', updateError);
+    return serverError('No se pudo actualizar el rol');
+  }
 
   await admin.from('audit_log').insert({
     actor_id:   session.userId,

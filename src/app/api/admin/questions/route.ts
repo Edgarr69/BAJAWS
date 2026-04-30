@@ -23,7 +23,11 @@ export async function GET() {
     .select('id, topic_id, text, type, is_active, display_order, topics(name)')
     .order('display_order');
 
-  if (error) return serverError(error.message);
+  if (error) {
+    // Log interno; no se expone el mensaje crudo de Supabase al cliente
+    console.error('[admin/questions GET] list failed:', error);
+    return serverError('No se pudieron obtener las preguntas');
+  }
   return NextResponse.json(data);
 }
 
@@ -42,6 +46,10 @@ export async function POST(req: NextRequest) {
     .select()
     .single();
 
-  if (error) return serverError(error.message);
+  if (error) {
+    // Log interno; no se expone el mensaje crudo de Supabase al cliente
+    console.error('[admin/questions POST] insert failed:', error);
+    return serverError('No se pudo crear la pregunta');
+  }
   return NextResponse.json(data, { status: 201 });
 }

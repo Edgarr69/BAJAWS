@@ -18,7 +18,11 @@ export async function GET() {
     .select('id, email, full_name, role, created_at, updated_at')
     .order('created_at');
 
-  if (error) return serverError(error.message);
+  if (error) {
+    // Log interno; no se expone el mensaje crudo de Supabase al cliente
+    console.error('[admin/users GET] list failed:', error);
+    return serverError('No se pudieron obtener los usuarios');
+  }
   return NextResponse.json(data);
 }
 
@@ -67,7 +71,11 @@ export async function POST(req: NextRequest) {
     email_confirm: true,
   });
 
-  if (createError) return serverError(createError.message);
+  if (createError) {
+    // Log interno; no se expone el mensaje crudo de Supabase al cliente
+    console.error('[admin/users POST] createUser failed:', createError);
+    return serverError('No se pudo crear el usuario');
+  }
 
   await admin.from('profiles').upsert({
     id:        newUser.user.id,
