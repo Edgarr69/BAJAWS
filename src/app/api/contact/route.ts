@@ -18,6 +18,20 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  // CSRF: rechazar requests cross-origin (solo permite POST desde el mismo host)
+  const origin = req.headers.get('origin');
+  const host = req.headers.get('host');
+  if (!origin) {
+    return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+  try {
+    if (new URL(origin).host !== host) {
+      return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+
   // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
   // x-forwarded-for puede inyectarse; usar último valor como fallback
   const ip = req.headers.get('x-real-ip')
@@ -34,6 +48,13 @@ export async function POST(req: NextRequest) {
   }
 
   const body   = await req.json().catch(() => null);
+
+  // Honeypot: si el campo oculto trae valor, es un bot. Devolvemos 201 ok
+  // para no revelar que detectamos el honeypot, pero no insertamos nada.
+  if (body && typeof body === 'object' && 'hp' in body && body.hp) {
+    return NextResponse.json({ ok: true }, { status: 201 });
+  }
+
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: 'INVALID' }, { status: 400 });

@@ -28,6 +28,20 @@ const schema = z.object({
 });
 
 export async function POST(req: NextRequest) {
+  // CSRF: rechazar requests cross-origin (solo permite POST desde el mismo host)
+  const origin = req.headers.get('origin');
+  const host = req.headers.get('host');
+  if (!origin) {
+    return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+  try {
+    if (new URL(origin).host !== host) {
+      return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+    }
+  } catch {
+    return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+
   // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
   const ip = req.headers.get('x-real-ip')
            ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
