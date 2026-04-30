@@ -8,10 +8,14 @@
   }
 
   /* Móvil: scroll instantáneo al volver al top — la barra del navegador
-     vuelve de inmediato y --dvh se puede sincronizar correctamente */
+     vuelve de inmediato y --dvh se puede sincronizar correctamente.
+     overscroll-behavior: none elimina el rebote elástico de Chrome al llegar
+     al tope — evita que elementos fixed queden visualmente desconectados del
+     contenido durante el bounce. */
   @media (max-width: 767px) {
     html {
       scroll-behavior: auto;
+      overscroll-behavior: none;
     }
   }
 
