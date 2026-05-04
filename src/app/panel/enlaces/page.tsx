@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState, useRef } from 'react';
+import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
-import { QRCodeSVG } from 'qrcode.react';
+
+const QRCodeSVG = dynamic(() => import('qrcode.react').then(m => m.QRCodeSVG), { ssr: false });
 import { Copy, Share2, RefreshCw, QrCode, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';

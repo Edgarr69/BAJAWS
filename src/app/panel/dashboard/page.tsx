@@ -1,12 +1,8 @@
 'use client';
 
 import { useCallback, useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
-import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
-  Tooltip, Legend, ResponsiveContainer,
-  RadarChart, Radar, PolarGrid, PolarAngleAxis,
-} from 'recharts';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -16,6 +12,12 @@ import { getMetrics, getLinkStats } from '@/lib/api';
 import { createClient } from '@/lib/supabase/client';
 import type { AggregateMetric } from '@/types/panel';
 import { NumberTicker } from '@/components/ui/number-ticker';
+
+// Charts cargados dinámicamente para sacar recharts (~120KB) del bundle inicial
+const TopicBarChart = dynamic(() => import('./Charts').then(m => m.TopicBarChart), { ssr: false, loading: () => null });
+const TrendLineChart = dynamic(() => import('./Charts').then(m => m.TrendLineChart), { ssr: false, loading: () => null });
+const StackedBarChart = dynamic(() => import('./Charts').then(m => m.StackedBarChart), { ssr: false, loading: () => null });
+const ProfileRadarChart = dynamic(() => import('./Charts').then(m => m.ProfileRadarChart), { ssr: false, loading: () => null });
 
 const today     = new Date().toISOString().slice(0, 10);
 const yearStart = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
@@ -89,7 +91,7 @@ export default function DashboardPage() {
     }
   }, []);
 
-  useEffect(() => { load(dateFrom, dateTo, groupBy); }, [load]); // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => { load(dateFrom, dateTo, groupBy); }, [load, dateFrom, dateTo, groupBy]);
 
   // Persistencia de filtros en localStorage
   useEffect(() => { try { localStorage.setItem(KEYS.from,  dateFrom); } catch {} }, [dateFrom]);
@@ -204,18 +206,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {loading ? <Skeleton className="h-52 w-full" /> : (
-              <ResponsiveContainer width="100%" height={210}>
-                <BarChart data={topicData} margin={{ left: -20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="topic" tick={{ fontSize: 11 }} tickLine={false} />
-                  <YAxis domain={[0, 5]} tick={{ fontSize: 11 }} tickLine={false} />
-                  <Tooltip formatter={(v) => [
-                    typeof v === 'number' ? `${v.toFixed(2)} / 5` : String(v ?? ''),
-                    'Promedio',
-                  ]} />
-                  <Bar dataKey="avg_score" name="Promedio" fill="#0B3C5D" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={800} />
-                </BarChart>
-              </ResponsiveContainer>
+              <TopicBarChart data={topicData} />
             )}
           </CardContent>
         </Card>
@@ -228,25 +219,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {loading ? <Skeleton className="h-52 w-full" /> : (
-              <ResponsiveContainer width="100%" height={210}>
-                <LineChart
-                  data={trendData.map(d => ({ ...d, fecha: d.date ?? d.week_start ?? '' }))}
-                  margin={{ left: -20 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="fecha" tick={{ fontSize: 10 }} tickLine={false} />
-                  <YAxis domain={[1, 5]} tick={{ fontSize: 11 }} tickLine={false} />
-                  <Tooltip formatter={(v) => [
-                    typeof v === 'number' ? `${v.toFixed(2)} / 5` : String(v ?? ''),
-                    'Score',
-                  ]} />
-                  <Line
-                    type="monotone" dataKey="avg_score_global" name="Score"
-                    stroke="#3D8B36" strokeWidth={2} dot={false}
-                    isAnimationActive animationDuration={800}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
+              <TrendLineChart data={trendData.map(d => ({ ...d, fecha: d.date ?? d.week_start ?? '' }))} />
             )}
           </CardContent>
         </Card>
@@ -260,18 +233,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {loading ? <Skeleton className="h-52 w-full" /> : (
-              <ResponsiveContainer width="100%" height={210}>
-                <BarChart data={stackedData} margin={{ left: -20 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                  <XAxis dataKey="topic" tick={{ fontSize: 11 }} tickLine={false} />
-                  <YAxis tick={{ fontSize: 11 }} tickLine={false} />
-                  <Tooltip formatter={(v, name) => [`${v ?? 0} resp.`, name ?? '']} />
-                  <Legend iconSize={10} wrapperStyle={{ fontSize: 11 }} />
-                  <Bar dataKey="Negativo (1-2)" stackId="a" fill="#ef4444" isAnimationActive animationDuration={800} />
-                  <Bar dataKey="Neutral (3)"    stackId="a" fill="#f59e0b" isAnimationActive animationDuration={800} />
-                  <Bar dataKey="Positivo (4-5)" stackId="a" fill="#3D8B36" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={800} />
-                </BarChart>
-              </ResponsiveContainer>
+              <StackedBarChart data={stackedData} />
             )}
           </CardContent>
         </Card>
@@ -282,25 +244,7 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             {loading ? <Skeleton className="h-52 w-full" /> : (
-              <ResponsiveContainer width="100%" height={210}>
-                <RadarChart data={radarData} outerRadius={70}>
-                  <PolarGrid stroke="#e2e8f0" />
-                  <PolarAngleAxis dataKey="subject" tick={{ fontSize: 10, fill: '#64748b' }} />
-                  <Radar
-                    name="Score"
-                    dataKey="score"
-                    stroke="#0B3C5D"
-                    fill="#0B3C5D"
-                    fillOpacity={0.25}
-                    isAnimationActive
-                    animationDuration={800}
-                  />
-                  <Tooltip formatter={(v) => [
-                    typeof v === 'number' ? `${v.toFixed(2)} / 5` : String(v ?? ''),
-                    'Score',
-                  ]} />
-                </RadarChart>
-              </ResponsiveContainer>
+              <ProfileRadarChart data={radarData} />
             )}
           </CardContent>
         </Card>
