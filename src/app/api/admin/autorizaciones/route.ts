@@ -36,7 +36,10 @@ export async function POST(req: NextRequest) {
   const { errorResponse } = await requireRole('superadmin', 'admin');
   if (errorResponse) return errorResponse;
 
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch((err: unknown) => {
+    console.error('[admin/autorizaciones POST] error al parsear JSON del body:', err);
+    return null;
+  });
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return badRequest('Payload inválido', parsed.error.flatten());
 

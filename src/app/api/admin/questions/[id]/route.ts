@@ -25,7 +25,10 @@ export async function PUT(
   const numId = parseInt(id, 10);
   if (!Number.isInteger(numId) || numId <= 0) return badRequest('ID inválido');
 
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch((err: unknown) => {
+    console.error('[admin/questions/[id] PUT] error al parsear JSON del body:', err);
+    return null;
+  });
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) return badRequest('Payload inválido', parsed.error.flatten());
 

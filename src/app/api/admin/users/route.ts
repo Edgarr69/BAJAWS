@@ -49,7 +49,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch((err: unknown) => {
+    console.error('[admin/users POST] error al parsear JSON del body:', err);
+    return null;
+  });
   const parsed = createSchema.safeParse(body);
   if (!parsed.success) return badRequest('Datos inválidos', parsed.error.flatten());
 

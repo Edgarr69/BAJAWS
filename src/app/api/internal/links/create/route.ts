@@ -19,7 +19,10 @@ export async function POST(req: NextRequest) {
   const { session, errorResponse } = await requireRole('superadmin', 'admin', 'atencion');
   if (errorResponse) return errorResponse;
 
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch((err: unknown) => {
+    console.error('[internal/links/create] error al parsear JSON del body:', err);
+    return null;
+  });
   const parsed = schema.safeParse(body);
   if (!parsed.success) return badRequest('Payload inválido', parsed.error.flatten());
 
