@@ -1,59 +1,32 @@
-'use client';
-
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Sidebar } from '@/components/panel/Sidebar';
-import { Topbar } from '@/components/panel/Topbar';
-import { Toaster } from '@/components/ui/sonner';
-import { getMe } from '@/lib/api';
+import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase/server';
+import { PanelShell } from './panel-shell';
 import type { Profile } from '@/types/panel';
 
-export default function PanelLayout({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
-  const [user, setUser]       = useState<Profile | null>(null);
-  const [sideOpen, setSide]   = useState(false);
-  const [loading, setLoading] = useState(true);
+export default async function PanelLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
 
-  // El middleware (src/middleware.ts) ya bloquea /panel/* server-side para
-  // usuarios no autenticados o con rol "pending". Este chequeo client-side se
-  // mantiene como defensa en profundidad y para hidratar el estado del usuario
-  // en el layout (Sidebar/Topbar consumen `user`).
-  useEffect(() => {
-    getMe()
-      .then(data => {
-        const profile = data as Profile;
-        if (profile.role === 'pending') {
-          router.replace('/acceso-solicitado');
-          return;
-        }
-        setUser(profile);
-      })
-      .catch(() => router.replace('/login'))
-      .finally(() => setLoading(false));
-  }, []);
+  // Verifica la sesión activa del usuario
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-primary-700 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+  if (!user) {
+    redirect('/login');
   }
 
-  if (!user) return null;
+  // Obtiene el perfil con el rol desde la tabla profiles
+  const { data: profile, error } = await supabase
+    .from('profiles')
+    .select('*')
+    .eq('id', user.id)
+    .single();
 
-  return (
-    <div className="flex h-screen bg-slate-50 overflow-hidden">
-      <Sidebar role={user.role} open={sideOpen} onClose={() => setSide(false)} />
+  if (error || !profile) {
+    redirect('/login');
+  }
 
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Topbar user={user} onMenuClick={() => setSide(true)} />
-        <main className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
-        </main>
-      </div>
+  if (profile.role === 'pending') {
+    redirect('/acceso-solicitado');
+  }
 
-      <Toaster richColors position="top-right" />
-    </div>
-  );
+  return <PanelShell user={profile as Profile}>{children}</PanelShell>;
 }
