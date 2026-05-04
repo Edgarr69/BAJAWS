@@ -74,7 +74,7 @@ export default function HeroTypewriter({ onComplete, onNearComplete }: Props) {
 
   const Cursor = ({ teal }: { teal?: boolean }) => (
     <span
-      className={`inline-block w-[7px] h-[1.2em] align-middle ml-[3px] rounded-[1px] ${teal ? 'bg-teal-300' : 'bg-white'}`}
+      className={`inline-block w-[0.44rem] h-[1.2em] align-middle ml-[0.19rem] rounded-[1px] ${teal ? 'bg-teal-300' : 'bg-white'}`}
       style={cursorStyle}
     />
   );

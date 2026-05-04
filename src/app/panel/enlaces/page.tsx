@@ -265,7 +265,7 @@ export default function EnlacesPage() {
             <p className="text-sm text-slate-400 text-center py-10">Sin enlaces generados</p>
           ) : (
             <div className="overflow-x-auto">
-              <div className="max-h-[420px] overflow-y-auto">
+              <div className="max-h-[26.25rem] overflow-y-auto">
                 <table className="w-full text-sm">
                   <thead className="sticky top-0 z-10 bg-slate-50">
                     <tr className="border-b border-slate-100">
