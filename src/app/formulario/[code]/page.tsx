@@ -3,10 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 
+type QuestionType = 'likert' | 'open' | 'yesno';
+
 interface Question {
   id: number;
   text: string;
-  type: string;
+  type: QuestionType;
   topic: string;
   order: number;
 }

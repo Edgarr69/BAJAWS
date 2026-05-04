@@ -13,11 +13,13 @@ export interface Topic {
   display_order: number;
 }
 
+export type QuestionType = 'likert' | 'open' | 'yesno';
+
 export interface Question {
   id: number;
   topic_id: number;
   text: string;
-  type: string;
+  type: QuestionType;
   is_active: boolean;
   display_order: number;
   topics?: { name: string };

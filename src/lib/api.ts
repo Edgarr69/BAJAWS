@@ -3,12 +3,69 @@
  * Todas las funciones usan fetch con credentials: 'include' para que las cookies
  * de sesión de Supabase se envíen automáticamente.
  */
+import { z } from 'zod';
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, { credentials: 'include', ...options });
   const data = await res.json();
   if (!res.ok) throw new Error(data?.message ?? 'Error de servidor');
   return data as T;
+}
+
+// ── Schemas de Zod ───────────────────────────────────────────────────────────
+// Supabase devuelve las relaciones anidadas como objeto (FK simple) o array
+// (FK múltiple). Los selects usados aquí son to-one, así que lo normal es un
+// objeto, pero dejamos el array opcional para tolerar ambos casos.
+const nestedOneToOne = <T extends z.ZodTypeAny>(schema: T) =>
+  z.union([schema, z.array(schema)]).nullable().optional();
+
+export const LinkSchema = z.object({
+  id:           z.string().uuid(),
+  code:         z.string(),
+  service_id:   z.string().uuid().nullable(),
+  expires_at:   z.string(),
+  used_at:      z.string().nullable(),
+  blocked_at:   z.string().nullable(),
+  attempts:     z.number(),
+  max_attempts: z.number(),
+  ttl_seconds:  z.number(),
+  created_at:   z.string(),
+  created_by:   z.string().uuid(),
+  services: nestedOneToOne(z.object({
+    folio:        z.string().nullable(),
+    service_date: z.string().nullable(),
+  })),
+});
+
+export const QuestionSchema = z.object({
+  id:            z.number(),
+  topic_id:      z.number(),
+  text:          z.string(),
+  type:          z.string(),
+  is_active:     z.boolean(),
+  display_order: z.number(),
+  topics: nestedOneToOne(z.object({ name: z.string() })),
+});
+
+export const UserSchema = z.object({
+  id:         z.string().uuid(),
+  email:      z.string(),
+  full_name:  z.string().nullable(),
+  role:       z.enum(['superadmin', 'admin', 'atencion', 'pending']),
+  created_at: z.string().optional(),
+  updated_at: z.string().optional().nullable(),
+});
+
+export type LinkDTO     = z.infer<typeof LinkSchema>;
+export type QuestionDTO = z.infer<typeof QuestionSchema>;
+export type UserDTO     = z.infer<typeof UserSchema>;
+
+async function apiFetchArray<T extends z.ZodTypeAny>(
+  url: string,
+  schema: T,
+): Promise<z.infer<T>[]> {
+  const raw = await apiFetch<unknown>(url);
+  return z.array(schema).parse(raw);
 }
 
 // ── Auth ─────────────────────────────────────────────────────────────────────
@@ -22,7 +79,7 @@ export const getMetrics = (params: Record<string, string>) => {
 };
 
 // ── Enlaces ──────────────────────────────────────────────────────────────────
-export const getLinks = () => apiFetch<unknown[]>('/api/internal/links');
+export const getLinks = () => apiFetchArray('/api/internal/links', LinkSchema);
 
 export const getLinkStats = async (params: { date_from: string; date_to: string }) => {
   const qs = new URLSearchParams({ ...params, _stats: '1' }).toString();
@@ -59,7 +116,7 @@ export const getSubmission = (id: string) =>
   apiFetch<{ submission: Submission; answers: Answer[] }>(`/api/internal/submissions/${id}`);
 
 // ── Preguntas ─────────────────────────────────────────────────────────────────
-export const getQuestions = () => apiFetch<unknown[]>('/api/admin/questions');
+export const getQuestions = () => apiFetchArray('/api/admin/questions', QuestionSchema);
 
 export const createQuestion = (body: { topic_id: number; text: string; display_order?: number }) =>
   apiFetch<unknown>('/api/admin/questions', {
@@ -79,7 +136,7 @@ export const deleteQuestion = (id: number) =>
   apiFetch<{ ok: boolean }>(`/api/admin/questions/${id}`, { method: 'DELETE' });
 
 // ── Usuarios ──────────────────────────────────────────────────────────────────
-export const getUsers = () => apiFetch<unknown[]>('/api/admin/users');
+export const getUsers = () => apiFetchArray('/api/admin/users', UserSchema);
 
 export const createUser = (body: { email: string; password: string; full_name?: string; role: 'admin' | 'atencion' | 'pending' }) =>
   apiFetch<{ ok: boolean; id: string }>('/api/admin/users', {
