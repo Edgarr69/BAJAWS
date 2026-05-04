@@ -54,6 +54,7 @@ export default function NotificacionesPage() {
   const [confirmDel, setConfirmDel] = useState<NotificationEmail | null>(null);
   const [showAdd, setShowAdd]       = useState(false);
   const [saving, setSaving]         = useState(false);
+  const [attempted, setAttempted]   = useState(false);
   const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail]     = useState('');
   const [newLabel, setNewLabel]     = useState('');
@@ -61,6 +62,7 @@ export default function NotificacionesPage() {
 
   const resolvedEmail = isExternal ? newEmail.trim() : `${newUsername.trim()}@bajaws.com.mx`;
   const emailValid    = isExternal ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.trim()) : newUsername.trim().length > 0;
+  const labelValid    = newLabel.trim().length > 0;
 
   useEffect(() => {
     getNotificationEmails()
@@ -98,7 +100,8 @@ export default function NotificacionesPage() {
   }
 
   async function handleAdd() {
-    if (!emailValid) return;
+    setAttempted(true);
+    if (!emailValid || !labelValid) return;
     setSaving(true);
     try {
       const created = await createNotificationEmail({
@@ -107,8 +110,11 @@ export default function NotificacionesPage() {
       });
       setItems(prev => [...prev, created]);
       setShowAdd(false);
+      setNewUsername('');
       setNewEmail('');
       setNewLabel('');
+      setAttempted(false);
+      setIsExternal(false);
       toast.success('Correo agregado');
     } catch (e: unknown) {
       toast.error((e as Error).message ?? 'Error al agregar correo');
@@ -123,6 +129,7 @@ export default function NotificacionesPage() {
     setNewUsername('');
     setNewEmail('');
     setNewLabel('');
+    setAttempted(false);
     setIsExternal(false);
   }
 
@@ -285,14 +292,26 @@ export default function NotificacionesPage() {
               {isExternal ? 'Usar correo @bajaws.com.mx' : 'No es correo de la empresa'}
             </button>
 
-            <input
-              type="text"
-              placeholder="Etiqueta descriptiva (ej. Ventas, Gerencia)"
-              value={newLabel}
-              onChange={e => setNewLabel(e.target.value)}
-              maxLength={60}
-              className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
-            />
+            <div className="space-y-1">
+              <input
+                type="text"
+                placeholder="Etiqueta descriptiva (ej. Ventas, Gerencia)"
+                value={newLabel}
+                onChange={e => {
+                  const v = e.target.value;
+                  setNewLabel(v.length > 0 ? v.charAt(0).toUpperCase() + v.slice(1).toLowerCase() : '');
+                }}
+                maxLength={60}
+                className={`w-full text-base md:text-sm border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 text-slate-700 placeholder:text-slate-300 ${
+                  attempted && !labelValid
+                    ? 'border-red-400 focus:ring-red-400'
+                    : 'border-slate-200 focus:ring-primary-500'
+                }`}
+              />
+              {attempted && !labelValid && (
+                <p className="text-xs text-red-500 pl-1">La etiqueta es requerida</p>
+              )}
+            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={handleCloseAdd} disabled={saving}>
@@ -300,7 +319,7 @@ export default function NotificacionesPage() {
             </Button>
             <Button
               onClick={handleAdd}
-              disabled={saving || !emailValid}
+              disabled={saving || (attempted && (!emailValid || !labelValid))}
               className="bg-primary-700 hover:bg-primary-600"
             >
               {saving ? 'Guardando…' : 'Agregar'}
