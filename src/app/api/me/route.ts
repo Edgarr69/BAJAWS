@@ -1,17 +1,17 @@
 import { NextResponse } from 'next/server';
-import { getSessionInfo, serverError, unauthorized } from '@/lib/auth';
-import { getAdminClient } from '@/lib/supabase/admin';
+import { unauthorized, serverError } from '@/lib/auth';
+import { createClient } from '@/lib/supabase/server';
 
 export async function GET() {
-  // Acepta cualquier usuario autenticado, incluido rol 'pending'
-  const session = await getSessionInfo();
-  if (!session) return unauthorized();
+  const supabase = await createClient();
+  const { data: { user }, error: authError } = await supabase.auth.getUser();
 
-  const admin = getAdminClient();
-  const { data, error } = await admin
+  if (authError || !user) return unauthorized();
+
+  const { data, error } = await supabase
     .from('profiles')
     .select('id, email, full_name, role')
-    .eq('id', session.userId)
+    .eq('id', user.id)
     .single();
 
   if (error || !data) return serverError('Perfil no encontrado');
