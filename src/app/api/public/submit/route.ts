@@ -8,11 +8,11 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createHash } from 'crypto';
 import { createClient } from '@/lib/supabase/server';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validateShortCode } from '@/utils/shortcode';
+import { getHashedIp } from '@/lib/request-utils';
 
 const answerSchema = z.object({
   question_id: z.number().int().positive(),
@@ -38,17 +38,21 @@ export async function POST(req: NextRequest) {
     if (new URL(origin).host !== host) {
       return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
     }
-  } catch {
+  } catch (err) {
+    console.error('[public/submit] origin inválido en verificación CSRF:', err);
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
   }
 
-  // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
-  const ip = req.headers.get('x-real-ip')
-           ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
-           ?? 'unknown';
+  let ipHash: string;
+  try {
+    ipHash = getHashedIp(req);
+  } catch {
+    console.error('IP_HASH_SECRET no está configurado');
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
 
   // Rate limit: 5 envíos por IP por 10 minutos
-  const rl = checkRateLimit(`submit:${ip}`, 5, 600_000);
+  const rl = checkRateLimit(`submit:${ipHash}`, 5, 600_000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: 'RATE_LIMIT', message: 'Demasiados envíos. Intenta más tarde.' },
@@ -59,7 +63,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body = await req.json().catch(() => null);
+  const body = await req.json().catch((err: unknown) => {
+    console.error('[public/submit] error al parsear JSON del body:', err);
+    return null;
+  });
   const parsed = schema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
@@ -73,14 +80,6 @@ export async function POST(req: NextRequest) {
   if (!validateShortCode(code)) {
     return NextResponse.json({ error: 'INVALID', message: 'Código inválido' }, { status: 400 });
   }
-
-  // Hash de IP: no reversible (SHA-256 + secret de entorno)
-  const secret = process.env.IP_HASH_SECRET;
-  if (!secret) {
-    console.error('IP_HASH_SECRET no está configurado');
-    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
-  }
-  const ipHash  = createHash('sha256').update(ip + secret).digest('hex');
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc('submit_feedback', {

@@ -5,9 +5,9 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createHash } from 'crypto';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
+import { getHashedIp } from '@/lib/request-utils';
 
 const schema = z.object({
   nombre:   z.string().trim().min(2).max(80),
@@ -28,18 +28,21 @@ export async function POST(req: NextRequest) {
     if (new URL(origin).host !== host) {
       return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
     }
-  } catch {
+  } catch (err) {
+    console.error('[contact] origin inválido en verificación CSRF:', err);
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
   }
 
-  // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
-  // x-forwarded-for puede inyectarse; usar último valor como fallback
-  const ip = req.headers.get('x-real-ip')
-           ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
-           ?? 'unknown';
+  let ipHash: string;
+  try {
+    ipHash = getHashedIp(req);
+  } catch {
+    console.error('IP_HASH_SECRET no está configurado');
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
 
   // Rate limit: 3 envíos por IP cada 10 minutos
-  const rl = checkRateLimit(`contact:${ip}`, 3, 600_000);
+  const rl = checkRateLimit(`contact:${ipHash}`, 3, 600_000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: 'RATE_LIMIT', message: 'Demasiados envíos. Intenta más tarde.' },
@@ -47,7 +50,10 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const body   = await req.json().catch(() => null);
+  const body = await req.json().catch((err: unknown) => {
+    console.error('[contact] error al parsear JSON del body:', err);
+    return null;
+  });
 
   // Honeypot: si el campo oculto trae valor, es un bot. Devolvemos 201 ok
   // para no revelar que detectamos el honeypot, pero no insertamos nada.
@@ -61,13 +67,6 @@ export async function POST(req: NextRequest) {
   }
 
   const { nombre, telefono, correo, mensaje, fuente } = parsed.data;
-
-  const secret = process.env.IP_HASH_SECRET;
-  if (!secret) {
-    console.error('IP_HASH_SECRET no está configurado');
-    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
-  }
-  const ipHash = createHash('sha256').update(ip + secret).digest('hex');
 
   const admin = getAdminClient();
   const { error } = await admin.from('contact_requests').insert({
