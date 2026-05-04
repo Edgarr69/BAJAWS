@@ -69,10 +69,7 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  // ── Eliminar todo — solo superadmin + token de confirmación explícito ──────
-  if (session.role !== 'superadmin') {
-    return forbidden('El borrado masivo de datos está reservado a superadmin');
-  }
+  // ── Eliminar todo — superadmin y admin + token de confirmación explícito ────
   if (confirm !== 'RESET_ALL') {
     return NextResponse.json(
       { error: 'CONFIRMATION_REQUIRED', message: 'Se requiere ?confirm=RESET_ALL para borrar todos los datos' },

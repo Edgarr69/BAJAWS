@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Eye, FileDown } from 'lucide-react';
+import { Eye, FileDown, Trash2 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { getSubmissions, getSubmission } from '@/lib/api';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { getSubmissions, getSubmission, getMe, resetAllData } from '@/lib/api';
 import type { Submission, Answer } from '@/types/panel';
 
 const today = new Date().toISOString().slice(0, 10);
@@ -17,12 +17,15 @@ export default function RespuestasPage() {
   const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading]         = useState(true);
+  const [myRole, setMyRole]           = useState<string>('atencion');
   const [dateFrom, setDateFrom]       = useState('');
   const [dateTo, setDateTo]           = useState('');
   const [search, setSearch]           = useState('');
   const [detail, setDetail]           = useState<{ submission: Submission; answers: Answer[] } | null>(null);
   const [detailOpen, setDetailOpen]   = useState(false);
   const [detailLoading, setDL]        = useState(false);
+  const [confirmPurge, setConfirmPurge] = useState(false);
+  const [purging, setPurging]           = useState(false);
 
   async function load() {
     setLoading(true);
@@ -39,7 +42,15 @@ export default function RespuestasPage() {
     }
   }
 
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    Promise.all([getMe(), getSubmissions()])
+      .then(([me, data]) => {
+        setMyRole(me.role);
+        setSubmissions(data as Submission[]);
+      })
+      .catch(() => toast.error('Error cargando respuestas'))
+      .finally(() => setLoading(false));
+  }, []);
 
   async function openDetail(id: string) {
     setDetailOpen(true);
@@ -55,6 +66,20 @@ export default function RespuestasPage() {
     }
   }
 
+  async function handlePurge() {
+    setPurging(true);
+    try {
+      await resetAllData();
+      setSubmissions([]);
+      setConfirmPurge(false);
+      toast.success('Todas las respuestas y enlaces han sido eliminados');
+    } catch {
+      toast.error('Error al eliminar los datos');
+    } finally {
+      setPurging(false);
+    }
+  }
+
   const scoreColor = (v: number) =>
     v <= 2 ? 'text-red-600 font-bold' : v === 3 ? 'text-amber-600 font-semibold' : 'text-accent-700 font-bold';
 
@@ -63,6 +88,8 @@ export default function RespuestasPage() {
         s.company_name?.toLowerCase().includes(search.trim().toLowerCase())
       )
     : submissions;
+
+  const canPurge = myRole === 'superadmin' || myRole === 'admin';
 
   return (
     <div className="max-w-5xl space-y-6">
@@ -82,7 +109,7 @@ export default function RespuestasPage() {
           placeholder="Buscar empresa…"
           value={search}
           onChange={e => setSearch(e.target.value)}
-          className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-[160px]"
+          className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500 min-w-[10rem]"
         />
         {search.trim() && (
           <Button
@@ -103,6 +130,28 @@ export default function RespuestasPage() {
       </div>
 
       <Card className="border-slate-200">
+        <CardHeader className="pb-3 flex flex-row items-center justify-between">
+          <CardTitle className="text-sm font-semibold text-slate-700">
+            {!loading && (
+              <span>
+                {filtered.length}{' '}
+                {filtered.length === 1 ? 'respuesta' : 'respuestas'}
+                {search.trim() ? ' encontradas' : ' en total'}
+              </span>
+            )}
+          </CardTitle>
+          {canPurge && !loading && submissions.length > 0 && (
+            <Button
+              size="sm"
+              variant="outline"
+              className="gap-1.5 text-red-600 border-red-200 hover:bg-red-50"
+              onClick={() => setConfirmPurge(true)}
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              Eliminar todo
+            </Button>
+          )}
+        </CardHeader>
         <CardContent className="p-0">
           {loading ? (
             <div className="p-6 space-y-3">{[1,2,3,4].map(i => <Skeleton key={i} className="h-10 w-full" />)}</div>
@@ -112,40 +161,42 @@ export default function RespuestasPage() {
             <p className="text-sm text-slate-400 text-center py-12">Sin resultados para &quot;{search}&quot;</p>
           ) : (
             <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="border-b border-slate-100 bg-slate-50">
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Fecha</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Código</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Folio</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Empresa</th>
-                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Ver</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {filtered.map(s => (
-                    <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
-                      <td className="px-4 py-3 text-slate-600 text-xs">
-                        {new Date(s.submitted_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}
-                      </td>
-                      <td className="px-4 py-3 font-mono text-xs text-primary-700">
-                        {(s.feedback_links as { code: string } | null)?.code ?? '—'}
-                      </td>
-                      <td className="px-4 py-3 text-slate-600">
-                        {(s.services as { folio: string | null } | null)?.folio ?? '—'}
-                      </td>
-                      <td className="px-4 py-3 text-slate-700 text-xs">
-                        {s.company_name ?? <span className="text-slate-300">—</span>}
-                      </td>
-                      <td className="px-4 py-3">
-                        <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => openDetail(s.id)}>
-                          <Eye className="w-3.5 h-3.5" />
-                        </Button>
-                      </td>
+              <div className="max-h-[32.5rem] overflow-y-auto">
+                <table className="w-full text-sm">
+                  <thead className="sticky top-0 z-10">
+                    <tr className="border-b border-slate-100 bg-slate-50">
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Fecha</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Código</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Folio</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Empresa</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Ver</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {filtered.map(s => (
+                      <tr key={s.id} className="border-b border-slate-50 hover:bg-slate-50 transition-colors">
+                        <td className="px-4 py-3 text-slate-600 text-xs">
+                          {new Date(s.submitted_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}
+                        </td>
+                        <td className="px-4 py-3 font-mono text-xs text-primary-700">
+                          {(s.feedback_links as { code: string } | null)?.code ?? '—'}
+                        </td>
+                        <td className="px-4 py-3 text-slate-600">
+                          {(s.services as { folio: string | null } | null)?.folio ?? '—'}
+                        </td>
+                        <td className="px-4 py-3 text-slate-700 text-xs">
+                          {s.company_name ?? <span className="text-slate-300">—</span>}
+                        </td>
+                        <td className="px-4 py-3">
+                          <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => openDetail(s.id)}>
+                            <Eye className="w-3.5 h-3.5" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
           )}
         </CardContent>
@@ -161,7 +212,6 @@ export default function RespuestasPage() {
             <div className="space-y-3 py-4">{[1,2,3].map(i => <Skeleton key={i} className="h-8 w-full" />)}</div>
           ) : detail ? (
             <div className="space-y-5">
-              {/* Metadatos */}
               <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-500 space-y-1">
                 <p><span className="font-medium">Fecha:</span> {new Date(detail.submission.submitted_at).toLocaleString('es-MX')}</p>
                 <p><span className="font-medium">Código:</span> {(detail.submission.feedback_links as { code: string } | null)?.code ?? '—'}</p>
@@ -171,7 +221,6 @@ export default function RespuestasPage() {
                 )}
               </div>
 
-              {/* Respuestas agrupadas por tema */}
               {(() => {
                 const grouped: Record<string, Answer[]> = {};
                 for (const a of detail.answers) {
@@ -190,7 +239,6 @@ export default function RespuestasPage() {
                         </div>
                       ))}
                     </div>
-                    {/* Comentarios */}
                     {answers.some(a => a.value_text) && (
                       <div className="mt-2 space-y-1">
                         {answers.filter(a => a.value_text).map(a => (
@@ -205,6 +253,31 @@ export default function RespuestasPage() {
               })()}
             </div>
           ) : null}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog confirmar purge */}
+      <Dialog open={confirmPurge} onOpenChange={open => !open && !purging && setConfirmPurge(false)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Eliminar todas las respuestas</DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 py-2">
+            Esta acción eliminará <strong>permanentemente</strong> todas las respuestas y
+            todos los enlaces de evaluación generados. No se puede deshacer.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmPurge(false)} disabled={purging}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={handlePurge}
+              disabled={purging}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              {purging ? 'Eliminando…' : 'Eliminar todo'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
