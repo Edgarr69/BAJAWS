@@ -38,7 +38,7 @@ export async function POST(req: NextRequest) {
   if (errorResponse) return errorResponse;
 
   // Rate limit: máximo 10 creaciones de usuario por hora por actor
-  const rl = checkRateLimit(`user-create:${session.userId}`, 10, 3600_000);
+  const rl = await checkRateLimit(`user-create:${session.userId}`, 10, 3600_000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: 'RATE_LIMIT', message: 'Demasiadas creaciones de usuario. Intenta más tarde.' },

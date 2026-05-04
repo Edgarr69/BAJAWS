@@ -52,7 +52,7 @@ export async function POST(req: NextRequest) {
   }
 
   // Rate limit: 5 envíos por IP por 10 minutos
-  const rl = checkRateLimit(`submit:${ipHash}`, 5, 600_000);
+  const rl = await checkRateLimit(`submit:${ipHash}`, 5, 600_000);
   if (!rl.allowed) {
     return NextResponse.json(
       { error: 'RATE_LIMIT', message: 'Demasiados envíos. Intenta más tarde.' },

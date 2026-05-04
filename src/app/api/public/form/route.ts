@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
   const ip = req.headers.get('x-real-ip')
            ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
            ?? 'unknown';
-  const rl = checkRateLimit(`form:${ip}`, 30, 60_000);
+  const rl = await checkRateLimit(`form:${ip}`, 30, 60_000);
 
   if (!rl.allowed) {
     return NextResponse.json(
