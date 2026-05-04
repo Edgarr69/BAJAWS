@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { getHashedIp } from '@/lib/request-utils';
+import { sendContactNotification } from '@/lib/email';
 
 const schema = z.object({
   nombre:   z.string().trim().min(2).max(80),
@@ -81,6 +82,12 @@ export async function POST(req: NextRequest) {
   if (error) {
     console.error('contact insert:', error.message);
     return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
+
+  try {
+    await sendContactNotification({ nombre, telefono, correo, mensaje, fuente });
+  } catch (emailErr) {
+    console.error('[contact] error al enviar notificación por email:', emailErr);
   }
 
   return NextResponse.json({ ok: true }, { status: 201 });
