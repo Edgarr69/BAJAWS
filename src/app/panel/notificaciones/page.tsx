@@ -54,8 +54,13 @@ export default function NotificacionesPage() {
   const [confirmDel, setConfirmDel] = useState<NotificationEmail | null>(null);
   const [showAdd, setShowAdd]       = useState(false);
   const [saving, setSaving]         = useState(false);
+  const [newUsername, setNewUsername] = useState('');
   const [newEmail, setNewEmail]     = useState('');
   const [newLabel, setNewLabel]     = useState('');
+  const [isExternal, setIsExternal] = useState(false);
+
+  const resolvedEmail = isExternal ? newEmail.trim() : `${newUsername.trim()}@bajaws.com.mx`;
+  const emailValid    = isExternal ? /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.trim()) : newUsername.trim().length > 0;
 
   useEffect(() => {
     getNotificationEmails()
@@ -93,11 +98,11 @@ export default function NotificacionesPage() {
   }
 
   async function handleAdd() {
-    if (!newEmail.trim()) return;
+    if (!emailValid) return;
     setSaving(true);
     try {
       const created = await createNotificationEmail({
-        email: newEmail.trim(),
+        email: resolvedEmail,
         label: newLabel.trim() || undefined,
       });
       setItems(prev => [...prev, created]);
@@ -115,8 +120,10 @@ export default function NotificacionesPage() {
   function handleCloseAdd() {
     if (saving) return;
     setShowAdd(false);
+    setNewUsername('');
     setNewEmail('');
     setNewLabel('');
+    setIsExternal(false);
   }
 
   return (
@@ -238,27 +245,53 @@ export default function NotificacionesPage() {
 
       {/* Dialog agregar correo */}
       <Dialog open={showAdd} onOpenChange={open => !open && handleCloseAdd()}>
-        <DialogContent className="sm:max-w-sm">
+        <DialogContent className="sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Agregar correo de notificación</DialogTitle>
           </DialogHeader>
-          <div className="py-2 space-y-3">
-            <input
-              type="email"
-              placeholder="Correo electrónico *"
-              value={newEmail}
-              onChange={e => setNewEmail(e.target.value)}
-              maxLength={254}
-              className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
-              autoFocus
-            />
+          <div className="py-4 space-y-4">
+            {!isExternal ? (
+              <div className="flex items-center border border-slate-200 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-primary-500">
+                <input
+                  type="text"
+                  placeholder="usuario"
+                  value={newUsername}
+                  onChange={e => setNewUsername(e.target.value.replace(/[@\s]/g, ''))}
+                  maxLength={64}
+                  autoFocus
+                  className="flex-1 text-base md:text-sm px-4 py-3 focus:outline-none text-slate-700 placeholder:text-slate-300"
+                />
+                <span className="px-4 py-3 bg-slate-50 text-slate-500 text-sm border-l border-slate-200 select-none whitespace-nowrap">
+                  @bajaws.com.mx
+                </span>
+              </div>
+            ) : (
+              <input
+                type="email"
+                placeholder="correo@ejemplo.com"
+                value={newEmail}
+                onChange={e => setNewEmail(e.target.value)}
+                maxLength={254}
+                autoFocus
+                className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+              />
+            )}
+
+            <button
+              type="button"
+              onClick={() => { setIsExternal(v => !v); setNewUsername(''); setNewEmail(''); }}
+              className="text-xs text-secondary-500 hover:underline"
+            >
+              {isExternal ? 'Usar correo @bajaws.com.mx' : 'No es correo de la empresa'}
+            </button>
+
             <input
               type="text"
               placeholder="Etiqueta descriptiva (ej. Ventas, Gerencia)"
               value={newLabel}
               onChange={e => setNewLabel(e.target.value)}
               maxLength={60}
-              className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+              className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
             />
           </div>
           <DialogFooter>
@@ -267,7 +300,7 @@ export default function NotificacionesPage() {
             </Button>
             <Button
               onClick={handleAdd}
-              disabled={saving || !newEmail.trim()}
+              disabled={saving || !emailValid}
               className="bg-primary-700 hover:bg-primary-600"
             >
               {saving ? 'Guardando…' : 'Agregar'}
