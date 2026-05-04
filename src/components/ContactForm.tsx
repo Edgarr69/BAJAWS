@@ -44,6 +44,12 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
   const mensajeRef  = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
+    if (status !== "success") return;
+    const timeout = setTimeout(() => setStatus("idle"), 5000);
+    return () => clearTimeout(timeout);
+  }, [status]);
+
+  useEffect(() => {
     if (status !== "rate_limited") return;
     const remaining = Math.ceil((RATE_LIMIT_MS - (Date.now() - lastSubmitRef.current)) / 1000);
     setCountdown(remaining > 0 ? remaining : 0);

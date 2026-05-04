@@ -114,7 +114,7 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {razones.map((r, i) => (
-            <AnimateOnScroll key={i} delay={i * 100}>
+            <AnimateOnScroll key={r.titulo} delay={i * 100}>
               <div className="flex gap-4 bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow duration-300">
                 <div className="w-11 h-11 bg-primary-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
                   <svg className="w-5 h-5 text-primary-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -193,7 +193,7 @@ export default async function HomePage() {
       </section>
 
       {/* ── Cotización ───────────────────────────────────────────────────────── */}
-      <section id="cotizacion" className="bg-gray-50 scroll-mt-16 min-h-[calc(100svh-4rem)] flex items-center">
+      <section id="cotizacion" className="bg-gray-50 [scroll-margin-top:var(--header-height,4rem)] min-h-[calc(100svh-4rem)] flex items-center">
         <div className="w-full max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
           <AnimateOnScroll direction="fade">
             <div className="text-center mb-5">
