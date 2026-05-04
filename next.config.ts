@@ -3,10 +3,16 @@ import type { NextConfig } from "next";
 // ─────────────────────────────────────────────────────────────────────────────
 // Headers de seguridad HTTP — aplicados a todas las rutas
 // ─────────────────────────────────────────────────────────────────────────────
+// En desarrollo Next.js usa eval() para HMR — en producción NO se permite
+const isDev = process.env.NODE_ENV !== "production";
+
+// Host exacto del proyecto Supabase (evita wildcard *.supabase.co)
+const SUPABASE_HOST = "https://dlgergnuqxzexsjeuztg.supabase.co";
+
 const CSP = [
   "default-src 'self'",
-  // Next.js App Router requiere unsafe-inline para hidratación
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com",
+  // Next.js App Router requiere unsafe-inline para hidratación; unsafe-eval solo en dev (HMR)
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
   "style-src 'self' 'unsafe-inline'",
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
@@ -16,8 +22,8 @@ const CSP = [
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
   "frame-src https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com",
-  // Peticiones fetch/XHR: mismo origen + Supabase (requerido para signInWithPassword y realtime)
-  "connect-src 'self' https://dlgergnuqxzexsjeuztg.supabase.co https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net",
+  // Peticiones fetch/XHR: mismo origen + host exacto de Supabase (requerido para signInWithPassword y realtime)
+  `connect-src 'self' ${SUPABASE_HOST} https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net`,
   // El formulario solo puede enviar datos al mismo origen
   "form-action 'self'",
   // Evita inyección de <base>
