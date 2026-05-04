@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://bajaws.mx"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://bajaws.com.mx"
   ),
   title: {
     default: "Baja Wastewater Solution",

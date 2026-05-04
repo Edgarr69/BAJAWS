@@ -238,7 +238,7 @@ export default async function HomePage() {
             "@type": "LocalBusiness",
             "name": siteContent.company.name,
             "telephone": siteContent.contacto.info.telefono,
-            "url": "https://bajaws.mx",
+            "url": "https://bajaws.com.mx",
             "address": {
               "@type": "PostalAddress",
               "streetAddress": siteContent.contacto.info.direccion,
