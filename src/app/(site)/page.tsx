@@ -13,7 +13,10 @@ import { getAdminClient } from "@/lib/supabase/admin";
 
 export const revalidate = 3600;
 export const metadata: Metadata = {
-  ...siteContent.home.meta,
+  title: {
+    absolute: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales",
+  },
+  description: siteContent.home.meta.description,
   openGraph: {
     images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
   },

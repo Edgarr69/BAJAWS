@@ -46,9 +46,9 @@ export const siteContent = {
       { label: "Nuestros servicios",   href: "/servicios",    variant: "secondary" as const },
     ],
     meta: {
-      title: "Inicio",
+      title: "Empresa de Tratamiento de Aguas Residuales Industriales en Baja California",
       description:
-        "Baja Wastewater Solution — empresa de soluciones para el tratamiento de aguas residuales industriales en Baja California.",
+        "Empresa certificada en tratamiento de aguas residuales industriales en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de 15 años de experiencia. Solicita cotización.",
     },
   },
 
@@ -166,58 +166,8 @@ export const siteContent = {
     },
   },
 
-  // ── Landing Page ───────────────────────────────────────────────────────────
+  // ── Autorizaciones (usado en home) ────────────────────────────────────────
   landing: {
-    hero: {
-      badge: "Empresa autorizada · SEMARNAT · CESPT · SEMAR · SCT",
-      title: "Tratamiento de Aguas Residuales Industriales en Baja California",
-      subtitle:
-        `Cumplimiento normativo garantizado, procesos físico-químicos certificados y más de ${getYearsExperience()} años de experiencia respaldando la industria de Baja California.`,
-      cta:    "Solicitar Cotización",
-      ctaHref:"#cotizacion",
-    },
-    problema: {
-      title: "¿Tu empresa genera aguas residuales industriales?",
-      items: [
-        {
-          titulo:     "Cumplimiento ambiental obligatorio",
-          descripcion:"Las industrias en México están sujetas a estrictas normas ambientales (NOM-001-SEMARNAT, NOM-002-SEMARNAT). El incumplimiento puede resultar en multas millonarias y cierre de operaciones.",
-        },
-        {
-          titulo:     "Manejo correcto de residuos líquidos",
-          descripcion:"Los residuos líquidos industriales requieren tratamiento especializado antes de su disposición final. Un manejo inadecuado contamina suelo, agua subterránea y cuerpos de agua.",
-        },
-        {
-          titulo:     "Riesgos del incumplimiento",
-          descripcion:"Las sanciones por incumplimiento ambiental incluyen clausura temporal o definitiva, multas millonarias y responsabilidad penal para directivos.",
-        },
-      ],
-    },
-    solucion: {
-      title:      "Nuestra Solución",
-      description:"Nuestra solución principal se enfoca en el tratamiento de aguas residuales industriales como sitio de disposición final por medio de procesos físico-químicos, los cuales son monitoreados mediante análisis de calidad del agua como medida de control para asegurar la eficiencia de nuestro servicio.",
-    },
-    beneficios: {
-      title: "¿Por qué elegirnos?",
-      items: [
-        {
-          titulo:     "Cumplimiento normativo garantizado",
-          descripcion:"Autorizaciones vigentes de SEMARNAT, CESPT, SEMAR y SCT. Operamos dentro del marco legal federal y estatal.",
-        },
-        {
-          titulo:     "Monitoreo y análisis de calidad",
-          descripcion:"Control continuo mediante análisis de agua para verificar la eficiencia del tratamiento en cada proceso.",
-        },
-        {
-          titulo:     "Tecnología físico-química especializada",
-          descripcion:"Procesos físico-químicos de vanguardia para el tratamiento efectivo de residuos líquidos industriales.",
-        },
-        {
-          titulo:     `${getYearsExperience()}+ años de experiencia`,
-          descripcion:"Desde 2009 brindando soluciones de manejo de residuos a industrias de gran prestigio en Baja California.",
-        },
-      ],
-    },
     autorizaciones: {
       title: "Operamos con todas las autorizaciones vigentes",
       items: [
@@ -226,17 +176,6 @@ export const siteContent = {
         { dependencia:"SEMAR",    descripcion:"Manejo de residuos líquidos, sólidos y semisólidos" },
         { dependencia:"SCT",      descripcion:"Transporte de carga general líquida, sólida o semisólida" },
       ],
-    },
-    formulario: {
-      title:    "Solicita tu Asesoría Técnica",
-      subtitle: "Nuestro equipo especializado analizará tu caso y te presentará la mejor solución para tu industria.",
-      cta:      "Recibir Asesoría Técnica",
-    },
-    meta: {
-      title:
-        "Tratamiento de Aguas Residuales Industriales en Baja California | Baja Wastewater Solution",
-      description:
-        `Empresa certificada en tratamiento de aguas residuales industriales. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de ${getYearsExperience()} años de experiencia. Solicita cotización.`,
     },
   },
 };
