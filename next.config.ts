@@ -12,7 +12,7 @@ const SUPABASE_HOST = "https://dlgergnuqxzexsjeuztg.supabase.co";
 const CSP = [
   "default-src 'self'",
   // Next.js App Router requiere unsafe-inline para hidratación; unsafe-eval solo en dev (HMR)
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com`,
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com`,
   "style-src 'self' 'unsafe-inline'",
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
@@ -23,7 +23,7 @@ const CSP = [
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
   "frame-src https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com",
   // Peticiones fetch/XHR: mismo origen + host exacto de Supabase (requerido para signInWithPassword y realtime)
-  `connect-src 'self' ${SUPABASE_HOST} https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net`,
+  `connect-src 'self' ${SUPABASE_HOST} https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://cloudflareinsights.com`,
   // El formulario solo puede enviar datos al mismo origen
   "form-action 'self'",
   // Evita inyección de <base>
