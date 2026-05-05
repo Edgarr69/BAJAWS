@@ -105,9 +105,9 @@ export const siteContent = {
       },
     ],
     meta: {
-      title: "Servicios",
+      title: "Servicios de Tratamiento y Gestión de Residuos Industriales",
       description:
-        "Servicios de recolección y transporte, tratamiento de aguas residuales y acopio de residuos industriales en Baja California.",
+        "Recolección, transporte, tratamiento de aguas residuales y acopio de residuos industriales en Baja California. Empresa autorizada con más de 15 años de experiencia.",
     },
   },
 
@@ -128,9 +128,9 @@ export const siteContent = {
       text: "Nuestra visión de proporcionar continuamente el servicio más eficaz en el tratamiento, reciclaje y recuperación de recursos, así como promover el cumplimiento puntual de la normatividad ambiental utilizando las mejores tecnologías que protejan y mejoren nuestro planeta tierra.",
     },
     meta: {
-      title: "Nosotros",
+      title: "Empresa de Tratamiento de Residuos Industriales en Baja California",
       description:
-        `Conoce la historia, misión y visión de Baja Wastewater Solution — más de ${getYearsExperience()} años de experiencia en tratamiento de residuos industriales en Baja California.`,
+        `Conoce a Baja Wastewater Solution — más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en Baja California.`,
     },
   },
 
@@ -140,9 +140,9 @@ export const siteContent = {
     intro:
       "Contamos con las autorizaciones necesarias emitidas por autoridades locales, estatales y federales competentes, para llevar a cabo nuestros servicios de manejo de residuos de forma segura y confiable, siempre procurando cumplir cabalmente con las disposiciones establecidas en las normas, leyes y reglamentos que rigen en nuestro país.",
     meta: {
-      title: "Autorizaciones",
+      title: "Autorizaciones SEMARNAT, CESPT, SEMAR y SCT para Manejo de Residuos",
       description:
-        "Autorizaciones oficiales de Baja Wastewater Solution emitidas por SEMARNAT, CESPT, SEMAR y SCT para el manejo seguro de residuos industriales.",
+        "Baja Wastewater Solution opera con autorizaciones vigentes de SEMARNAT, CESPT, SEMAR y SCT para el manejo, tratamiento y transporte seguro de residuos industriales en Baja California.",
     },
   },
 
@@ -160,9 +160,9 @@ export const siteContent = {
     },
     honeypotLabel: "Si eres humano, deja este campo en blanco.",
     meta: {
-      title: "Contacto",
+      title: "Contacto y Cotización de Servicios de Tratamiento de Residuos",
       description:
-        "Contáctanos en Baja Wastewater Solution. Dirección: Fray Junípero Serra No.17501, Garita de Otay, Tijuana B.C. Teléfono: (664) 647 5020.",
+        "Solicita cotización o contáctanos en Baja Wastewater Solution. Tijuana, Baja California. Tel: (664) 647 5020. Atención Lunes a Viernes 8:00 AM - 5:00 PM.",
     },
   },
 
