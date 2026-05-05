@@ -85,6 +85,8 @@ export default function CookieBanner() {
   return (
     <div
       ref={bannerRef}
+      role="region"
+      aria-label="Consentimiento de cookies"
       className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
       style={{
         animation: leaving

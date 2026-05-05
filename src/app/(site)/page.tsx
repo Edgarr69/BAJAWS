@@ -46,11 +46,16 @@ export default async function HomePage() {
   const servicesCount        = services.length;
   const agencias             = siteContent.landing.autorizaciones.items;
 
-  const admin = getAdminClient();
-  const { count } = await admin
-    .from("autorizaciones")
-    .select("id", { count: "exact", head: true });
-  const authorizationsCount = count ?? 0;
+  let authorizationsCount = 0;
+  try {
+    const admin = getAdminClient();
+    const { count } = await admin
+      .from("autorizaciones")
+      .select("id", { count: "exact", head: true });
+    authorizationsCount = count ?? 0;
+  } catch {
+    // fallback silencioso — la página sigue funcionando con 0
+  }
 
   return (
     <>
