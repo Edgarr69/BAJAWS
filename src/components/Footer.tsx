@@ -27,7 +27,7 @@ export default function Footer() {
               Empresa tratadora de aguas industriales residuales con más de {getYearsExperience()} años de experiencia en todo México.
             </p>
             <Link
-              href="/tratamiento-aguas-residuales"
+              href="/contacto"
               className="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-gray-100 transition-colors duration-150 text-sm font-semibold px-5 py-2.5 rounded-full w-fit"
             >
               Solicitar cotización →
