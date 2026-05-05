@@ -17,9 +17,7 @@ export const metadata: Metadata = {
     absolute: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales",
   },
   description: siteContent.home.meta.description,
-  openGraph: {
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
-  },
+  openGraph: {},
 };
 
 const razones = [

@@ -6,9 +6,7 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.nosotros.meta,
-  openGraph: {
-    images: [{ url: "/og-image.jpg", width: 1200, height: 630 }],
-  },
+  openGraph: {},
 };
 
 export default function NosotrosPage() {
