@@ -96,8 +96,8 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
           <step.Icon className="w-4 h-4 sm:w-6 sm:h-6" strokeWidth={1.75} />
         </div>
         <div className="relative z-10 flex flex-col gap-1">
-          <h3 className="font-bold text-slate-800 text-sm sm:text-base leading-snug">{step.title}</h3>
-          <p className="text-slate-500 text-xs sm:text-sm leading-relaxed text-justify">{step.description}</p>
+          <h3 className="font-bold text-slate-800 text-base leading-snug">{step.title}</h3>
+          <p className="text-slate-500 text-sm leading-relaxed text-justify">{step.description}</p>
         </div>
       </div>
     </AnimateOnScroll>
