@@ -50,6 +50,15 @@ export default function AvisoPrivacidadPage() {
             <li>Mensaje o consulta</li>
           </ul>
           <p className="mt-3 text-sm">
+            Adicionalmente, cuando visita este sitio web se registran automáticamente datos técnicos
+            como: tipo de navegador, sistema operativo, páginas visitadas y dirección IP (almacenada
+            de forma hasheada — no permite identificarle directamente).
+          </p>
+          <p className="mt-3 text-sm">
+            Proporcionar los datos marcados en los formularios es voluntario; sin embargo, no hacerlo
+            puede impedir que podamos atender su solicitud de contacto o cotización.
+          </p>
+          <p className="mt-3 text-sm">
             No recabamos datos personales sensibles (salud, origen étnico, creencias religiosas, etc.).
           </p>
         </section>
@@ -120,6 +129,10 @@ export default function AvisoPrivacidadPage() {
             <li><a href="mailto:damian@bajaws.com.mx" className="text-primary-600 hover:underline">damian@bajaws.com.mx</a></li>
             <li><a href="mailto:yperalta@bajaws.com.mx" className="text-primary-600 hover:underline">yperalta@bajaws.com.mx</a></li>
           </ul>
+          <p className="mt-3 text-sm">
+            Atenderemos su petición en un plazo máximo de 20 días hábiles y le comunicaremos la
+            resolución por correo electrónico.
+          </p>
           <p className="mt-3 text-sm">
             Tenga en cuenta que revocar el consentimiento para finalidades primarias puede impedir que
             podamos atender su solicitud o cotización.
