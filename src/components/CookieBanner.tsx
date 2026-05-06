@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { X } from "lucide-react";
 
 export default function CookieBanner() {
   const [visible, setVisible]       = useState(false);
   const [leaving, setLeaving]       = useState(false);
   const [processing, setProcessing] = useState(false);
   const dismissTimer                = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const bannerRef                   = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const consent = localStorage.getItem("cookie-consent");
@@ -18,148 +18,95 @@ export default function CookieBanner() {
     }
   }, []);
 
+  // Bloquear scroll del body mientras el modal está visible
+  useEffect(() => {
+    if (visible) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [visible]);
+
   useEffect(() => {
     return () => {
       if (dismissTimer.current) clearTimeout(dismissTimer.current);
     };
   }, []);
 
-  // Mantener el banner pegado al borde inferior del visual viewport.
-  // En iOS, `fixed bottom-0` usa el layout viewport — cuando la barra de Chrome
-  // se oculta el visual viewport crece pero el banner no se mueve, quedando flotando.
-  // VisualViewport API reporta el tamaño real visible y permite corregirlo.
-  useEffect(() => {
-    if (!visible || !bannerRef.current) return;
-    const vv = window.visualViewport;
-    if (!vv) return;
-
-    let pending = false;
-    const update = () => {
-      pending = false;
-      if (!bannerRef.current) return;
-      const gap = Math.max(0, window.innerHeight - vv.offsetTop - vv.height);
-      bannerRef.current.style.bottom = `${gap}px`;
-    };
-    // Agrupa actualizaciones en un RAF para no escribir el DOM 60×/seg
-    const schedule = () => {
-      if (pending) return;
-      pending = true;
-      requestAnimationFrame(update);
-    };
-
-    vv.addEventListener("resize", schedule);
-    vv.addEventListener("scroll", schedule);
-    // window.scroll captura cuando la barra de Chrome se oculta/muestra al
-    // hacer scroll normal, ya que en iOS vv.resize no siempre dispara en ese caso
-    window.addEventListener("scroll", schedule, { passive: true });
-    update();
-
-    return () => {
-      vv.removeEventListener("resize", schedule);
-      vv.removeEventListener("scroll", schedule);
-      window.removeEventListener("scroll", schedule);
-    };
-  }, [visible]);
-
-  // Deslizar el banner hacia abajo durante el gesto pull-to-refresh
-  // para que no quede flotando mientras el resto de la página se jala.
-  useEffect(() => {
-    if (!visible) return;
-
-    let startY = 0;
-    let pulling = false;
-
-    const onTouchStart = (e: TouchEvent) => {
-      if (window.scrollY === 0) {
-        startY = e.touches[0].clientY;
-        pulling = true;
-      }
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      if (!pulling || !bannerRef.current) return;
-      const delta = Math.max(0, e.touches[0].clientY - startY);
-      bannerRef.current.style.transform = `translateY(${delta}px)`;
-    };
-
-    const onTouchEnd = () => {
-      if (!pulling || !bannerRef.current) return;
-      pulling = false;
-      bannerRef.current.style.transition = "transform 0.25s ease";
-      bannerRef.current.style.transform = "";
-      setTimeout(() => {
-        if (bannerRef.current) bannerRef.current.style.transition = "";
-      }, 250);
-    };
-
-    document.addEventListener("touchstart", onTouchStart, { passive: true });
-    document.addEventListener("touchmove", onTouchMove, { passive: true });
-    document.addEventListener("touchend", onTouchEnd);
-    document.addEventListener("touchcancel", onTouchEnd);
-
-    return () => {
-      document.removeEventListener("touchstart", onTouchStart);
-      document.removeEventListener("touchmove", onTouchMove);
-      document.removeEventListener("touchend", onTouchEnd);
-      document.removeEventListener("touchcancel", onTouchEnd);
-    };
-  }, [visible]);
-
-  const dismiss = (value: "accepted" | "rejected") => {
-    // Bug #5: evitar clicks múltiples
+  const dismiss = (value: "accepted" | "rejected" | null) => {
     if (processing) return;
     setProcessing(true);
 
-    localStorage.setItem("cookie-consent", value);
+    if (value) localStorage.setItem("cookie-consent", value);
     setLeaving(true);
 
-    // Bug #4: dispatch después de iniciar animación de salida
-    // Bug #2: guardar ref del timer para limpiarlo si el componente se desmonta
     dismissTimer.current = setTimeout(() => {
       setVisible(false);
-      window.dispatchEvent(new CustomEvent("cookie-consent-updated"));
-    }, 350);
+      if (value) window.dispatchEvent(new CustomEvent("cookie-consent-updated"));
+    }, 300);
   };
-
-  const accept = () => dismiss("accepted");
-  const reject = () => dismiss("rejected");
 
   if (!visible) return null;
 
   return (
     <div
-      ref={bannerRef}
-      role="region"
-      aria-label="Consentimiento de cookies"
-      className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-gray-200 shadow-lg"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{
         animation: leaving
-          ? "cookie-out 0.35s ease forwards"
-          : "cookie-in 0.4s cubic-bezier(0.34,1.1,0.64,1) forwards",
+          ? "overlay-out 0.3s ease forwards"
+          : "overlay-in 0.3s ease forwards",
       }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      {/* Fondo oscuro */}
+      <div className="absolute inset-0 bg-black/50" />
+
+      {/* Modal */}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label="Consentimiento de cookies"
+        className="relative bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 flex flex-col gap-4"
+        style={{
+          animation: leaving
+            ? "modal-out 0.3s ease forwards"
+            : "modal-in 0.3s cubic-bezier(0.34,1.1,0.64,1) forwards",
+        }}
+      >
+        {/* Botón cerrar */}
+        <button
+          onClick={() => dismiss(null)}
+          disabled={processing}
+          aria-label="Cerrar"
+          className="absolute top-3 right-3 text-gray-400 hover:text-gray-600 transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded-lg p-1"
+        >
+          <X className="w-4 h-4" aria-hidden="true" />
+        </button>
+
         {/* Texto */}
-        <p className="text-sm text-gray-600 text-center sm:text-left leading-relaxed">
-          Usamos cookies para analizar el tráfico del sitio y mejorar tu experiencia.{" "}
-          <Link href="/aviso-privacidad" className="text-primary-600 hover:underline font-medium">
-            Aviso de privacidad
-          </Link>
-        </p>
+        <div className="pr-6">
+          <p className="text-sm font-semibold text-slate-800 mb-1">Usamos cookies</p>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            Usamos cookies para analizar el tráfico del sitio y mejorar tu experiencia.{" "}
+            <Link href="/aviso-privacidad" className="text-primary-600 hover:underline font-medium">
+              Aviso de privacidad
+            </Link>
+          </p>
+        </div>
 
         {/* Botones */}
-        <div className="flex gap-3 flex-shrink-0">
+        <div className="flex gap-3">
           <button
-            onClick={reject}
+            onClick={() => dismiss("rejected")}
             disabled={processing}
-            className="text-sm font-medium border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
+            className="flex-1 text-sm font-medium border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 px-4 py-2.5 rounded-xl transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500"
           >
             Rechazar
           </button>
           <button
-            onClick={accept}
+            onClick={() => dismiss("accepted")}
             disabled={processing}
-            className="text-sm font-semibold bg-primary-700 hover:bg-primary-800 text-white px-5 py-2 rounded-lg transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-2"
+            className="flex-1 text-sm font-semibold bg-primary-700 hover:bg-primary-800 text-white px-4 py-2.5 rounded-xl transition-colors duration-150 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-700 focus-visible:ring-offset-2"
           >
             Aceptar
           </button>
@@ -167,17 +114,15 @@ export default function CookieBanner() {
       </div>
 
       <style>{`
-        @keyframes cookie-in {
-          from { opacity: 0; transform: translateY(100%); }
-          to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes cookie-out {
-          from { opacity: 1; transform: translateY(0); }
-          to   { opacity: 0; transform: translateY(100%); }
-        }
+        @keyframes overlay-in  { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes overlay-out { from { opacity: 1; } to { opacity: 0; } }
+        @keyframes modal-in  { from { opacity: 0; transform: scale(0.92) translateY(8px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+        @keyframes modal-out { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(4px); } }
         @media (prefers-reduced-motion: reduce) {
-          @keyframes cookie-in  { from { opacity: 0; } to { opacity: 1; } }
-          @keyframes cookie-out { from { opacity: 1; } to { opacity: 0; } }
+          @keyframes overlay-in  { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes overlay-out { from { opacity: 1; } to { opacity: 0; } }
+          @keyframes modal-in    { from { opacity: 0; } to { opacity: 1; } }
+          @keyframes modal-out   { from { opacity: 1; } to { opacity: 0; } }
         }
       `}</style>
     </div>
