@@ -61,6 +61,50 @@ export default function CookieBanner() {
     };
   }, [visible]);
 
+  // Deslizar el banner hacia abajo durante el gesto pull-to-refresh
+  // para que no quede flotando mientras el resto de la página se jala.
+  useEffect(() => {
+    if (!visible) return;
+
+    let startY = 0;
+    let pulling = false;
+
+    const onTouchStart = (e: TouchEvent) => {
+      if (window.scrollY === 0) {
+        startY = e.touches[0].clientY;
+        pulling = true;
+      }
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      if (!pulling || !bannerRef.current) return;
+      const delta = Math.max(0, e.touches[0].clientY - startY);
+      bannerRef.current.style.transform = `translateY(${delta}px)`;
+    };
+
+    const onTouchEnd = () => {
+      if (!pulling || !bannerRef.current) return;
+      pulling = false;
+      bannerRef.current.style.transition = "transform 0.25s ease";
+      bannerRef.current.style.transform = "";
+      setTimeout(() => {
+        if (bannerRef.current) bannerRef.current.style.transition = "";
+      }, 250);
+    };
+
+    document.addEventListener("touchstart", onTouchStart, { passive: true });
+    document.addEventListener("touchmove", onTouchMove, { passive: true });
+    document.addEventListener("touchend", onTouchEnd);
+    document.addEventListener("touchcancel", onTouchEnd);
+
+    return () => {
+      document.removeEventListener("touchstart", onTouchStart);
+      document.removeEventListener("touchmove", onTouchMove);
+      document.removeEventListener("touchend", onTouchEnd);
+      document.removeEventListener("touchcancel", onTouchEnd);
+    };
+  }, [visible]);
+
   const dismiss = (value: "accepted" | "rejected") => {
     // Bug #5: evitar clicks múltiples
     if (processing) return;
