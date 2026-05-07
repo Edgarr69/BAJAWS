@@ -250,6 +250,7 @@ export default async function HomePage() {
             "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT.",
             "url": "https://bajaws.com.mx",
             "logo": "https://bajaws.com.mx/logoo.webp",
+            "image": "https://bajaws.com.mx/images/nosotros.webp",
             "telephone": siteContent.contacto.info.telefono,
             "email": siteContent.contacto.info.correo,
             "foundingDate": String(siteContent.company.foundingYear),

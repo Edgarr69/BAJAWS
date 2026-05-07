@@ -47,6 +47,7 @@ export default function RootLayout({
               "name": "Baja Wastewater Solution",
               "url": "https://bajaws.com.mx",
               "logo": "https://bajaws.com.mx/logoo.webp",
+              "image": "https://bajaws.com.mx/images/nosotros.webp",
               "telephone": "(664) 647 5020",
               "email": "damian@bajaws.com.mx",
               "foundingDate": "2009",
