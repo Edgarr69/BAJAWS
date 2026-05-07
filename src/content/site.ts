@@ -48,7 +48,7 @@ export const siteContent = {
     meta: {
       title: "Empresa de Tratamiento de Aguas Residuales Industriales en Baja California",
       description:
-        "Empresa certificada en tratamiento de aguas residuales industriales en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de 15 años de experiencia. Solicita cotización.",
+        "Empresa certificada en tratamiento de aguas residuales en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de 15 años de experiencia.",
     },
   },
 
@@ -107,7 +107,7 @@ export const siteContent = {
     meta: {
       title: "Servicios de Tratamiento y Gestión de Residuos Industriales",
       description:
-        "Recolección, transporte, tratamiento de aguas residuales y acopio de residuos industriales en Baja California. Empresa autorizada con más de 15 años de experiencia.",
+        "Recolección, transporte, tratamiento de aguas residuales y acopio de residuos industriales en Baja California. Empresa autorizada con +15 años de experiencia.",
     },
   },
 
@@ -142,7 +142,7 @@ export const siteContent = {
     meta: {
       title: "Autorizaciones SEMARNAT, CESPT, SEMAR y SCT para Manejo de Residuos",
       description:
-        "Baja Wastewater Solution opera con autorizaciones vigentes de SEMARNAT, CESPT, SEMAR y SCT para el manejo, tratamiento y transporte seguro de residuos industriales en Baja California.",
+        "Autorizaciones vigentes SEMARNAT, CESPT, SEMAR y SCT para manejo, tratamiento y transporte de residuos industriales peligrosos en Baja California.",
     },
   },
 

@@ -268,10 +268,18 @@ export default async function HomePage() {
               "opens": "08:00",
               "closes": "17:00",
             },
-            "areaServed": {
-              "@type": "State",
-              "name": "Baja California",
+            "geo": {
+              "@type": "GeoCoordinates",
+              "latitude": 32.5368,
+              "longitude": -116.9320,
             },
+            "areaServed": [
+              { "@type": "City", "name": "Tijuana" },
+              { "@type": "City", "name": "Tecate" },
+              { "@type": "City", "name": "Mexicali" },
+              { "@type": "City", "name": "Ensenada" },
+              { "@type": "State", "name": "Baja California" },
+            ],
           }),
         }}
       />
