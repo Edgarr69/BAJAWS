@@ -342,6 +342,25 @@ export default async function HomePage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
+            "@type": "VideoObject",
+            "name": "BWS video promo",
+            "description": "Conoce las instalaciones y los procesos de tratamiento de aguas residuales industriales y gestión de residuos peligrosos de Baja Wastewater Solution en Tijuana, Baja California.",
+            "thumbnailUrl": "https://i.ytimg.com/vi/UyetZ7i_Mg4/hqdefault.jpg",
+            "embedUrl": "https://www.youtube-nocookie.com/embed/UyetZ7i_Mg4",
+            "url": "https://www.youtube.com/watch?v=UyetZ7i_Mg4",
+            "uploadDate": "2023-01-01",
+            "publisher": {
+              "@type": "Organization",
+              "@id": "https://bajaws.com.mx/#organization",
+            },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/#webpage",
             "url": "https://bajaws.com.mx",
