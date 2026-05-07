@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: "Proceso de Disposición | Baja Wastewater Solution",
   description:
     "Conoce nuestro proceso de disposición segura de residuos industriales: desde la recepción controlada hasta el confinamiento definitivo en celdas de seguridad.",
+  alternates: { canonical: "/servicios/disposicion" },
 };
 
 const steps = [

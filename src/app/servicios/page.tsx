@@ -4,7 +4,10 @@ import ServicesList from "@/components/ServicesList";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { siteContent } from "@/content/site";
 
-export const metadata: Metadata = siteContent.services.meta;
+export const metadata: Metadata = {
+  ...siteContent.services.meta,
+  alternates: { canonical: "/servicios" },
+};
 
 export default function ServiciosPage() {
   const { title, intro, question, cta, ctaHref } = siteContent.services;

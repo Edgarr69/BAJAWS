@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   title: "Servicios Integrales | Baja Wastewater Solution",
   description:
     "Conoce nuestro proceso integral de gestión de residuos: desde el primer contacto hasta la mejora continua con estándares de calidad certificados.",
+  alternates: { canonical: "/servicios/integrales" },
 };
 
 // Orden: inicio del proceso → ejecución/operación → beneficio, mejora y calidad

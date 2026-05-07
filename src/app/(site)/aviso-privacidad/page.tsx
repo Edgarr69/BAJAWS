@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Aviso de Privacidad | Baja Wastewater Solution",
   description: "Aviso de privacidad de Baja Wastewater Solution conforme a la LFPDPPP.",
+  alternates: { canonical: "/aviso-privacidad" },
 };
 
 export default function AvisoPrivacidadPage() {

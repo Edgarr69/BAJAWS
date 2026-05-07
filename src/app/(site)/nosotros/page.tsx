@@ -6,7 +6,7 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.nosotros.meta,
-  openGraph: {},
+  alternates: { canonical: "/nosotros" },
 };
 
 export default function NosotrosPage() {

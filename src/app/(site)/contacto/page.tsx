@@ -6,7 +6,7 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.contacto.meta,
-  openGraph: {},
+  alternates: { canonical: "/contacto" },
 };
 
 export default function ContactoPage() {
