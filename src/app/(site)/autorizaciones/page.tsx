@@ -8,7 +8,10 @@ import { getAdminClient } from "@/lib/supabase/admin";
 import type { Autorizacion } from "@/types/panel";
 
 export const revalidate = 3600;
-export const metadata: Metadata = siteContent.autorizaciones.meta;
+export const metadata: Metadata = {
+  ...siteContent.autorizaciones.meta,
+  alternates: { canonical: "/autorizaciones" },
+};
 
 const stats = [
   { value: "8",  label: "Autorizaciones vigentes" },
@@ -20,12 +23,17 @@ const stats = [
 export default async function AutorizacionesPage() {
   const { title, intro } = siteContent.autorizaciones;
 
-  const admin = getAdminClient();
-  const { data } = await admin
-    .from("autorizaciones")
-    .select("id, clasificacion, dependencia, modalidad, residuo, numero_autorizacion, vigencia, display_order, created_at")
-    .order("display_order");
-  const rows: Autorizacion[] = data ?? [];
+  let rows: Autorizacion[] = [];
+  try {
+    const admin = getAdminClient();
+    const { data } = await admin
+      .from("autorizaciones")
+      .select("id, clasificacion, dependencia, modalidad, residuo, numero_autorizacion, vigencia, display_order, created_at")
+      .order("display_order");
+    rows = data ?? [];
+  } catch {
+    // fallback silencioso — la página sigue funcionando con tabla vacía
+  }
 
   return (
     <>
