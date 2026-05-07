@@ -147,6 +147,7 @@ export default function DisposicionPage() {
             "@id": "https://bajaws.com.mx/servicios/disposicion#webpage",
             "url": "https://bajaws.com.mx/servicios/disposicion",
             "name": "Proceso de Disposición | Baja Wastewater Solution",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),

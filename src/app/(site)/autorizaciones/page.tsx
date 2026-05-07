@@ -65,6 +65,7 @@ export default async function AutorizacionesPage() {
             "@id": "https://bajaws.com.mx/autorizaciones#webpage",
             "url": "https://bajaws.com.mx/autorizaciones",
             "name": "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solution",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),

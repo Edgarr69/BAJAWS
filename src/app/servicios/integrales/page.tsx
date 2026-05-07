@@ -156,6 +156,7 @@ export default function ServiciosIntegralesPage() {
             "@id": "https://bajaws.com.mx/servicios/integrales#webpage",
             "url": "https://bajaws.com.mx/servicios/integrales",
             "name": "Servicios Integrales | Baja Wastewater Solution",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),
