@@ -35,10 +35,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es-MX" className={inter.className} suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-      </head>
       <body suppressHydrationWarning>
         <GoogleTagManager />
         {children}
