@@ -101,83 +101,93 @@ export default function ContactoPage() {
           }),
         }}
       />
-      {/* Encabezado */}
-      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <AnimateOnScroll direction="fade">
-            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Habla con nosotros</p>
-            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
-            <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnScroll>
+      {/* ── Contenido principal (viewport fijo en desktop) ─────────────────── */}
+      <div className="flex flex-col bg-white md:overflow-hidden md:h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
+
+        {/* Encabezado */}
+        <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <AnimateOnScroll direction="fade">
+              <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Habla con nosotros</p>
+              <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
+              <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
+            </AnimateOnScroll>
+          </div>
+        </div>
+
+        {/* Cuerpo */}
+        <div className="flex-1 overflow-hidden py-4 sm:py-5">
+          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex flex-col justify-center">
+
+            {/* Intro */}
+            <AnimateOnScroll direction="up" delay={50}>
+              <p className="text-center text-gray-600 text-sm max-w-2xl mx-auto mb-4 leading-relaxed">
+                {intro}
+              </p>
+            </AnimateOnScroll>
+
+            {/* Grid principal */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-8 items-start">
+
+              {/* Columna izquierda — imagen + info */}
+              <AnimateOnScroll direction="left" delay={100}>
+                <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 mb-3">
+                  <Image
+                    src="/images/contacto.jpeg"
+                    alt="Recepción Baja Wastewater Solution"
+                    width={700}
+                    height={400}
+                    className="w-full h-36 sm:h-48 md:h-44 object-cover"
+                    sizes="(max-width: 1024px) 100vw, 50vw"
+                    priority
+                  />
+                </div>
+                <h2 className="text-base font-bold text-gray-900 mb-3">Información de contacto</h2>
+                <ul className="space-y-2.5">
+                  {contactItems.map((item) => (
+                    <li key={item.label} className="flex gap-3">
+                      <div className="w-8 h-8 bg-primary-50 border border-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-0.5">
+                          {item.label}
+                        </p>
+                        {item.href ? (
+                          <a href={item.href} className="text-gray-800 font-medium hover:text-primary-600 transition-colors text-sm block">
+                            {item.value}
+                          </a>
+                        ) : (
+                          <p className="text-gray-800 font-medium text-sm">{item.value}</p>
+                        )}
+                        {item.extra && (
+                          <a href={item.extra.href} className="text-gray-800 font-medium hover:text-primary-600 transition-colors text-sm block mt-0.5">
+                            {item.extra.value}
+                          </a>
+                        )}
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </AnimateOnScroll>
+
+              {/* Columna derecha — formulario */}
+              <AnimateOnScroll direction="right" delay={200}>
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5">
+                  <h2 className="text-base font-bold text-gray-900 mb-3">Envíanos un mensaje</h2>
+                  <ContactForm />
+                </div>
+              </AnimateOnScroll>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      <section className="py-5 sm:py-6">
+      {/* ── Mapa (debajo del fold, se anima al hacer scroll) ────────────────── */}
+      <div className="py-8 sm:py-10 bg-white">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Intro */}
-          <AnimateOnScroll direction="up" delay={50}>
-            <p className="text-center text-gray-600 text-sm max-w-2xl mx-auto mb-5 leading-relaxed">
-              {intro}
-            </p>
-          </AnimateOnScroll>
-
-          {/* Grid principal */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-10 items-start">
-
-            {/* Columna izquierda — imagen + info */}
-            <AnimateOnScroll direction="left" delay={100}>
-              <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 mb-4">
-                <Image
-                  src="/images/contacto.jpeg"
-                  alt="Recepción Baja Wastewater Solution"
-                  width={700}
-                  height={400}
-                  className="w-full h-36 sm:h-48 md:h-60 object-cover"
-                  sizes="(max-width: 1024px) 100vw, 50vw"
-                  priority
-                />
-              </div>
-              <h2 className="text-base font-bold text-gray-900 mb-3">Información de contacto</h2>
-              <ul className="space-y-2.5">
-                {contactItems.map((item) => (
-                  <li key={item.label} className="flex gap-3">
-                    <div className="w-8 h-8 bg-primary-50 border border-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      {item.icon}
-                    </div>
-                    <div>
-                      <p className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-0.5">
-                        {item.label}
-                      </p>
-                      {item.href ? (
-                        <a href={item.href} className="text-gray-800 font-medium hover:text-primary-600 transition-colors text-sm block">
-                          {item.value}
-                        </a>
-                      ) : (
-                        <p className="text-gray-800 font-medium text-sm">{item.value}</p>
-                      )}
-                      {item.extra && (
-                        <a href={item.extra.href} className="text-gray-800 font-medium hover:text-primary-600 transition-colors text-sm block mt-0.5">
-                          {item.extra.value}
-                        </a>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </AnimateOnScroll>
-
-            {/* Columna derecha — formulario */}
-            <AnimateOnScroll direction="right" delay={200}>
-              <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-5">
-                <h2 className="text-base font-bold text-gray-900 mb-3">Envíanos un mensaje</h2>
-                <ContactForm />
-              </div>
-            </AnimateOnScroll>
-          </div>
-
-          {/* Google Maps */}
-          <AnimateOnScroll direction="up" className="mt-8">
+          <AnimateOnScroll direction="up" once={false}>
             <h2 className="text-base font-bold text-gray-900 mb-3">Cómo llegarnos</h2>
             <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200 w-full h-72 sm:h-80">
               <iframe
@@ -204,9 +214,8 @@ export default function ContactoPage() {
               Abrir en Google Maps
             </a>
           </AnimateOnScroll>
-
         </div>
-      </section>
+      </div>
     </>
   );
 }
