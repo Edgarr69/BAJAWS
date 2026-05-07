@@ -91,10 +91,11 @@ export default function ContactoPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "WebPage",
+            "@type": "ContactPage",
             "@id": "https://bajaws.com.mx/contacto#webpage",
             "url": "https://bajaws.com.mx/contacto",
             "name": "Contacto y Cotización de Servicios | Baja Wastewater Solution",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),

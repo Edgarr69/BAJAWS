@@ -38,10 +38,12 @@ export default function NosotrosPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "WebPage",
+            "@type": "AboutPage",
             "@id": "https://bajaws.com.mx/nosotros#webpage",
             "url": "https://bajaws.com.mx/nosotros",
             "name": "Empresa Tratadora Baja California | Baja Wastewater Solution",
+            "datePublished": "2009-01-01",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),
