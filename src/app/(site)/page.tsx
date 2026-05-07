@@ -246,6 +246,7 @@ export default async function HomePage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
+            "@id": "https://bajaws.com.mx/#organization",
             "name": siteContent.company.name,
             "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en México. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT.",
             "url": "https://bajaws.com.mx",

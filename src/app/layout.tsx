@@ -44,6 +44,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
+              "@id": "https://bajaws.com.mx/#organization",
               "name": "Baja Wastewater Solution",
               "url": "https://bajaws.com.mx",
               "logo": "https://bajaws.com.mx/logoo.webp",
