@@ -35,6 +35,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es-MX" className={inter.className} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body suppressHydrationWarning>
         <GoogleTagManager />
         {children}
@@ -65,6 +69,18 @@ export default function RootLayout({
                 "https://www.linkedin.com/company/baja-waste-water-solution/",
                 "https://www.instagram.com/bajawstj/",
               ],
+              "hasOfferCatalog": {
+                "@type": "OfferCatalog",
+                "name": "Servicios de gestión de residuos industriales",
+                "itemListElement": [
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Recolección y transporte" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Tratamiento de aguas residuales" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Acopio temporal" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Reciclaje y revalorización" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Servicios de remediación" } },
+                  { "@type": "Offer", "itemOffered": { "@type": "Service", "name": "Residuos de manejo especial" } },
+                ],
+              },
             }),
           }}
         />
@@ -74,6 +90,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "WebSite",
+              "@id": "https://bajaws.com.mx/#website",
               "url": "https://bajaws.com.mx",
               "name": "Baja Wastewater Solution",
               "inLanguage": "es-MX",
