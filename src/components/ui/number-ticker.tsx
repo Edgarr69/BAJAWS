@@ -1,8 +1,6 @@
 "use client"
 
 import { useEffect, useRef, type ComponentPropsWithoutRef } from "react"
-import { useInView, useMotionValue, useSpring } from "motion/react"
-
 import { cn } from "@/lib/utils"
 
 interface NumberTickerProps extends ComponentPropsWithoutRef<"span"> {
@@ -25,50 +23,61 @@ export function NumberTicker({
   ...props
 }: NumberTickerProps) {
   const ref = useRef<HTMLSpanElement>(null)
-  const motionValue = useMotionValue(direction === "down" ? value : startValue)
-  const springValue = useSpring(motionValue, {
-    damping: 60,
-    stiffness: 100,
-  })
-  const isInView = useInView(ref, { once: true, margin: "0px" })
+  const raf = useRef<number | null>(null)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const from = direction === "down" ? value : startValue
+  const to   = direction === "down" ? startValue : value
+
+  const fmt = (n: number) =>
+    Intl.NumberFormat("en-US", {
+      minimumFractionDigits: decimalPlaces,
+      maximumFractionDigits: decimalPlaces,
+    }).format(Number(n.toFixed(decimalPlaces)))
 
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout> | null = null
+    const el = ref.current
+    if (!el) return
 
-    if (isInView) {
-      timer = setTimeout(() => {
-        motionValue.set(direction === "down" ? startValue : value)
-      }, delay * 1000)
-    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return
+        observer.disconnect()
+
+        timer.current = setTimeout(() => {
+          const duration = 1400
+          const start = performance.now()
+
+          const tick = (now: number) => {
+            const elapsed = now - start
+            const t = Math.min(elapsed / duration, 1)
+            // ease-out cubic
+            const ease = 1 - Math.pow(1 - t, 3)
+            const current = from + (to - from) * ease
+            if (el) el.textContent = fmt(current)
+            if (t < 1) {
+              raf.current = requestAnimationFrame(tick)
+            } else {
+              if (el) el.textContent = fmt(to)
+              onComplete?.()
+            }
+          }
+
+          raf.current = requestAnimationFrame(tick)
+        }, delay * 1000)
+      },
+      { rootMargin: "0px" }
+    )
+
+    observer.observe(el)
 
     return () => {
-      if (timer !== null) {
-        clearTimeout(timer)
-      }
+      observer.disconnect()
+      if (timer.current !== null) clearTimeout(timer.current)
+      if (raf.current !== null) cancelAnimationFrame(raf.current)
     }
-  }, [motionValue, isInView, delay, value, direction, startValue])
-
-  const onCompleteRef = useRef(onComplete)
-  onCompleteRef.current = onComplete
-  const completedRef = useRef(false)
-
-  useEffect(
-    () =>
-      springValue.on("change", (latest) => {
-        if (ref.current) {
-          ref.current.textContent = Intl.NumberFormat("en-US", {
-            minimumFractionDigits: decimalPlaces,
-            maximumFractionDigits: decimalPlaces,
-          }).format(Number(latest.toFixed(decimalPlaces)))
-        }
-        const target = direction === "down" ? startValue : value
-        if (!completedRef.current && Math.abs(latest - target) < 0.5) {
-          completedRef.current = true
-          onCompleteRef.current?.()
-        }
-      }),
-    [springValue, decimalPlaces, value, startValue, direction]
-  )
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <span
@@ -79,7 +88,7 @@ export function NumberTicker({
       )}
       {...props}
     >
-      {startValue}
+      {fmt(from)}
     </span>
   )
 }
