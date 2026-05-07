@@ -36,18 +36,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
+      images: [`${SITE_URL}/images/autorizaciones.jpg`],
     },
     {
       url: `${SITE_URL}/nosotros`,
       lastModified,
       changeFrequency: "monthly",
       priority: 0.7,
+      images: [`${SITE_URL}/images/nosotros.webp`],
     },
     {
       url: `${SITE_URL}/contacto`,
       lastModified,
       changeFrequency: "yearly",
       priority: 0.8,
+      images: [`${SITE_URL}/images/contacto.jpeg`],
     },
     {
       url: `${SITE_URL}/aviso-privacidad`,

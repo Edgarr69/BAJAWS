@@ -34,7 +34,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="es" className={inter.className} suppressHydrationWarning>
+    <html lang="es-MX" className={inter.className} suppressHydrationWarning>
       <body suppressHydrationWarning>
         <GoogleTagManager />
         {children}
