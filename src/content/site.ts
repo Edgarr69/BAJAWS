@@ -46,9 +46,9 @@ export const siteContent = {
       { label: "Nuestros servicios",   href: "/servicios",    variant: "secondary" as const },
     ],
     meta: {
-      title: "Empresa de Tratamiento de Aguas Residuales Industriales en Baja California",
+      title: "Empresa de Tratamiento de Aguas Residuales Industriales en México",
       description:
-        `Empresa certificada en tratamiento de aguas residuales en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de ${getYearsExperience()} años de experiencia.`,
+        `Empresa certificada en tratamiento de aguas residuales industriales en México. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT. Más de ${getYearsExperience()} años de experiencia.`,
     },
   },
 
@@ -107,7 +107,7 @@ export const siteContent = {
     meta: {
       title: "Servicios de Tratamiento y Gestión de Residuos Industriales",
       description:
-        `Recolección, transporte, tratamiento de aguas residuales y acopio de residuos industriales en Baja California. Empresa autorizada con ${getYearsExperience()} años de experiencia.`,
+        `Recolección, transporte, tratamiento de aguas residuales y acopio de residuos industriales en México. Empresa autorizada con ${getYearsExperience()} años de experiencia.`,
     },
   },
 
@@ -130,7 +130,7 @@ export const siteContent = {
     meta: {
       title: "Empresa de Tratamiento de Residuos Industriales en Baja California",
       description:
-        `Conoce a Baja Wastewater Solution — más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en Baja California.`,
+        `Conoce a Baja Wastewater Solution — más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en México.`,
     },
   },
 

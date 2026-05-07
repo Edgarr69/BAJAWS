@@ -247,7 +247,7 @@ export default async function HomePage() {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": siteContent.company.name,
-            "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT.",
+            "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en México. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT.",
             "url": "https://bajaws.com.mx",
             "logo": "https://bajaws.com.mx/logoo.webp",
             "image": "https://bajaws.com.mx/images/nosotros.webp",
@@ -274,11 +274,12 @@ export default async function HomePage() {
               "longitude": -116.9320,
             },
             "areaServed": [
+              { "@type": "Country", "name": "México" },
+              { "@type": "State", "name": "Baja California" },
               { "@type": "City", "name": "Tijuana" },
               { "@type": "City", "name": "Tecate" },
               { "@type": "City", "name": "Mexicali" },
               { "@type": "City", "name": "Ensenada" },
-              { "@type": "State", "name": "Baja California" },
             ],
           }),
         }}
