@@ -147,6 +147,21 @@ export default function ServiciosIntegralesPage() {
         }}
       />
 
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/servicios/integrales#webpage",
+            "url": "https://bajaws.com.mx/servicios/integrales",
+            "name": "Servicios Integrales | Baja Wastewater Solution",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
+          }),
+        }}
+      />
+
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll direction="fade">

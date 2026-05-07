@@ -336,6 +336,20 @@ export default async function HomePage() {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/#webpage",
+            "url": "https://bajaws.com.mx",
+            "name": "Baja Wastewater Solution | Tratamiento Residuos Industriales",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
+          }),
+        }}
+      />
     </>
   );
 }
