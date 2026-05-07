@@ -52,6 +52,56 @@ export default function ServiciosPage() {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/servicios#webpage",
+            "url": "https://bajaws.com.mx/servicios",
+            "name": "Tratamiento de Residuos Industriales | Baja Wastewater Solution",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "¿Qué tipos de residuos industriales manejan?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Manejamos residuos peligrosos y no peligrosos de origen industrial: aceites, solventes, lodos, residuos químicos, metales pesados y material biológico-infeccioso, entre otros. Ofrecemos soluciones personalizadas según las corrientes específicas de cada planta en México." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Ofrecen servicio de recolección y transporte de residuos?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Sí. Contamos con flota propia para la recolección y transporte seguro de residuos industriales. Todo el traslado se realiza bajo protocolos de seguridad y con documentación conforme a la normativa de SEMARNAT y SCT." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿En qué consiste el tratamiento de aguas residuales industriales?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Realizamos tratamiento fisicoquímico y biológico de efluentes industriales para reducir contaminantes a niveles permitidos por la normatividad vigente (NOM-001-SEMARNAT, NOM-002-SEMARNAT). El proceso incluye coagulación, floculación, sedimentación y, en casos específicos, oxidación avanzada." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Ofrecen acopio temporal de residuos peligrosos?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Sí. Contamos con almacén temporal autorizado para residuos peligrosos. El acopio incluye identificación, etiquetado y resguardo bajo condiciones de seguridad hasta su tratamiento o disposición final." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Realizan proyectos de remediación de suelos contaminados?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Sí. Ofrecemos servicios de remediación de suelos y sitios contaminados, incluyendo diagnóstico, plan de remediación y ejecución conforme a la NOM-138-SEMARNAT/SS y demás normas aplicables." },
+              },
+            ],
+          }),
+        }}
+      />
       {/* ── Cards ── */}
       <div className="bg-slate-50 py-6 sm:py-8 md:py-4">
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">
