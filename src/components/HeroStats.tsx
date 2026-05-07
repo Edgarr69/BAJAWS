@@ -39,7 +39,7 @@ export default function HeroStats({ yearsExperience, authorizationsCount, ready 
                   {s.suffix}
                 </>
               ) : (
-                <span className="invisible" aria-hidden="true">0{s.suffix}</span>
+                <span className="invisible" aria-hidden="true">{s.value}{s.suffix}</span>
               )}
             </p>
             <p className="text-white/60 text-xs mt-1 tracking-wide uppercase leading-tight">
