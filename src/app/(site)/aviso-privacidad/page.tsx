@@ -8,7 +8,23 @@ export const metadata: Metadata = {
 
 export default function AvisoPrivacidadPage() {
   return (
-    <div className="bg-gradient-to-b from-slate-50 to-white min-h-screen">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/aviso-privacidad#webpage",
+            "url": "https://bajaws.com.mx/aviso-privacidad",
+            "name": "Aviso de Privacidad | Baja Wastewater Solution",
+            "dateModified": "2026-04-01",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
+          }),
+        }}
+      />
+      <div className="bg-gradient-to-b from-slate-50 to-white min-h-screen">
       {/* Encabezado */}
       <div className="border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -250,5 +266,6 @@ export default function AvisoPrivacidadPage() {
 
       </div>
     </div>
+    </>
   );
 }
