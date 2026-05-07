@@ -147,7 +147,7 @@ export default function Header() {
                 alt="Baja Wastewater Solution"
                 width={160}
                 height={62}
-                sizes="160px"
+                sizes="96px"
                 className="w-auto object-contain h-9"
                 priority
               />
@@ -288,6 +288,7 @@ export default function Header() {
             alt="Baja Wastewater Solution"
             width={120}
             height={47}
+            sizes="72px"
             className="h-7 w-auto object-contain"
           />
           <div className="flex items-center gap-1">

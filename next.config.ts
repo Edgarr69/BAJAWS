@@ -57,6 +57,7 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   images: {
+    imageSizes: [16, 32, 48, 64, 96, 128, 192, 256, 320, 384],
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
