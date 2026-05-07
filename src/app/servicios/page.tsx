@@ -7,6 +7,10 @@ import { siteContent } from "@/content/site";
 export const metadata: Metadata = {
   ...siteContent.services.meta,
   alternates: { canonical: "/servicios" },
+  openGraph: {
+    title: siteContent.services.meta.title,
+    description: siteContent.services.meta.description,
+  },
 };
 
 export default function ServiciosPage() {
@@ -14,6 +18,19 @@ export default function ServiciosPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
+              { "@type": "ListItem", "position": 2, "name": "Servicios", "item": "https://bajaws.com.mx/servicios" },
+            ],
+          }),
+        }}
+      />
       {/* ── Cards ── */}
       <div className="bg-slate-50 py-6 sm:py-8 md:py-4">
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">

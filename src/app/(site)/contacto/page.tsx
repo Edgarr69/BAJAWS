@@ -7,6 +7,10 @@ import { siteContent } from "@/content/site";
 export const metadata: Metadata = {
   ...siteContent.contacto.meta,
   alternates: { canonical: "/contacto" },
+  openGraph: {
+    title: siteContent.contacto.meta.title,
+    description: siteContent.contacto.meta.description,
+  },
 };
 
 export default function ContactoPage() {
@@ -67,6 +71,19 @@ export default function ContactoPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
+              { "@type": "ListItem", "position": 2, "name": "Contacto", "item": "https://bajaws.com.mx/contacto" },
+            ],
+          }),
+        }}
+      />
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -11,6 +11,10 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   ...siteContent.autorizaciones.meta,
   alternates: { canonical: "/autorizaciones" },
+  openGraph: {
+    title: siteContent.autorizaciones.meta.title,
+    description: siteContent.autorizaciones.meta.description,
+  },
 };
 
 const stats = [
@@ -37,6 +41,19 @@ export default async function AutorizacionesPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
+              { "@type": "ListItem", "position": 2, "name": "Autorizaciones", "item": "https://bajaws.com.mx/autorizaciones" },
+            ],
+          }),
+        }}
+      />
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

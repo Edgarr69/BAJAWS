@@ -7,6 +7,10 @@ import { siteContent } from "@/content/site";
 export const metadata: Metadata = {
   ...siteContent.nosotros.meta,
   alternates: { canonical: "/nosotros" },
+  openGraph: {
+    title: siteContent.nosotros.meta.title,
+    description: siteContent.nosotros.meta.description,
+  },
 };
 
 export default function NosotrosPage() {
@@ -14,6 +18,19 @@ export default function NosotrosPage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
+              { "@type": "ListItem", "position": 2, "name": "Nosotros", "item": "https://bajaws.com.mx/nosotros" },
+            ],
+          }),
+        }}
+      />
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -42,7 +59,7 @@ export default function NosotrosPage() {
             <AnimateOnScroll direction="right" delay={200} className="lg:col-span-2">
               <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100">
                 <Image
-                  src="/images/nosotros.png"
+                  src="/images/nosotros.webp"
                   alt="Análisis de calidad del agua en laboratorio"
                   width={600}
                   height={600}

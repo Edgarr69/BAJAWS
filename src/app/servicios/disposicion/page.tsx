@@ -11,6 +11,10 @@ export const metadata: Metadata = {
   description:
     "Conoce nuestro proceso de disposición segura de residuos industriales: desde la recepción controlada hasta el confinamiento definitivo en celdas de seguridad.",
   alternates: { canonical: "/servicios/disposicion" },
+  openGraph: {
+    title: "Proceso de Disposición | Baja Wastewater Solution",
+    description: "Conoce nuestro proceso de disposición segura de residuos industriales: desde la recepción controlada hasta el confinamiento definitivo en celdas de seguridad.",
+  },
 };
 
 const steps = [
@@ -108,6 +112,31 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
 export default function DisposicionPage() {
   return (
     <div className="flex flex-col bg-white md:overflow-hidden md:h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
+                { "@type": "ListItem", "position": 2, "name": "Servicios", "item": "https://bajaws.com.mx/servicios" },
+                { "@type": "ListItem", "position": 3, "name": "Proceso de Disposición", "item": "https://bajaws.com.mx/servicios/disposicion" },
+              ],
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Service",
+              "name": "Disposición Segura de Residuos Industriales",
+              "description": "Proceso de disposición segura de residuos industriales: recepción controlada, análisis de viabilidad, procesos en planta, tratamiento, verificación y confinamiento en celdas de seguridad.",
+              "provider": { "@type": "Organization", "name": "Baja Wastewater Solution", "url": "https://bajaws.com.mx" },
+              "areaServed": { "@type": "State", "name": "Baja California" },
+              "serviceType": "Disposición de residuos peligrosos",
+            },
+          ]),
+        }}
+      />
 
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

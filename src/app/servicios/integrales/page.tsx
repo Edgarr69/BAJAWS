@@ -12,6 +12,10 @@ export const metadata: Metadata = {
   description:
     "Conoce nuestro proceso integral de gestión de residuos: desde el primer contacto hasta la mejora continua con estándares de calidad certificados.",
   alternates: { canonical: "/servicios/integrales" },
+  openGraph: {
+    title: "Servicios Integrales | Baja Wastewater Solution",
+    description: "Conoce nuestro proceso integral de gestión de residuos: desde el primer contacto hasta la mejora continua con estándares de calidad certificados.",
+  },
 };
 
 // Orden: inicio del proceso → ejecución/operación → beneficio, mejora y calidad
@@ -117,6 +121,31 @@ function StepCard({ step, delay }: { step: typeof steps[number]; delay: number }
 export default function ServiciosIntegralesPage() {
   return (
     <div className="flex flex-col bg-white md:overflow-hidden md:h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
+                { "@type": "ListItem", "position": 2, "name": "Servicios", "item": "https://bajaws.com.mx/servicios" },
+                { "@type": "ListItem", "position": 3, "name": "Servicios Integrales", "item": "https://bajaws.com.mx/servicios/integrales" },
+              ],
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Service",
+              "name": "Servicios Integrales de Gestión de Residuos Industriales",
+              "description": "Proceso integral de gestión de residuos: primer contacto, levantamiento, soluciones con personal especializado, disposición segura, mejora continua y estándares de calidad certificados.",
+              "provider": { "@type": "Organization", "name": "Baja Wastewater Solution", "url": "https://bajaws.com.mx" },
+              "areaServed": { "@type": "State", "name": "Baja California" },
+              "serviceType": "Gestión integral de residuos industriales",
+            },
+          ]),
+        }}
+      />
 
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

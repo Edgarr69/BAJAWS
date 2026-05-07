@@ -247,17 +247,82 @@ export default async function HomePage() {
             "@context": "https://schema.org",
             "@type": "LocalBusiness",
             "name": siteContent.company.name,
-            "telephone": siteContent.contacto.info.telefono,
+            "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en Baja California. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT.",
             "url": "https://bajaws.com.mx",
+            "logo": "https://bajaws.com.mx/logoo.webp",
+            "telephone": siteContent.contacto.info.telefono,
+            "email": siteContent.contacto.info.correo,
+            "foundingDate": String(siteContent.company.foundingYear),
             "address": {
               "@type": "PostalAddress",
-              "streetAddress": siteContent.contacto.info.direccion,
+              "streetAddress": "Fray Junípero Serra No.17501, Garita de Otay",
               "addressLocality": "Tijuana",
               "addressRegion": "Baja California",
               "postalCode": "22430",
-              "addressCountry": "MX"
-            }
-          })
+              "addressCountry": "MX",
+            },
+            "openingHoursSpecification": {
+              "@type": "OpeningHoursSpecification",
+              "dayOfWeek": ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+              "opens": "08:00",
+              "closes": "17:00",
+            },
+            "areaServed": {
+              "@type": "State",
+              "name": "Baja California",
+            },
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            "mainEntity": [
+              {
+                "@type": "Question",
+                "name": "¿Qué tipos de aguas residuales industriales tratan?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Tratamos aguas residuales con aceites, grasas, metales pesados, solventes y detergentes. Nuestros procesos incluyen separación físico-química, flotación por aire disuelto (DAF), neutralización y tratamiento biológico, adaptados a cada industria." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿En qué zonas ofrecen el servicio?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Operamos en toda la región de Baja California: Tijuana, Tecate, Mexicali, Ensenada y zonas industriales adyacentes. Adicionalmente, brindamos servicio a nivel nacional para empresas que requieran atención en otros estados de la República Mexicana. Contamos con unidades propias de recolección y transporte." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Qué tipos de residuos manejan?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Manejamos aguas residuales industriales y residuos peligrosos sólidos, conforme a normativa vigente, minimizando el riesgo ambiental y operativo de tu empresa." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Cuánto tiempo toma obtener una cotización?",
+                "acceptedAnswer": { "@type": "Answer", "text": "El proceso inicia con una visita técnica sin costo para evaluar el volumen, la composición del residuo y las condiciones del sitio. Con esa información elaboramos una cotización precisa que te entregamos en menos de 24 horas después de la visita técnica." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Qué documentación recibo después del tratamiento?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Al concluir cada servicio entregamos: manifiesto de entrega-recepción de residuos peligrosos, certificados de análisis fisicoquímicos y reportes a las autoridades según corresponda. Esto respalda tu cumplimiento normativo." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Con qué equipo de transporte cuentan para el traslado de residuos?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Contamos con una flota versátil que nos permite atender desde pequeños hasta grandes volúmenes, tanto de residuos líquidos como sólidos. Disponemos de pipas para traslado de líquidos, camiones tipo rabón y tractocamiones, todos con permisos vigentes para el manejo de residuos peligrosos." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Con qué frecuencia se realiza la recolección?",
+                "acceptedAnswer": { "@type": "Answer", "text": "La frecuencia depende del volumen generado por tu proceso. Nos ajustamos a lo que necesite tu operación, incluyendo atención de emergencias fuera de calendario, para que tu producción no se detenga." },
+              },
+              {
+                "@type": "Question",
+                "name": "¿Por qué es importante contratar un prestador de servicios autorizado?",
+                "acceptedAnswer": { "@type": "Answer", "text": "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT y SCT garantizan pleno cumplimiento normativo." },
+              },
+            ],
+          }),
         }}
       />
     </>
