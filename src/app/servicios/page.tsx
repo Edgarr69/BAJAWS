@@ -15,10 +15,30 @@ export const metadata: Metadata = {
 };
 
 export default function ServiciosPage() {
-  const { title, intro, question, cta, ctaHref } = siteContent.services;
+  const { title, intro, question, cta, ctaHref, items } = siteContent.services;
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Servicios de Baja Wastewater Solution",
+            "itemListElement": items.map((s, i) => ({
+              "@type": "ListItem",
+              "position": i + 1,
+              "item": {
+                "@type": "Service",
+                "name": s.title,
+                "description": s.description,
+                "provider": { "@type": "Organization", "name": "Baja Wastewater Solution", "url": "https://bajaws.com.mx" },
+              },
+            })),
+          }),
+        }}
+      />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
