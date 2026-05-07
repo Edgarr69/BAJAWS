@@ -35,7 +35,6 @@ export default function HeroVideo() {
         style={{ backfaceVisibility: "hidden" }}
       >
         <source src="/videos/loop1.mp4" type="video/mp4" />
-        <source src="/videos/loop1.webm" type="video/webm" />
       </video>
     </>
   );
