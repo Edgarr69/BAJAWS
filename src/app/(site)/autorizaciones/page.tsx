@@ -10,6 +10,7 @@ import type { Autorizacion } from "@/types/panel";
 export const revalidate = 3600;
 export const metadata: Metadata = {
   ...siteContent.autorizaciones.meta,
+  title: { absolute: "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solution" },
   alternates: { canonical: "/autorizaciones" },
   openGraph: {
     title: siteContent.autorizaciones.meta.title,

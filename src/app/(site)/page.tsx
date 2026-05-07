@@ -14,12 +14,12 @@ import { getAdminClient } from "@/lib/supabase/admin";
 export const revalidate = 3600;
 export const metadata: Metadata = {
   title: {
-    absolute: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales",
+    absolute: "Baja Wastewater Solution | Tratamiento Residuos Industriales",
   },
   description: siteContent.home.meta.description,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales",
+    title: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales en Baja California",
     description: siteContent.home.meta.description,
   },
 };

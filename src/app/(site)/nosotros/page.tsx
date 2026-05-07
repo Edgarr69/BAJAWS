@@ -6,6 +6,7 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.nosotros.meta,
+  title: { absolute: "Empresa Tratadora Baja California | Baja Wastewater Solution" },
   alternates: { canonical: "/nosotros" },
   openGraph: {
     title: siteContent.nosotros.meta.title,

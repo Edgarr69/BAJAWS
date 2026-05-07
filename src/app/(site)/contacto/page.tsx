@@ -6,6 +6,7 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.contacto.meta,
+  title: { absolute: "Contacto y Cotización de Servicios | Baja Wastewater Solution" },
   alternates: { canonical: "/contacto" },
   openGraph: {
     title: siteContent.contacto.meta.title,
