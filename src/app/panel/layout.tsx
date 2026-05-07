@@ -1,7 +1,12 @@
+import type { Metadata } from 'next';
 import { redirect } from 'next/navigation';
 import { createClient } from '@/lib/supabase/server';
 import { PanelShell } from './panel-shell';
 import type { Profile } from '@/types/panel';
+
+export const metadata: Metadata = {
+  robots: { index: false, follow: false },
+};
 
 export default async function PanelLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
