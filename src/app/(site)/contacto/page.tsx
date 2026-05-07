@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteContent.contacto.meta.title,
     description: siteContent.contacto.meta.description,
+    images: [{ url: "https://bajaws.com.mx/images/contacto.jpeg", width: 700, height: 400, alt: "Recepción e instalaciones de Baja Wastewater Solution en Tijuana" }],
   },
 };
 
@@ -82,6 +83,20 @@ export default function ContactoPage() {
               { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
               { "@type": "ListItem", "position": 2, "name": "Contacto", "item": "https://bajaws.com.mx/contacto" },
             ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/contacto#webpage",
+            "url": "https://bajaws.com.mx/contacto",
+            "name": "Contacto y Cotización de Servicios | Baja Wastewater Solution",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),
         }}
       />

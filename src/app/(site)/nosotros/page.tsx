@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteContent.nosotros.meta.title,
     description: siteContent.nosotros.meta.description,
+    images: [{ url: "https://bajaws.com.mx/images/nosotros.webp", width: 600, height: 600, alt: "Análisis de calidad del agua en laboratorio de Baja Wastewater Solution" }],
   },
 };
 
@@ -29,6 +30,20 @@ export default function NosotrosPage() {
               { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
               { "@type": "ListItem", "position": 2, "name": "Nosotros", "item": "https://bajaws.com.mx/nosotros" },
             ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/nosotros#webpage",
+            "url": "https://bajaws.com.mx/nosotros",
+            "name": "Empresa Tratadora Baja California | Baja Wastewater Solution",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),
         }}
       />

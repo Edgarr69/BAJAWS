@@ -15,6 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteContent.autorizaciones.meta.title,
     description: siteContent.autorizaciones.meta.description,
+    images: [{ url: "https://bajaws.com.mx/images/autorizaciones.jpg", width: 600, height: 600, alt: "Autorizaciones oficiales de Baja Wastewater Solution emitidas por CESPT, SEMAR y SEMARNAT" }],
   },
 };
 
@@ -52,6 +53,20 @@ export default async function AutorizacionesPage() {
               { "@type": "ListItem", "position": 1, "name": "Inicio", "item": "https://bajaws.com.mx" },
               { "@type": "ListItem", "position": 2, "name": "Autorizaciones", "item": "https://bajaws.com.mx/autorizaciones" },
             ],
+          }),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebPage",
+            "@id": "https://bajaws.com.mx/autorizaciones#webpage",
+            "url": "https://bajaws.com.mx/autorizaciones",
+            "name": "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solution",
+            "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
+            "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),
         }}
       />
