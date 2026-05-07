@@ -61,6 +61,29 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "i.ytimg.com" },
     ],
   },
+  async redirects() {
+    return [
+      // Elimina barra final en todas las rutas — Google indexó /servicios/, /nosotros/, etc.
+      {
+        source: "/:path+/",
+        destination: "/:path+",
+        permanent: true,
+      },
+      // Evita que bajaws.vercel.app sea indexado como sitio duplicado
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "bajaws.vercel.app" }],
+        destination: "https://bajaws.com.mx/:path*",
+        permanent: true,
+      },
+      // Página eliminada — redirige a servicios para conservar el link juice
+      {
+        source: "/tratamiento-aguas-residuales",
+        destination: "/servicios",
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       // API routes — CORS + sin caché + solo cargables desde el mismo origen
