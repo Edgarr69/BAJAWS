@@ -22,16 +22,10 @@ function fadeStyle(visible: boolean, delayMs: number, reduced: boolean): React.C
 }
 
 export default function HeroContent({ yearsExperience, authorizationsCount }: Props) {
-  const [eyebrowVisible,  setEyebrowVisible]  = useState(false);
+  const [eyebrowVisible,  setEyebrowVisible]  = useState(true);
   const [contentVisible,  setContentVisible]  = useState(false);
   const [statsReady,      setStatsReady]      = useState(false);
   const reducedMotion = useReducedMotion();
-
-  // Eyebrow aparece primero, al montar
-  useEffect(() => {
-    const t = setTimeout(() => setEyebrowVisible(true), 200);
-    return () => clearTimeout(t);
-  }, []);
 
   return (
     <>
