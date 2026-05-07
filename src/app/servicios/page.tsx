@@ -11,6 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteContent.services.meta.title,
     description: siteContent.services.meta.description,
+    images: [{ url: "https://bajaws.com.mx/images/autorizaciones.jpg", width: 600, height: 600, alt: "Servicios de tratamiento y disposición de residuos industriales de Baja Wastewater Solution" }],
   },
 };
 
@@ -57,10 +58,11 @@ export default function ServiciosPage() {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "WebPage",
+            "@type": "CollectionPage",
             "@id": "https://bajaws.com.mx/servicios#webpage",
             "url": "https://bajaws.com.mx/servicios",
             "name": "Tratamiento de Residuos Industriales | Baja Wastewater Solution",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),

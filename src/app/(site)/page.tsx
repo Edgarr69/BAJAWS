@@ -21,6 +21,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales en Baja California",
     description: siteContent.home.meta.description,
+    images: [{ url: "https://bajaws.com.mx/images/nosotros.webp", width: 600, height: 600, alt: "Instalaciones y laboratorio de Baja Wastewater Solution en Tijuana, Baja California" }],
   },
 };
 
@@ -345,6 +346,8 @@ export default async function HomePage() {
             "@id": "https://bajaws.com.mx/#webpage",
             "url": "https://bajaws.com.mx",
             "name": "Baja Wastewater Solution | Tratamiento Residuos Industriales",
+            "datePublished": "2009-01-01",
+            "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
           }),
