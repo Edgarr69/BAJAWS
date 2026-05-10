@@ -204,3 +204,34 @@ export const resetAllData = () =>
 
 export const deleteLinkByCode = (code: string) =>
   apiFetch<{ ok: boolean }>(`/api/admin/reset-all?code=${encodeURIComponent(code)}`, { method: 'DELETE' });
+
+// ── Correos de notificación ───────────────────────────────────────────────────
+export interface NotificationEmail {
+  id: string;
+  email: string;
+  label: string | null;
+  is_active: boolean;
+  created_at: string;
+}
+
+export const getNotificationEmails = () =>
+  apiFetch<NotificationEmail[]>('/api/admin/notification-emails');
+
+export const createNotificationEmail = (body: { email: string; label?: string }) =>
+  apiFetch<NotificationEmail>('/api/admin/notification-emails', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+export const toggleNotificationEmail = (id: string, is_active: boolean) =>
+  apiFetch<NotificationEmail>(`/api/admin/notification-emails/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_active }),
+  });
+
+export const deleteNotificationEmail = (id: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/notification-emails/${id}`, {
+    method: 'DELETE',
+  });
