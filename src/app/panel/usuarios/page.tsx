@@ -85,9 +85,13 @@ export default function UsuariosPage() {
     if (!newUser) return;
     setSaving(true);
     try {
-      await createUser(newUser);
-      const us = await getUsers();
-      setUsers(us as Profile[]);
+      const result = await createUser(newUser);
+      setUsers(prev => [...prev, {
+        id: result.id,
+        email: newUser.email,
+        full_name: newUser.full_name.trim() || null,
+        role: newUser.role,
+      }]);
       setNewUser(null);
       toast.success('Usuario creado');
     } catch (e: unknown) {
