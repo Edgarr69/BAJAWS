@@ -8,16 +8,17 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { getSubmissions, getSubmission, getMe, resetAllData } from '@/lib/api';
+import { getSubmissions, getSubmission, resetAllData } from '@/lib/api';
+import { usePanelUser } from '../user-context';
 import type { Submission, Answer } from '@/types/panel';
 
 const today = new Date().toISOString().slice(0, 10);
 
 export default function RespuestasPage() {
+  const { role: myRole } = usePanelUser();
   const router = useRouter();
   const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading]         = useState(true);
-  const [myRole, setMyRole]           = useState<string>('atencion');
   const [dateFrom, setDateFrom]       = useState('');
   const [dateTo, setDateTo]           = useState('');
   const [search, setSearch]           = useState('');
@@ -43,11 +44,8 @@ export default function RespuestasPage() {
   }
 
   useEffect(() => {
-    Promise.all([getMe(), getSubmissions()])
-      .then(([me, data]) => {
-        setMyRole(me.role);
-        setSubmissions(data as Submission[]);
-      })
+    getSubmissions()
+      .then(data => setSubmissions(data as Submission[]))
       .catch(() => toast.error('Error cargando respuestas'))
       .finally(() => setLoading(false));
   }, []);

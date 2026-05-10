@@ -8,7 +8,8 @@ import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { getUsers, setUserRole, updateUserName, createUser, deleteUser, getMe } from '@/lib/api';
+import { getUsers, setUserRole, updateUserName, createUser, deleteUser } from '@/lib/api';
+import { usePanelUser } from '../user-context';
 import type { Profile, UserRole } from '@/types/panel';
 
 const ROLE_LABEL: Record<UserRole, string> = {
@@ -33,10 +34,10 @@ const ROLE_ICON: Record<UserRole, React.ElementType> = {
 };
 
 export default function UsuariosPage() {
+  const { id: myId, role: myRole } = usePanelUser();
+
   const [users, setUsers]     = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
-  const [myId, setMyId]       = useState('');
-  const [myRole, setMyRole]   = useState<UserRole>('atencion');
   const [confirm, setConfirm]         = useState<{ user: Profile; role: 'admin' | 'atencion' } | null>(null);
   const [confirmDel, setConfirmDel]   = useState<Profile | null>(null);
   const [editName, setEditName]       = useState<{ user: Profile; name: string } | null>(null);
@@ -44,13 +45,8 @@ export default function UsuariosPage() {
   const [saving, setSaving]           = useState(false);
 
   useEffect(() => {
-    Promise.all([getMe(), getUsers()])
-      .then(([me, us]) => {
-        const profile = me as Profile;
-        setMyId(profile.id);
-        setMyRole(profile.role);
-        setUsers(us as Profile[]);
-      })
+    getUsers()
+      .then(us => setUsers(us as Profile[]))
       .catch(() => toast.error('Error cargando usuarios'))
       .finally(() => setLoading(false));
   }, []);

@@ -14,7 +14,8 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { createService, createLink, getLinks, getMe, resetAllData, deleteLinkByCode } from '@/lib/api';
+import { createService, createLink, getLinks, resetAllData, deleteLinkByCode } from '@/lib/api';
+import { usePanelUser } from '../user-context';
 import { getLinkStatus, type FeedbackLink } from '@/types/panel';
 
 const BASE_URL = 'https://bajaws.com.mx/formulario/';
@@ -27,10 +28,11 @@ const statusColor: Record<string, string> = {
 };
 
 export default function EnlacesPage() {
+  const { role } = usePanelUser();
+
   const [links, setLinks]       = useState<FeedbackLink[]>([]);
   const [loading, setLoading]   = useState(true);
   const [creating, setCreating] = useState(false);
-  const [role, setRole]         = useState<string>('atencion');
 
   // form
   const [fecha, setFecha]     = useState('');
@@ -47,11 +49,8 @@ export default function EnlacesPage() {
   const [deletingCode, setDeletingCode]     = useState(false);
 
   useEffect(() => {
-    Promise.all([getMe(), getLinks()])
-      .then(([me, lnks]) => {
-        setRole((me as { role: string }).role);
-        setLinks(lnks as FeedbackLink[]);
-      })
+    getLinks()
+      .then(lnks => setLinks(lnks as FeedbackLink[]))
       .catch(() => toast.error('Error cargando datos'))
       .finally(() => setLoading(false));
   }, []);

@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { Sidebar } from '@/components/panel/Sidebar';
 import { Topbar } from '@/components/panel/Topbar';
 import { Toaster } from '@/components/ui/sonner';
+import { UserProvider } from './user-context';
 import type { Profile } from '@/types/panel';
 
 interface PanelShellProps {
@@ -29,7 +30,7 @@ export function PanelShell({ user, children }: PanelShellProps) {
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         <Topbar user={user} onMenuClick={() => setSide(true)} />
         <main id="main-content" className="flex-1 overflow-y-auto p-4 md:p-6">
-          {children}
+          <UserProvider user={user}>{children}</UserProvider>
         </main>
       </div>
 
