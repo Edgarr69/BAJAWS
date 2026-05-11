@@ -70,13 +70,6 @@ const nextConfig: NextConfig = {
         destination: "/:path+",
         permanent: true,
       },
-      // Evita que bajaws.vercel.app sea indexado como sitio duplicado
-      {
-        source: "/:path*",
-        has: [{ type: "host", value: "bajaws.vercel.app" }],
-        destination: "https://bajaws.com.mx/:path*",
-        permanent: true,
-      },
       // Página eliminada — redirige a servicios para conservar el link juice
       {
         source: "/tratamiento-aguas-residuales",
