@@ -102,7 +102,7 @@ export default function FaqSection() {
   const toggle = (i: number) => setOpenIndex(openIndex === i ? null : i);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="pt-20 pb-10 md:pb-20 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <AnimateOnScroll direction="fade">
           <div className="text-center mb-6">
