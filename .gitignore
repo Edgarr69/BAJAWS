@@ -57,4 +57,4 @@ database/app.db
 
 # Videos y fotos originales de trabajo (ya procesados en public/)
 /videos/
-/fotos/
+/fotos/supabase/
