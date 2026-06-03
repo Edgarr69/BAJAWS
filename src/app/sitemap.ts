@@ -46,6 +46,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       images: [`${SITE_URL}/images/nosotros.webp`],
     },
     {
+      url: `${SITE_URL}/vacantes`,
+      lastModified,
+      changeFrequency: "weekly",
+      priority: 0.7,
+    },
+    {
       url: `${SITE_URL}/contacto`,
       lastModified,
       changeFrequency: "yearly",
