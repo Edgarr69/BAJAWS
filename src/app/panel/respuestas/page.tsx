@@ -3,12 +3,12 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import { Eye, FileDown, Trash2 } from 'lucide-react';
+import { Eye, FileDown, Trash2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
-import { getSubmissions, getSubmission, resetAllData } from '@/lib/api';
+import { getSubmissions, getSubmission, deleteSubmission, resetAllData } from '@/lib/api';
 import { usePanelUser } from '../user-context';
 import type { Submission, Answer } from '@/types/panel';
 
@@ -25,8 +25,10 @@ export default function RespuestasPage() {
   const [detail, setDetail]           = useState<{ submission: Submission; answers: Answer[] } | null>(null);
   const [detailOpen, setDetailOpen]   = useState(false);
   const [detailLoading, setDL]        = useState(false);
-  const [confirmPurge, setConfirmPurge] = useState(false);
-  const [purging, setPurging]           = useState(false);
+  const [confirmPurge, setConfirmPurge]       = useState(false);
+  const [purging, setPurging]                 = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting]               = useState(false);
 
   async function load() {
     setLoading(true);
@@ -75,6 +77,21 @@ export default function RespuestasPage() {
       toast.error('Error al eliminar los datos');
     } finally {
       setPurging(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!confirmDeleteId) return;
+    setDeleting(true);
+    try {
+      await deleteSubmission(confirmDeleteId);
+      setSubmissions(prev => prev.filter(s => s.id !== confirmDeleteId));
+      setConfirmDeleteId(null);
+      toast.success('Respuesta eliminada');
+    } catch {
+      toast.error('Error al eliminar la respuesta');
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -165,9 +182,8 @@ export default function RespuestasPage() {
                     <tr className="border-b border-slate-100 bg-slate-50">
                       <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Fecha</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Código</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Folio</th>
                       <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Empresa</th>
-                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Ver</th>
+                      <th className="px-4 py-3 text-left text-xs font-medium text-slate-500">Acciones</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -179,16 +195,25 @@ export default function RespuestasPage() {
                         <td className="px-4 py-3 font-mono text-xs text-primary-700">
                           {(s.feedback_links as { code: string } | null)?.code ?? '—'}
                         </td>
-                        <td className="px-4 py-3 text-slate-600">
-                          {(s.services as { folio: string | null } | null)?.folio ?? '—'}
-                        </td>
                         <td className="px-4 py-3 text-slate-700 text-xs">
                           {s.company_name ?? <span className="text-slate-300">—</span>}
                         </td>
                         <td className="px-4 py-3">
-                          <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => openDetail(s.id)}>
-                            <Eye className="w-3.5 h-3.5" />
-                          </Button>
+                          <div className="flex items-center gap-1">
+                            <Button size="sm" variant="ghost" className="h-7 px-2" onClick={() => openDetail(s.id)}>
+                              <Eye className="w-3.5 h-3.5" />
+                            </Button>
+                            {canPurge && (
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 px-2 text-red-400 hover:text-red-600 hover:bg-red-50"
+                                onClick={() => setConfirmDeleteId(s.id)}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </Button>
+                            )}
+                          </div>
                         </td>
                       </tr>
                     ))}
@@ -213,7 +238,6 @@ export default function RespuestasPage() {
               <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-500 space-y-1">
                 <p><span className="font-medium">Fecha:</span> {new Date(detail.submission.submitted_at).toLocaleString('es-MX')}</p>
                 <p><span className="font-medium">Código:</span> {(detail.submission.feedback_links as { code: string } | null)?.code ?? '—'}</p>
-                <p><span className="font-medium">Folio:</span> {(detail.submission.services as { folio: string | null } | null)?.folio ?? '—'}</p>
                 {detail.submission.company_name && (
                   <p><span className="font-medium">Empresa:</span> {detail.submission.company_name}</p>
                 )}
@@ -251,6 +275,33 @@ export default function RespuestasPage() {
               })()}
             </div>
           ) : null}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog confirmar eliminar individual */}
+      <Dialog open={!!confirmDeleteId} onOpenChange={open => !open && !deleting && setConfirmDeleteId(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+              Eliminar respuesta
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 py-2">
+            Se eliminará esta respuesta junto con todas sus calificaciones. Esta acción no se puede deshacer.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDeleteId(null)} disabled={deleting}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              {deleting ? 'Eliminando…' : 'Eliminar'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 
