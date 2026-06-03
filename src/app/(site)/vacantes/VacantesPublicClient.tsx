@@ -267,7 +267,7 @@ export function VacantesPublicClient({ postings }: Props) {
       {/* ─── Modal de postulación ─────────────────────────────────────────────── */}
       <Dialog open={!!selected} onOpenChange={open => { if (!open && !previewUrl) handleClose(); }}>
         <DialogContent
-          className="sm:max-w-lg max-h-[90vh] overflow-y-auto"
+          className="sm:max-w-lg max-h-[90svh] overflow-y-auto"
           onInteractOutside={(e) => { if (previewUrl) e.preventDefault(); }}
           onEscapeKeyDown={(e) => { if (previewUrl) e.preventDefault(); }}
         >
@@ -309,7 +309,6 @@ export function VacantesPublicClient({ postings }: Props) {
                   value={nombre}
                   onChange={e => setNombre(e.target.value)}
                   maxLength={80}
-                  autoFocus
                   className={`w-full text-base md:text-sm border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 text-slate-700 placeholder:text-slate-300 ${
                     attempted && !nombreValid
                       ? 'border-red-400 focus:ring-red-400'
@@ -342,7 +341,7 @@ export function VacantesPublicClient({ postings }: Props) {
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div className="space-y-1">
                   <label className="text-xs font-medium text-slate-600">
                     Teléfono <span className="text-slate-400 font-normal">(opcional)</span>

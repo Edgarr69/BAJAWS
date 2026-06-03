@@ -21,7 +21,7 @@ export default async function VacantesPage() {
   const postings = (data ?? []) as JobPosting[];
 
   return (
-    <div className="flex flex-col bg-white md:overflow-hidden md:h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
+    <div className="flex flex-col bg-white overflow-hidden h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
 
       {/* Encabezado */}
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
