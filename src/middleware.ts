@@ -48,6 +48,8 @@ export async function middleware(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const isAccesoSolicitado = request.nextUrl.pathname === '/acceso-solicitado';
+
   // Sin sesión → al login.
   if (!user) {
     const url = request.nextUrl.clone();
@@ -56,8 +58,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  // Verificamos el rol en profiles. Si el usuario no tiene perfil o está
-  // pendiente, no entra al panel.
+  // Verificamos el rol en profiles.
   const { data: profile } = await supabase
     .from('profiles')
     .select('role')
@@ -79,8 +80,20 @@ export async function middleware(request: NextRequest) {
   }
 
   if (role === 'pending') {
+    // Pending: solo puede ver /acceso-solicitado
+    if (!isAccesoSolicitado) {
+      const url = request.nextUrl.clone();
+      url.pathname = '/acceso-solicitado';
+      url.search = '';
+      return NextResponse.redirect(url);
+    }
+    return response;
+  }
+
+  // Usuario con acceso activo: no debe ver /acceso-solicitado
+  if (isAccesoSolicitado) {
     const url = request.nextUrl.clone();
-    url.pathname = '/acceso-solicitado';
+    url.pathname = '/panel/dashboard';
     url.search = '';
     return NextResponse.redirect(url);
   }
@@ -89,5 +102,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/panel/:path*'],
+  matcher: ['/panel/:path*', '/acceso-solicitado'],
 };

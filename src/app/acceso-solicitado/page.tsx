@@ -110,7 +110,7 @@ export default function AccesoSolicitadoPage() {
 
             <button
               onClick={handleCerrarSesion}
-              className="w-full h-10 text-slate-500 hover:text-slate-700 text-sm font-medium transition-colors"
+              className="w-full h-10 border border-slate-200 rounded-lg text-slate-500 hover:text-slate-700 hover:border-slate-300 text-sm font-medium transition-colors"
             >
               Cerrar sesión
             </button>
