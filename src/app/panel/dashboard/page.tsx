@@ -21,14 +21,7 @@ const ProfileRadarChart    = dynamic(() => import('./Charts').then(m => m.Profil
 
 const today = new Date().toISOString().slice(0, 10);
 
-const KEYS = { from: 'dash_dateFrom', to: 'dash_dateTo' } as const;
-
-function savedDate(key: string): string | null {
-  try {
-    const v = localStorage.getItem(key);
-    return v && /^\d{4}-\d{2}-\d{2}$/.test(v) && v <= today ? v : null;
-  } catch { return null; }
-}
+const STALE_KEYS = ['dash_dateFrom', 'dash_dateTo', 'dash_groupBy'] as const;
 
 // ── KPI animado ───────────────────────────────────────────────────────────────
 
@@ -95,21 +88,11 @@ export default function DashboardPage() {
   const questionData = dashData?.questionData ?? [];
   const linkStats    = dashData?.linkStats    ?? { total: 0, used: 0, pct: 0 };
 
-  // Leer localStorage después de la hidratación para evitar mismatch SSR/cliente
+  // Limpiar claves de localStorage obsoletas y marcar como listo para cargar
   useEffect(() => {
-    try {
-      const from = savedDate(KEYS.from) ?? '';
-      const to   = savedDate(KEYS.to)   ?? '';
-      setDateFrom(from);
-      setDateTo(to);
-      setFilters({ from, to });
-    } catch {}
+    try { STALE_KEYS.forEach(k => localStorage.removeItem(k)); } catch {}
     setReady(true);
   }, []);
-
-  // Persistencia de filtros
-  useEffect(() => { try { localStorage.setItem(KEYS.from, dateFrom); } catch {} }, [dateFrom]);
-  useEffect(() => { try { localStorage.setItem(KEYS.to,   dateTo);   } catch {} }, [dateTo]);
 
   // Agregar datos semanales en meses para la gráfica de tendencia
   const monthlyData = useMemo(() => {
@@ -133,11 +116,7 @@ export default function DashboardPage() {
     const supabase = createClient();
     const { data: { subscription } } = supabase.auth.onAuthStateChange(event => {
       if (event === 'SIGNED_OUT') {
-        try {
-          localStorage.removeItem(KEYS.from);
-          localStorage.removeItem(KEYS.to);
-          localStorage.removeItem('dash_groupBy');
-        } catch {}
+        try { STALE_KEYS.forEach(k => localStorage.removeItem(k)); } catch {}
       }
     });
     return () => subscription.unsubscribe();
