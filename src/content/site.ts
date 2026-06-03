@@ -26,6 +26,7 @@ export const siteContent = {
       { label: "Nosotros",        href: "/nosotros" },
       { label: "Servicios",       href: "/servicios" },
       { label: "Autorizaciones", href: "/autorizaciones" },
+      { label: "Vacantes",        href: "/vacantes" },
       { label: "Contacto",        href: "/contacto" },
     ],
   },
