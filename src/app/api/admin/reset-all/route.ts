@@ -44,9 +44,15 @@ export async function DELETE(req: NextRequest) {
       subsToDelete = subs2;
     }
 
-    // Eliminar submissions (cascade a answers vía FK)
+    // Eliminar answers y submissions del link
     if (subsToDelete && subsToDelete.length > 0) {
       const ids = subsToDelete.map((s: { id: string }) => s.id);
+      const { error: ansDelError } = await admin
+        .from('feedback_answers')
+        .delete()
+        .in('submission_id', ids);
+      if (ansDelError) return serverError(ansDelError.message);
+
       const { error: subDelError } = await admin
         .from('feedback_submissions')
         .delete()
@@ -76,6 +82,12 @@ export async function DELETE(req: NextRequest) {
       { status: 400 }
     );
   }
+
+  const { error: ansError } = await admin
+    .from('feedback_answers')
+    .delete()
+    .not('id', 'is', null);
+  if (ansError) return serverError(ansError.message);
 
   const { error: subError } = await admin
     .from('feedback_submissions')

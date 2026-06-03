@@ -29,7 +29,7 @@ export async function GET(req: NextRequest) {
     .from('feedback_links')
     .select(statsOnly
       ? 'used_at'
-      : 'id, code, service_id, expires_at, used_at, blocked_at, attempts, max_attempts, ttl_seconds, created_at, created_by, services(folio, service_date)')
+      : 'id, code, service_id, expires_at, used_at, blocked_at, attempts, max_attempts, ttl_seconds, created_at, created_by, services(service_date)')
     .order('created_at', { ascending: false })
     .limit(statsOnly ? 1000 : 100);
 

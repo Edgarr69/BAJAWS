@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
 
   const buildQuery = (withCompanyName: boolean) => {
     const select = withCompanyName
-      ? `id, submitted_at, company_name, feedback_links(code), services(folio, service_date)`
-      : `id, submitted_at, feedback_links(code), services(folio, service_date)`;
+      ? `id, submitted_at, company_name, feedback_links(code)`
+      : `id, submitted_at, feedback_links(code)`;
     let q = admin
       .from('feedback_submissions')
       .select(select)
