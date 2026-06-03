@@ -23,11 +23,15 @@ type Answers = Record<number, { value: number; comment: string }>;
 type PageState = 'loading' | 'form' | 'error' | 'success';
 
 const ERROR_MESSAGES: Record<string, string> = {
-  INVALID:  'Este enlace no es válido.',
-  EXPIRED:  'Este enlace ha expirado.',
-  USED:     'Este formulario ya fue completado anteriormente.',
-  BLOQUEADO:'Este enlace ha sido bloqueado.',
+  INVALID:    'Este enlace no es válido.',
+  EXPIRED:    'Este enlace ha expirado.',
+  USED:       'Este formulario ya fue completado anteriormente.',
+  BLOQUEADO:  'Este enlace ha sido bloqueado.',
+  RATE_LIMIT: 'Demasiadas solicitudes. Espera un momento e intenta de nuevo.',
+  SERVER_ERROR: 'Error del servidor. Intenta de nuevo en unos minutos.',
 };
+
+const PERMANENT_ERRORS = new Set(['INVALID', 'EXPIRED', 'USED', 'BLOQUEADO']);
 
 const RATING_LABELS = ['Muy malo', 'Malo', 'Regular', 'Bueno', 'Excelente'];
 const RATING_COLORS = [
@@ -46,8 +50,9 @@ export default function FormularioPage() {
   const [answers, setAnswers]     = useState<Answers>({});
   const [companyName, setCompanyName] = useState('');
   const [privateComment, setPrivateComment] = useState('');
-  const [topicIdx, setTopicIdx]   = useState(0);
+  const [topicIdx, setTopicIdx]     = useState(0);
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   useEffect(() => {
     fetch(`/api/public/form?code=${code}`)
@@ -95,6 +100,7 @@ export default function FormularioPage() {
   async function handleSubmit() {
     if (!isAllComplete()) return;
     setSubmitting(true);
+    setSubmitError('');
     try {
       const payload = Object.entries(answers).map(([qId, a]) => ({
         question_id: Number(qId),
@@ -114,13 +120,16 @@ export default function FormularioPage() {
       const data = await res.json();
       if (data.ok) {
         setState('success');
-      } else {
+      } else if (PERMANENT_ERRORS.has(data.error)) {
+        // Error permanente (enlace inválido/expirado/usado) → pantalla de error
         setErrorMsg(ERROR_MESSAGES[data.error] ?? data.message ?? 'Error al enviar.');
         setState('error');
+      } else {
+        // Error transitorio → mostrar inline sin destruir las respuestas
+        setSubmitError(ERROR_MESSAGES[data.error] ?? data.message ?? 'Error al enviar. Intenta de nuevo.');
       }
     } catch {
-      setErrorMsg('Error de conexión al enviar. Intenta de nuevo.');
-      setState('error');
+      setSubmitError('Error de conexión. Intenta de nuevo.');
     } finally {
       setSubmitting(false);
     }
@@ -213,7 +222,7 @@ export default function FormularioPage() {
             value={companyName}
             onChange={e => setCompanyName(e.target.value)}
             maxLength={120}
-            className="w-full text-base border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
+            className="w-full text-[16px] border border-slate-200 rounded-xl px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300"
           />
           {companyName.trim() === '' && (
             <p className="text-xs text-slate-400 mt-1">Requerido para continuar</p>
@@ -266,11 +275,18 @@ export default function FormularioPage() {
               onChange={e => setPrivateComment(e.target.value)}
               rows={3}
               maxLength={500}
-              className="w-full text-base border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-slate-700 placeholder:text-slate-300"
+              className="w-full text-[16px] border border-slate-200 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 resize-none text-slate-700 placeholder:text-slate-300"
             />
           </div>
         )}
       </div>
+
+      {/* Error de envío — inline, sin perder respuestas */}
+      {submitError && (
+        <p className="mt-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-center">
+          {submitError}
+        </p>
+      )}
 
       {/* Navegación */}
       <div className="flex justify-between mt-8 pt-6 border-t border-slate-100">
