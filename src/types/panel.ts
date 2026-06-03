@@ -109,6 +109,31 @@ export interface Autorizacion {
   created_at: string;
 }
 
+export interface JobPosting {
+  id: string;
+  titulo: string;
+  descripcion: string;
+  requisitos: string | null;
+  ubicacion: string;
+  modalidad: 'presencial' | 'remoto' | 'hibrido';
+  is_active: boolean;
+  created_by: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface JobApplication {
+  id: string;
+  posting_id: string | null;
+  nombre: string;
+  correo: string;
+  telefono: string | null;
+  mensaje: string | null;
+  cv_path: string | null;
+  created_at: string;
+  job_postings?: { titulo: string } | null;
+}
+
 export type LinkStatus = 'vigente' | 'usado' | 'expirado' | 'bloqueado';
 
 export function getLinkStatus(link: FeedbackLink): LinkStatus {
