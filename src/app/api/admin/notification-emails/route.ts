@@ -8,8 +8,10 @@ import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
 
 const createSchema = z.object({
-  email: z.string().email('Email inválido').max(254),
-  label: z.string().min(1, 'El label es requerido').max(100),
+  email:              z.string().email('Email inválido').max(254),
+  label:              z.string().min(1, 'El label es requerido').max(100),
+  is_active:          z.boolean().optional(),
+  notify_postulantes: z.boolean().optional(),
 });
 
 export async function GET() {
@@ -19,7 +21,7 @@ export async function GET() {
   const admin = getAdminClient();
   const { data, error } = await admin
     .from('notification_emails')
-    .select('id, email, label, is_active, created_at')
+    .select('id, email, label, is_active, notify_postulantes, created_at')
     .order('created_at', { ascending: true });
 
   if (error) {
@@ -57,7 +59,12 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await admin
     .from('notification_emails')
-    .insert({ email: parsed.data.email, label: parsed.data.label })
+    .insert({
+      email:              parsed.data.email,
+      label:              parsed.data.label,
+      is_active:          parsed.data.is_active ?? true,
+      notify_postulantes: parsed.data.notify_postulantes ?? true,
+    })
     .select()
     .single();
 

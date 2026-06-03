@@ -10,11 +10,12 @@ import { getAdminClient } from '@/lib/supabase/admin';
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const patchSchema = z.object({
-  is_active: z.boolean().optional(),
-  label:     z.string().min(1, 'El label no puede estar vacío').max(100).optional(),
+  is_active:          z.boolean().optional(),
+  label:              z.string().min(1, 'El label no puede estar vacío').max(100).optional(),
+  notify_postulantes: z.boolean().optional(),
 }).refine(
-  (data) => data.is_active !== undefined || data.label !== undefined,
-  { message: 'Se requiere al menos un campo: is_active o label' }
+  (data) => data.is_active !== undefined || data.label !== undefined || data.notify_postulantes !== undefined,
+  { message: 'Se requiere al menos un campo' }
 );
 
 export async function PATCH(

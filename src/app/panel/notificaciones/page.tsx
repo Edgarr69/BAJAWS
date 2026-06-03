@@ -13,7 +13,7 @@ export default async function NotificacionesPage() {
   const admin = getAdminClient();
   const { data, error } = await admin
     .from('notification_emails')
-    .select('id, email, label, is_active, created_at')
+    .select('id, email, label, is_active, notify_postulantes, created_at')
     .order('created_at', { ascending: true });
 
   if (error) throw new Error('No se pudieron cargar los correos de notificación');
