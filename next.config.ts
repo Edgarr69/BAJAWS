@@ -21,7 +21,7 @@ const CSP = [
   // Video local (src/videos/*)
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
-  "frame-src https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com",
+  "frame-src blob: https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com",
   // Peticiones fetch/XHR: mismo origen + host exacto de Supabase (requerido para signInWithPassword y realtime)
   `connect-src 'self' ${SUPABASE_HOST} https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://cloudflareinsights.com`,
   // El formulario solo puede enviar datos al mismo origen
@@ -29,7 +29,7 @@ const CSP = [
   // Evita inyección de <base>
   "base-uri 'self'",
   // Sin Flash ni plugins
-  "object-src 'none'",
+  "object-src blob:",
   // Impide que este sitio sea embebido en un iframe externo (clickjacking)
   "frame-ancestors 'none'",
 ].join("; ");
