@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { toast } from 'sonner';
 import { Shield, ShieldCheck, User, Trash2, Pencil, UserPlus } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -36,27 +37,24 @@ const ROLE_ICON: Record<UserRole, React.ElementType> = {
 export default function UsuariosPage() {
   const { id: myId, role: myRole } = usePanelUser();
 
-  const [users, setUsers]     = useState<Profile[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: users = [], isLoading: loading, mutate } = useSWR(
+    'panel:users',
+    () => getUsers() as Promise<Profile[]>,
+    { revalidateOnFocus: false, dedupingInterval: 60_000 }
+  );
+
   const [confirm, setConfirm]         = useState<{ user: Profile; role: 'admin' | 'atencion' } | null>(null);
   const [confirmDel, setConfirmDel]   = useState<Profile | null>(null);
   const [editName, setEditName]       = useState<{ user: Profile; name: string } | null>(null);
   const [newUser, setNewUser]         = useState<{ email: string; password: string; full_name: string; role: 'admin' | 'atencion' | 'pending' } | null>(null);
   const [saving, setSaving]           = useState(false);
 
-  useEffect(() => {
-    getUsers()
-      .then(us => setUsers(us as Profile[]))
-      .catch(() => toast.error('Error cargando usuarios'))
-      .finally(() => setLoading(false));
-  }, []);
-
   async function confirmChange() {
     if (!confirm) return;
     setSaving(true);
     try {
       await setUserRole(confirm.user.id, confirm.role);
-      setUsers(us => us.map(u => u.id === confirm.user.id ? { ...u, role: confirm.role } : u));
+      mutate(us => (us ?? []).map(u => u.id === confirm!.user.id ? { ...u, role: confirm!.role } : u), { revalidate: false });
       setConfirm(null);
       toast.success(`Rol actualizado a "${ROLE_LABEL[confirm.role]}"`);
     } catch (e: unknown) {
@@ -71,7 +69,7 @@ export default function UsuariosPage() {
     setSaving(true);
     try {
       await updateUserName(editName.user.id, editName.name.trim());
-      setUsers(us => us.map(u => u.id === editName.user.id ? { ...u, full_name: editName.name.trim() || null } : u));
+      mutate(us => (us ?? []).map(u => u.id === editName!.user.id ? { ...u, full_name: editName!.name.trim() || null } : u), { revalidate: false });
       setEditName(null);
       toast.success('Nombre actualizado');
     } catch (e: unknown) {
@@ -86,12 +84,12 @@ export default function UsuariosPage() {
     setSaving(true);
     try {
       const result = await createUser(newUser);
-      setUsers(prev => [...prev, {
+      mutate(prev => [...(prev ?? []), {
         id: result.id,
-        email: newUser.email,
-        full_name: newUser.full_name.trim() || null,
-        role: newUser.role,
-      }]);
+        email: newUser!.email,
+        full_name: newUser!.full_name.trim() || null,
+        role: newUser!.role,
+      }], { revalidate: false });
       setNewUser(null);
       toast.success('Usuario creado');
     } catch (e: unknown) {
@@ -106,7 +104,7 @@ export default function UsuariosPage() {
     setSaving(true);
     try {
       await deleteUser(confirmDel.id);
-      setUsers(us => us.filter(u => u.id !== confirmDel.id));
+      mutate(us => (us ?? []).filter(u => u.id !== confirmDel!.id), { revalidate: false });
       setConfirmDel(null);
       toast.success('Usuario eliminado');
     } catch (e: unknown) {

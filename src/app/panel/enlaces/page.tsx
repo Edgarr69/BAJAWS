@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { useState, useRef } from 'react';
+import useSWR from 'swr';
 import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
 
 const QRCodeSVG = dynamic(() => import('qrcode.react').then(m => m.QRCodeSVG), { ssr: false });
-import { Copy, Share2, RefreshCw, QrCode, Trash2 } from 'lucide-react';
+import { Copy, Share2, QrCode, Trash2, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -30,8 +31,11 @@ const statusColor: Record<string, string> = {
 export default function EnlacesPage() {
   const { role } = usePanelUser();
 
-  const [links, setLinks]       = useState<FeedbackLink[]>([]);
-  const [loading, setLoading]   = useState(true);
+  const { data: links = [], isLoading: loading, mutate: mutateLinks } = useSWR(
+    'panel:links',
+    () => getLinks() as Promise<FeedbackLink[]>,
+    { revalidateOnFocus: false, dedupingInterval: 60_000 }
+  );
   const [creating, setCreating] = useState(false);
 
   // form
@@ -42,18 +46,13 @@ export default function EnlacesPage() {
   const [newLink, setNewLink] = useState<{ code: string; url: string; expires_at: string } | null>(null);
   const [qrOpen, setQrOpen]   = useState(false);
 
-  // eliminar
+  // eliminar todo
   const [confirmReset, setConfirmReset]     = useState(false);
   const [resetting, setResetting]           = useState(false);
-  const [deleteCode, setDeleteCode]         = useState('');
-  const [deletingCode, setDeletingCode]     = useState(false);
+  // eliminar individual por fila
+  const [confirmDeleteRow, setConfirmDeleteRow] = useState<string | null>(null);
+  const [deletingRow, setDeletingRow]           = useState(false);
 
-  useEffect(() => {
-    getLinks()
-      .then(lnks => setLinks(lnks as FeedbackLink[]))
-      .catch(() => toast.error('Error cargando datos'))
-      .finally(() => setLoading(false));
-  }, []);
 
   async function handleCreate() {
     setCreating(true);
@@ -67,9 +66,7 @@ export default function EnlacesPage() {
       const result = await createLink({ service_id, ttl_seconds: ttlSeconds });
       setNewLink(result);
       toast.success('Enlace generado');
-      // recargar lista
-      const updated = await getLinks();
-      setLinks(updated as FeedbackLink[]);
+      mutateLinks();
     } catch (e: unknown) {
       toast.error((e as Error).message ?? 'Error al generar enlace');
     } finally {
@@ -86,7 +83,7 @@ export default function EnlacesPage() {
     setResetting(true);
     try {
       await resetAllData();
-      setLinks([]);
+      mutateLinks([], { revalidate: false });
       setNewLink(null);
       setConfirmReset(false);
       toast.success('Todos los datos han sido eliminados');
@@ -94,18 +91,17 @@ export default function EnlacesPage() {
     finally { setResetting(false); }
   }
 
-  async function handleDeleteByCode() {
-    const code = deleteCode.trim().toUpperCase();
-    if (!code) return;
-    setDeletingCode(true);
+async function handleDeleteRow() {
+    if (!confirmDeleteRow) return;
+    setDeletingRow(true);
     try {
-      await deleteLinkByCode(code);
-      setLinks(ls => ls.filter(l => l.code !== code));
-      if (newLink?.code === code) setNewLink(null);
-      setDeleteCode('');
-      toast.success(`Enlace ${code} eliminado`);
-    } catch { toast.error('Código no encontrado o error al eliminar'); }
-    finally { setDeletingCode(false); }
+      await deleteLinkByCode(confirmDeleteRow);
+      mutateLinks(ls => (ls ?? []).filter(l => l.code !== confirmDeleteRow), { revalidate: false });
+      if (newLink?.code === confirmDeleteRow) setNewLink(null);
+      setConfirmDeleteRow(null);
+      toast.success(`Enlace ${confirmDeleteRow} eliminado`);
+    } catch { toast.error('Error al eliminar el enlace'); }
+    finally { setDeletingRow(false); }
   }
 
   function shareWhatsApp(code: string) {
@@ -205,35 +201,6 @@ export default function EnlacesPage() {
               )}
             </div>
 
-            {/* Zona de eliminación — solo admin/superadmin */}
-            {(role === 'admin' || role === 'superadmin') && (
-              <div className="border-t border-slate-100 px-6 py-4 mt-auto space-y-3">
-                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Eliminar un enlace</p>
-                {/* Por código */}
-                <div className="flex gap-2">
-                  <Input
-                    placeholder="Código (ej. AB12CD34)"
-                    value={deleteCode}
-                    onChange={e => setDeleteCode(e.target.value.toUpperCase())}
-                    maxLength={8}
-                    className="font-mono text-sm h-8 text-xs"
-                  />
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="h-8 px-3 text-xs gap-1.5 text-red-600 border-red-200 hover:bg-red-50 shrink-0"
-                    onClick={handleDeleteByCode}
-                    disabled={deletingCode || deleteCode.trim().length === 0}
-                  >
-                    {deletingCode
-                      ? <span className="w-3 h-3 border-2 border-red-300 border-t-red-600 rounded-full animate-spin" />
-                      : <Trash2 className="w-3 h-3" />
-                    }
-                    Eliminar
-                  </Button>
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>
@@ -289,16 +256,36 @@ export default function EnlacesPage() {
                             </span>
                           </td>
                           <td className="px-4 py-3">
-                            {status !== 'usado' && (
-                              <div className="flex gap-1">
-                                <Button size="sm" variant="ghost" className="h-7 px-2 text-xs" onClick={() => copyLink(link.code)}>
-                                  <Copy className="w-3 h-3" />
-                                </Button>
-                                <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-green-600" onClick={() => shareWhatsApp(link.code)}>
+                            <div className="flex gap-1">
+                              <Button
+                                size="sm" variant="ghost"
+                                className="h-7 px-2"
+                                title="Copiar enlace"
+                                onClick={() => copyLink(link.code)}
+                              >
+                                <Copy className="w-3 h-3" />
+                              </Button>
+                              {status !== 'usado' && (
+                                <Button
+                                  size="sm" variant="ghost"
+                                  className="h-7 px-2 text-green-600 hover:text-green-700 hover:bg-green-50"
+                                  title="Compartir por WhatsApp"
+                                  onClick={() => shareWhatsApp(link.code)}
+                                >
                                   <Share2 className="w-3 h-3" />
                                 </Button>
-                              </div>
-                            )}
+                              )}
+                              {(role === 'admin' || role === 'superadmin') && (
+                                <Button
+                                  size="sm" variant="ghost"
+                                  className="h-7 px-2 text-red-400 hover:text-red-600 hover:bg-red-50"
+                                  title="Eliminar enlace"
+                                  onClick={() => setConfirmDeleteRow(link.code)}
+                                >
+                                  <Trash2 className="w-3 h-3" />
+                                </Button>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       );
@@ -332,6 +319,33 @@ export default function EnlacesPage() {
             >
               {resetting && <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
               Sí, eliminar todo
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog confirmar eliminar fila individual */}
+      <Dialog open={!!confirmDeleteRow} onOpenChange={open => !open && !deletingRow && setConfirmDeleteRow(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+              Eliminar enlace
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 py-2">
+            Se eliminará el enlace <span className="font-mono font-semibold text-primary-700">{confirmDeleteRow}</span> junto con su respuesta asociada si existe. Esta acción no se puede deshacer.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDeleteRow(null)} disabled={deletingRow}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleDeleteRow}
+              disabled={deletingRow}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              {deletingRow ? 'Eliminando…' : 'Eliminar'}
             </Button>
           </DialogFooter>
         </DialogContent>

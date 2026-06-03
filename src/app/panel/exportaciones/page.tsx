@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
+import useSWR from 'swr';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
 import { FileDown, Calendar, Eye } from 'lucide-react';
@@ -30,10 +31,15 @@ function fmtSub(iso: string) {
 export default function ExportacionesPage() {
   const searchParams = useSearchParams();
 
-  // Lista de empresas / submissions
-  const [allSubs, setAllSubs]       = useState<Submission[]>([]);
-  const [companies, setCompanies]   = useState<string[]>([]);
-  const [loadingCo, setLoadingCo]   = useState(true);
+  // Lista de empresas / submissions — cacheado con SWR
+  const { data: allSubs = [], isLoading: loadingCo } = useSWR(
+    'panel:submissions',
+    () => getSubmissions() as Promise<Submission[]>,
+    { revalidateOnFocus: false, dedupingInterval: 60_000 }
+  );
+  const companies = useMemo(() =>
+    [...new Set(allSubs.map(s => s.company_name).filter(Boolean) as string[])].sort()
+  , [allSubs]);
 
   // Filtros
   const [company, setCompany]       = useState(searchParams.get('empresa') ?? '__all__');
@@ -56,19 +62,6 @@ export default function ExportacionesPage() {
   const [reportMounted, setReportMounted] = useState(false);
   const reportDataRef = useRef<ReportData | null>(null);
 
-  // Carga inicial — guarda todos los submissions para no repetir el request
-  useEffect(() => {
-    getSubmissions()
-      .then(subs => {
-        setAllSubs(subs);
-        const unique = Array.from(
-          new Set(subs.map(s => s.company_name).filter(Boolean) as string[])
-        ).sort();
-        setCompanies(unique);
-      })
-      .catch(() => {})
-      .finally(() => setLoadingCo(false));
-  }, []);
 
   // Al cambiar empresa específica → filtrar y abrir modal
   useEffect(() => {

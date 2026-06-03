@@ -1,6 +1,7 @@
 'use client';
 
-import { useCallback, useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
+import useSWR from 'swr';
 import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -61,34 +62,38 @@ function AnimatedKpi({
 // ── Componente principal ──────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const [loading, setLoading]         = useState(true);
-  const [topicData, setTopicData]     = useState<AggregateMetric[]>([]);
-  const [trendData, setTrendData]     = useState<AggregateMetric[]>([]);
-  const [questionData, setQuestionData] = useState<AggregateMetric[]>([]);
-  const [linkStats, setLinkStats]     = useState({ total: 0, used: 0, pct: 0 });
-  const [dateFrom, setDateFrom]       = useState('');
-  const [dateTo, setDateTo]           = useState('');
-  const [ready, setReady]             = useState(false);
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo]     = useState('');
+  const [filters, setFilters]   = useState({ from: '', to: '' });
+  const [ready, setReady]       = useState(false);
 
-  const load = useCallback(async (from: string, to: string) => {
-    setLoading(true);
-    try {
+  const { data: dashData, isLoading: loading } = useSWR(
+    ready ? ['panel:dashboard', filters.from, filters.to] : null,
+    async () => {
       const [topicRes, trendRes, questionRes, stats] = await Promise.all([
-        getMetrics({ date_from: from, date_to: to, group_by: 'topic' }),
-        getMetrics({ date_from: from, date_to: to, group_by: 'week' }),
-        getMetrics({ date_from: from, date_to: to, group_by: 'question' }),
-        getLinkStats({ date_from: from, date_to: to }),
+        getMetrics({ date_from: filters.from, date_to: filters.to, group_by: 'topic' }),
+        getMetrics({ date_from: filters.from, date_to: filters.to, group_by: 'week' }),
+        getMetrics({ date_from: filters.from, date_to: filters.to, group_by: 'question' }),
+        getLinkStats({ date_from: filters.from, date_to: filters.to }),
       ]);
-      setTopicData(topicRes.data ?? []);
-      setTrendData(trendRes.data ?? []);
-      setQuestionData(questionRes.data ?? []);
-      setLinkStats(stats);
-    } catch {
-      toast.error('Error al cargar métricas');
-    } finally {
-      setLoading(false);
+      return {
+        topicData:    topicRes.data    ?? [],
+        trendData:    trendRes.data    ?? [],
+        questionData: questionRes.data ?? [],
+        linkStats:    stats,
+      };
+    },
+    {
+      revalidateOnFocus: false,
+      dedupingInterval:  60_000,
+      onError: () => toast.error('Error al cargar métricas'),
     }
-  }, []);
+  );
+
+  const topicData    = dashData?.topicData    ?? [];
+  const trendData    = dashData?.trendData    ?? [];
+  const questionData = dashData?.questionData ?? [];
+  const linkStats    = dashData?.linkStats    ?? { total: 0, used: 0, pct: 0 };
 
   // Leer localStorage después de la hidratación para evitar mismatch SSR/cliente
   useEffect(() => {
@@ -97,14 +102,10 @@ export default function DashboardPage() {
       const to   = savedDate(KEYS.to)   ?? '';
       setDateFrom(from);
       setDateTo(to);
+      setFilters({ from, to });
     } catch {}
     setReady(true);
   }, []);
-
-  useEffect(() => {
-    if (!ready) return;
-    load(dateFrom, dateTo);
-  }, [ready, load, dateFrom, dateTo]);
 
   // Persistencia de filtros
   useEffect(() => { try { localStorage.setItem(KEYS.from, dateFrom); } catch {} }, [dateFrom]);
@@ -184,12 +185,12 @@ export default function DashboardPage() {
             onChange={e => setDateTo(e.target.value)}
             className="text-base md:text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
-          <Button size="sm" onClick={() => load(dateFrom, dateTo)} className="bg-primary-700 hover:bg-primary-600">
+          <Button size="sm" onClick={() => setFilters({ from: dateFrom, to: dateTo })} className="bg-primary-700 hover:bg-primary-600">
             Aplicar
           </Button>
           <Button size="sm" variant="outline" onClick={() => {
             setDateFrom(''); setDateTo('');
-            load('', '');
+            setFilters({ from: '', to: '' });
           }}>
             Reset
           </Button>

@@ -1,6 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import useSWR from 'swr';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
 import { Eye, FileDown, Trash2, AlertTriangle } from 'lucide-react';
@@ -17,10 +18,18 @@ const today = new Date().toISOString().slice(0, 10);
 export default function RespuestasPage() {
   const { role: myRole } = usePanelUser();
   const router = useRouter();
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
-  const [loading, setLoading]         = useState(true);
-  const [dateFrom, setDateFrom]       = useState('');
-  const [dateTo, setDateTo]           = useState('');
+  const [dateFrom, setDateFrom]   = useState('');
+  const [dateTo, setDateTo]       = useState('');
+  const [filters, setFilters]     = useState({ from: '', to: '' });
+
+  const { data: submissions = [], isLoading: loading, mutate } = useSWR(
+    ['panel:submissions', filters.from, filters.to],
+    () => getSubmissions(filters.from || filters.to
+      ? { date_from: filters.from, date_to: filters.to }
+      : undefined
+    ) as Promise<Submission[]>,
+    { revalidateOnFocus: false, dedupingInterval: 60_000 }
+  );
   const [search, setSearch]           = useState('');
   const [detail, setDetail]           = useState<{ submission: Submission; answers: Answer[] } | null>(null);
   const [detailOpen, setDetailOpen]   = useState(false);
@@ -30,27 +39,6 @@ export default function RespuestasPage() {
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting]               = useState(false);
 
-  async function load() {
-    setLoading(true);
-    try {
-      const params: Record<string, string> = {};
-      if (dateFrom) params.date_from = dateFrom;
-      if (dateTo)   params.date_to   = dateTo;
-      const data = await getSubmissions(params);
-      setSubmissions(data as Submission[]);
-    } catch {
-      toast.error('Error cargando respuestas');
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  useEffect(() => {
-    getSubmissions()
-      .then(data => setSubmissions(data as Submission[]))
-      .catch(() => toast.error('Error cargando respuestas'))
-      .finally(() => setLoading(false));
-  }, []);
 
   async function openDetail(id: string) {
     setDetailOpen(true);
@@ -70,7 +58,7 @@ export default function RespuestasPage() {
     setPurging(true);
     try {
       await resetAllData();
-      setSubmissions([]);
+      mutate([], { revalidate: false });
       setConfirmPurge(false);
       toast.success('Todas las respuestas y enlaces han sido eliminados');
     } catch {
@@ -85,7 +73,7 @@ export default function RespuestasPage() {
     setDeleting(true);
     try {
       await deleteSubmission(confirmDeleteId);
-      setSubmissions(prev => prev.filter(s => s.id !== confirmDeleteId));
+      mutate(prev => (prev ?? []).filter(s => s.id !== confirmDeleteId), { revalidate: false });
       setConfirmDeleteId(null);
       toast.success('Respuesta eliminada');
     } catch {
@@ -117,8 +105,8 @@ export default function RespuestasPage() {
         <span className="text-slate-400 text-sm">—</span>
         <input type="date" value={dateTo} min={dateFrom} max={today} onChange={e => setDateTo(e.target.value)}
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
-        <Button size="sm" onClick={load} className="bg-primary-700 hover:bg-primary-600">Filtrar</Button>
-        <Button size="sm" variant="outline" onClick={() => { setDateFrom(''); setDateTo(''); }}>Reset</Button>
+        <Button size="sm" onClick={() => setFilters({ from: dateFrom, to: dateTo })} className="bg-primary-700 hover:bg-primary-600">Filtrar</Button>
+        <Button size="sm" variant="outline" onClick={() => { setDateFrom(''); setDateTo(''); setFilters({ from: '', to: '' }); }}>Reset</Button>
         <input
           type="text"
           placeholder="Buscar empresa…"
