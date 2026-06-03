@@ -37,7 +37,7 @@ export interface FeedbackLink {
   ttl_seconds: number;
   created_at: string;
   created_by: string;
-  services?: { folio: string | null; service_date: string | null } | null;
+  services?: { service_date: string | null } | null;
 }
 
 export interface Submission {
@@ -45,7 +45,6 @@ export interface Submission {
   submitted_at: string;
   company_name: string | null;
   feedback_links?: { code: string } | null;
-  services?: { folio: string | null; service_date: string | null } | null;
 }
 
 export interface Answer {

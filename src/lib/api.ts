@@ -37,7 +37,6 @@ export const LinkSchema = z.object({
   created_at:   z.string(),
   created_by:   z.string().uuid(),
   services: nestedOneToOne(z.object({
-    folio:        z.string().nullable(),
     service_date: z.string().nullable(),
   })),
 });
@@ -79,7 +78,8 @@ export const getMe = () =>
 
 // ── Métricas ─────────────────────────────────────────────────────────────────
 export const getMetrics = (params: Record<string, string>) => {
-  const qs = new URLSearchParams(params).toString();
+  const filtered = Object.fromEntries(Object.entries(params).filter(([, v]) => v !== ''));
+  const qs = new URLSearchParams(filtered).toString();
   return apiFetch<AggregateResponse>(`/api/internal/metrics/aggregate?${qs}`);
 };
 
@@ -87,8 +87,10 @@ export const getMetrics = (params: Record<string, string>) => {
 export const getLinks = () => apiFetchArray('/api/internal/links', LinkSchema);
 
 export const getLinkStats = async (params: { date_from: string; date_to: string }) => {
-  const qs = new URLSearchParams({ ...params, _stats: '1' }).toString();
-  const links = await apiFetch<{ used_at: string | null }[]>(`/api/internal/links?${qs}`);
+  const p: Record<string, string> = { _stats: '1' };
+  if (params.date_from) p.date_from = params.date_from;
+  if (params.date_to)   p.date_to   = params.date_to;
+  const links = await apiFetch<{ used_at: string | null }[]>(`/api/internal/links?${new URLSearchParams(p).toString()}`);
   const total = links.length;
   const used  = links.filter(l => l.used_at != null).length;
   const pct   = total > 0 ? Math.round((used / total) * 100) : 0;
@@ -119,6 +121,9 @@ export const getSubmissions = (params?: Record<string, string>) => {
 
 export const getSubmission = (id: string) =>
   apiFetch<{ submission: Submission; answers: Answer[] }>(`/api/internal/submissions/${id}`);
+
+export const deleteSubmission = (id: string) =>
+  apiFetch<{ ok: boolean }>(`/api/internal/submissions/${id}`, { method: 'DELETE' });
 
 // ── Preguntas ─────────────────────────────────────────────────────────────────
 export const getQuestions = () => apiFetchArray('/api/admin/questions', QuestionSchema);
