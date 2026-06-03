@@ -7,8 +7,13 @@ import { z } from 'zod';
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, { credentials: 'include', ...options });
-  const data = await res.json();
-  if (!res.ok) throw new Error(data?.message ?? 'Error de servidor');
+  let data: unknown;
+  try {
+    data = await res.json();
+  } catch {
+    throw new Error(`Error ${res.status}${res.statusText ? ': ' + res.statusText : ''}`);
+  }
+  if (!res.ok) throw new Error((data as Record<string, string>)?.message ?? 'Error de servidor');
   return data as T;
 }
 
@@ -211,13 +216,14 @@ export interface NotificationEmail {
   email: string;
   label: string | null;
   is_active: boolean;
+  notify_postulantes: boolean;
   created_at: string;
 }
 
 export const getNotificationEmails = () =>
   apiFetch<NotificationEmail[]>('/api/admin/notification-emails');
 
-export const createNotificationEmail = (body: { email: string; label?: string }) =>
+export const createNotificationEmail = (body: { email: string; label?: string; is_active?: boolean; notify_postulantes?: boolean }) =>
   apiFetch<NotificationEmail>('/api/admin/notification-emails', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -231,7 +237,50 @@ export const toggleNotificationEmail = (id: string, is_active: boolean) =>
     body: JSON.stringify({ is_active }),
   });
 
+export const toggleNotificationPostulantes = (id: string, notify_postulantes: boolean) =>
+  apiFetch<NotificationEmail>(`/api/admin/notification-emails/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ notify_postulantes }),
+  });
+
 export const deleteNotificationEmail = (id: string) =>
   apiFetch<{ ok: boolean }>(`/api/admin/notification-emails/${id}`, {
     method: 'DELETE',
   });
+
+// ── Vacantes ──────────────────────────────────────────────────────────────────
+import type { JobPosting, JobApplication } from '@/types/panel';
+
+export const getJobPostings = () =>
+  apiFetch<JobPosting[]>('/api/admin/job-postings');
+
+export const createJobPosting = (body: Omit<JobPosting, 'id' | 'created_by' | 'created_at' | 'updated_at'>) =>
+  apiFetch<JobPosting>('/api/admin/job-postings', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
+export const toggleJobPosting = (id: string, is_active: boolean) =>
+  apiFetch<JobPosting>(`/api/admin/job-postings/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ is_active }),
+  });
+
+export const deleteJobPosting = (id: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/job-postings/${id}`, { method: 'DELETE' });
+
+// ── Postulaciones ─────────────────────────────────────────────────────────────
+
+export const getJobApplications = (params?: { posting_id?: string }) => {
+  const qs = params?.posting_id ? `?posting_id=${params.posting_id}` : '';
+  return apiFetch<JobApplication[]>(`/api/admin/job-applications${qs}`);
+};
+
+export const deleteJobApplication = (id: string) =>
+  apiFetch<{ ok: boolean }>(`/api/admin/job-applications/${id}`, { method: 'DELETE' });
+
+export const getJobApplicationCvUrl = (id: string) =>
+  apiFetch<{ url: string }>(`/api/admin/job-applications/${id}/cv`);
