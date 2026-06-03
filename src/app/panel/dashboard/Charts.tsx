@@ -1,9 +1,11 @@
 'use client';
 
 import {
-  BarChart, Bar, LineChart, Line, XAxis, YAxis, CartesianGrid,
+  BarChart, Bar, LineChart, Line, AreaChart, Area,
+  XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
+  Cell,
 } from 'recharts';
 import type { AggregateMetric } from '@/types/panel';
 
@@ -63,6 +65,89 @@ export function StackedBarChart({ data }: {
         <Bar dataKey="Positivo (4-5)" stackId="a" fill="#3D8B36" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={800} />
       </BarChart>
     </ResponsiveContainer>
+  );
+}
+
+// Score mensual — agrega datos semanales en meses para una tendencia más legible
+export function MonthlyTrendChart({ data }: { data: Array<{ mes: string; score: number }> }) {
+  return (
+    <ResponsiveContainer width="100%" height={210}>
+      <AreaChart data={data} margin={{ left: -20 }}>
+        <defs>
+          <linearGradient id="scoreGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%"  stopColor="#0B3C5D" stopOpacity={0.18} />
+            <stop offset="95%" stopColor="#0B3C5D" stopOpacity={0}    />
+          </linearGradient>
+        </defs>
+        <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+        <XAxis dataKey="mes" tick={{ fontSize: 11 }} tickLine={false} />
+        <YAxis domain={[1, 5]} tick={{ fontSize: 11 }} tickLine={false} />
+        <Tooltip formatter={(v) => [
+          typeof v === 'number' ? `${v.toFixed(2)} / 5` : String(v ?? ''),
+          'Score',
+        ]} />
+        <Area
+          type="monotone" dataKey="score" name="Score"
+          stroke="#0B3C5D" strokeWidth={2}
+          fill="url(#scoreGrad)"
+          dot={{ fill: '#0B3C5D', r: 3 }}
+          activeDot={{ r: 5 }}
+          isAnimationActive animationDuration={800}
+        />
+      </AreaChart>
+    </ResponsiveContainer>
+  );
+}
+
+// Preguntas peor evaluadas — lista con barra de progreso, sin recharts
+export function QuestionRankingChart({ data }: { data: AggregateMetric[] }) {
+  const items = [...data]
+    .filter(d => d.question_text && d.avg_score != null)
+    .sort((a, b) => a.avg_score - b.avg_score)
+    .slice(0, 6);
+
+  if (items.length === 0) return (
+    <p className="text-sm text-slate-400 text-center py-8">Sin datos</p>
+  );
+
+  return (
+    <div className="space-y-3">
+      {items.map((d, i) => {
+        const pct       = (d.avg_score / 5) * 100;
+        const isRed     = d.avg_score < 3;
+        const isAmber   = d.avg_score >= 3 && d.avg_score < 4;
+        const barColor  = isRed ? 'bg-red-500'    : isAmber ? 'bg-amber-400'    : 'bg-accent-500';
+        const numColor  = isRed ? 'text-red-600'  : isAmber ? 'text-amber-600'  : 'text-accent-700';
+        const topicCls  = isRed ? 'bg-red-50 text-red-500 border-red-100'
+                        : isAmber ? 'bg-amber-50 text-amber-600 border-amber-100'
+                        : 'bg-accent-50 text-accent-700 border-accent-100';
+        return (
+          <div key={i} className="space-y-1.5">
+            <div className="flex items-start justify-between gap-3">
+              <div className="flex items-start gap-2 min-w-0 flex-1">
+                {d.topic && (
+                  <span className={`mt-0.5 shrink-0 text-[10px] font-semibold border rounded px-1.5 py-0.5 leading-none ${topicCls}`}>
+                    {d.topic.split(' ')[0]}
+                  </span>
+                )}
+                <span className="text-xs text-slate-700 leading-snug line-clamp-2">
+                  {d.question_text}
+                </span>
+              </div>
+              <span className={`shrink-0 text-sm font-bold tabular-nums ${numColor}`}>
+                {d.avg_score.toFixed(1)}<span className="text-[10px] font-normal text-slate-400">/5</span>
+              </span>
+            </div>
+            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+              <div
+                className={`h-full rounded-full ${barColor}`}
+                style={{ width: `${pct}%`, transition: 'width 0.6s ease' }}
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
   );
 }
 

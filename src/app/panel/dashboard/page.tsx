@@ -1,11 +1,10 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { KpiCard } from '@/components/panel/KpiCard';
 import { getMetrics, getLinkStats } from '@/lib/api';
@@ -14,15 +13,14 @@ import type { AggregateMetric } from '@/types/panel';
 import { NumberTicker } from '@/components/ui/number-ticker';
 
 // Charts cargados dinámicamente para sacar recharts (~120KB) del bundle inicial
-const TopicBarChart = dynamic(() => import('./Charts').then(m => m.TopicBarChart), { ssr: false, loading: () => null });
-const TrendLineChart = dynamic(() => import('./Charts').then(m => m.TrendLineChart), { ssr: false, loading: () => null });
-const StackedBarChart = dynamic(() => import('./Charts').then(m => m.StackedBarChart), { ssr: false, loading: () => null });
-const ProfileRadarChart = dynamic(() => import('./Charts').then(m => m.ProfileRadarChart), { ssr: false, loading: () => null });
+const TopicBarChart        = dynamic(() => import('./Charts').then(m => m.TopicBarChart),        { ssr: false, loading: () => null });
+const MonthlyTrendChart    = dynamic(() => import('./Charts').then(m => m.MonthlyTrendChart),    { ssr: false, loading: () => null });
+const QuestionRankingChart = dynamic(() => import('./Charts').then(m => m.QuestionRankingChart), { ssr: false, loading: () => null });
+const ProfileRadarChart    = dynamic(() => import('./Charts').then(m => m.ProfileRadarChart),    { ssr: false, loading: () => null });
 
-const today     = new Date().toISOString().slice(0, 10);
-const yearStart = new Date(new Date().getFullYear(), 0, 1).toISOString().slice(0, 10);
+const today = new Date().toISOString().slice(0, 10);
 
-const KEYS = { from: 'dash_dateFrom', to: 'dash_dateTo', group: 'dash_groupBy' } as const;
+const KEYS = { from: 'dash_dateFrom', to: 'dash_dateTo' } as const;
 
 function savedDate(key: string): string | null {
   try {
@@ -63,26 +61,27 @@ function AnimatedKpi({
 // ── Componente principal ──────────────────────────────────────────────────────
 
 export default function DashboardPage() {
-  const [loading, setLoading]     = useState(true);
-  const [topicData, setTopicData] = useState<AggregateMetric[]>([]);
-  const [trendData, setTrendData] = useState<AggregateMetric[]>([]);
-  const [linkStats, setLinkStats] = useState({ total: 0, used: 0, pct: 0 });
-  const [dateFrom, setDateFrom]   = useState(() => savedDate(KEYS.from) ?? yearStart);
-  const [dateTo, setDateTo]       = useState(() => savedDate(KEYS.to)   ?? today);
-  const [groupBy, setGroupBy]     = useState<'day' | 'week'>(() => {
-    try { return localStorage.getItem(KEYS.group) === 'week' ? 'week' : 'day'; } catch { return 'day'; }
-  });
+  const [loading, setLoading]         = useState(true);
+  const [topicData, setTopicData]     = useState<AggregateMetric[]>([]);
+  const [trendData, setTrendData]     = useState<AggregateMetric[]>([]);
+  const [questionData, setQuestionData] = useState<AggregateMetric[]>([]);
+  const [linkStats, setLinkStats]     = useState({ total: 0, used: 0, pct: 0 });
+  const [dateFrom, setDateFrom]       = useState('');
+  const [dateTo, setDateTo]           = useState('');
+  const [ready, setReady]             = useState(false);
 
-  const load = useCallback(async (from: string, to: string, group: 'day' | 'week') => {
+  const load = useCallback(async (from: string, to: string) => {
     setLoading(true);
     try {
-      const [topicRes, trendRes, stats] = await Promise.all([
+      const [topicRes, trendRes, questionRes, stats] = await Promise.all([
         getMetrics({ date_from: from, date_to: to, group_by: 'topic' }),
-        getMetrics({ date_from: from, date_to: to, group_by: group }),
+        getMetrics({ date_from: from, date_to: to, group_by: 'week' }),
+        getMetrics({ date_from: from, date_to: to, group_by: 'question' }),
         getLinkStats({ date_from: from, date_to: to }),
       ]);
       setTopicData(topicRes.data ?? []);
       setTrendData(trendRes.data ?? []);
+      setQuestionData(questionRes.data ?? []);
       setLinkStats(stats);
     } catch {
       toast.error('Error al cargar métricas');
@@ -91,12 +90,42 @@ export default function DashboardPage() {
     }
   }, []);
 
-  useEffect(() => { load(dateFrom, dateTo, groupBy); }, [load, dateFrom, dateTo, groupBy]);
+  // Leer localStorage después de la hidratación para evitar mismatch SSR/cliente
+  useEffect(() => {
+    try {
+      const from = savedDate(KEYS.from) ?? '';
+      const to   = savedDate(KEYS.to)   ?? '';
+      setDateFrom(from);
+      setDateTo(to);
+    } catch {}
+    setReady(true);
+  }, []);
 
-  // Persistencia de filtros en localStorage
-  useEffect(() => { try { localStorage.setItem(KEYS.from,  dateFrom); } catch {} }, [dateFrom]);
-  useEffect(() => { try { localStorage.setItem(KEYS.to,    dateTo);   } catch {} }, [dateTo]);
-  useEffect(() => { try { localStorage.setItem(KEYS.group, groupBy);  } catch {} }, [groupBy]);
+  useEffect(() => {
+    if (!ready) return;
+    load(dateFrom, dateTo);
+  }, [ready, load, dateFrom, dateTo]);
+
+  // Persistencia de filtros
+  useEffect(() => { try { localStorage.setItem(KEYS.from, dateFrom); } catch {} }, [dateFrom]);
+  useEffect(() => { try { localStorage.setItem(KEYS.to,   dateTo);   } catch {} }, [dateTo]);
+
+  // Agregar datos semanales en meses para la gráfica de tendencia
+  const monthlyData = useMemo(() => {
+    const byMonth: Record<string, number[]> = {};
+    for (const d of trendData) {
+      const month = (d.week_start ?? d.date ?? '').slice(0, 7);
+      if (!month) continue;
+      if (!byMonth[month]) byMonth[month] = [];
+      if (d.avg_score_global != null) byMonth[month].push(d.avg_score_global);
+    }
+    return Object.entries(byMonth)
+      .sort(([a], [b]) => a.localeCompare(b))
+      .map(([month, scores]) => ({
+        mes:   new Date(month + '-15').toLocaleDateString('es-MX', { month: 'short', year: '2-digit' }),
+        score: scores.length ? +(scores.reduce((s, v) => s + v, 0) / scores.length).toFixed(2) : 0,
+      }));
+  }, [trendData]);
 
   // Limpiar al cerrar sesión
   useEffect(() => {
@@ -106,7 +135,7 @@ export default function DashboardPage() {
         try {
           localStorage.removeItem(KEYS.from);
           localStorage.removeItem(KEYS.to);
-          localStorage.removeItem(KEYS.group);
+          localStorage.removeItem('dash_groupBy');
         } catch {}
       }
     });
@@ -125,13 +154,6 @@ export default function DashboardPage() {
     : 0;
 
   const worst5 = [...topicData].sort((a, b) => a.avg_score - b.avg_score).slice(0, 5);
-
-  const stackedData = topicData.map(d => ({
-    topic: d.topic?.split(' ')[0] ?? '',
-    'Negativo (1-2)': (d.dist_1 ?? 0) + (d.dist_2 ?? 0),
-    'Neutral (3)': d.dist_3 ?? 0,
-    'Positivo (4-5)': (d.dist_4 ?? 0) + (d.dist_5 ?? 0),
-  }));
 
   const radarData = topicData.map(d => ({
     subject: d.topic?.split(' ')[0] ?? '',
@@ -162,21 +184,12 @@ export default function DashboardPage() {
             onChange={e => setDateTo(e.target.value)}
             className="text-base md:text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
-          <Select value={groupBy} onValueChange={v => setGroupBy(v as 'day' | 'week')}>
-            <SelectTrigger className="w-28 h-9 text-base md:text-sm">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="day">Por día</SelectItem>
-              <SelectItem value="week">Por semana</SelectItem>
-            </SelectContent>
-          </Select>
-          <Button size="sm" onClick={() => load(dateFrom, dateTo, groupBy)} className="bg-primary-700 hover:bg-primary-600">
+          <Button size="sm" onClick={() => load(dateFrom, dateTo)} className="bg-primary-700 hover:bg-primary-600">
             Aplicar
           </Button>
           <Button size="sm" variant="outline" onClick={() => {
-            setDateFrom(yearStart); setDateTo(today); setGroupBy('day');
-            load(yearStart, today, 'day');
+            setDateFrom(''); setDateTo('');
+            load('', '');
           }}>
             Reset
           </Button>
@@ -198,7 +211,7 @@ export default function DashboardPage() {
         />
       </div>
 
-      {/* ── Gráficas fila 1 ──────────────────────────────────────────────────── */}
+      {/* ── Fila 1: vista general por tema ──────────────────────────────────── */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <Card className="border-slate-200">
           <CardHeader className="pb-2">
@@ -213,33 +226,6 @@ export default function DashboardPage() {
 
         <Card className="border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">
-              Tendencia score global ({groupBy === 'day' ? 'diaria' : 'semanal'})
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? <Skeleton className="h-52 w-full" /> : (
-              <TrendLineChart data={trendData.map(d => ({ ...d, fecha: d.date ?? d.week_start ?? '' }))} />
-            )}
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* ── Gráficas fila 2 ──────────────────────────────────────────────────── */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        <Card className="border-slate-200">
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Distribución por tema</CardTitle>
-          </CardHeader>
-          <CardContent>
-            {loading ? <Skeleton className="h-52 w-full" /> : (
-              <StackedBarChart data={stackedData} />
-            )}
-          </CardContent>
-        </Card>
-
-        <Card className="border-slate-200">
-          <CardHeader className="pb-2">
             <CardTitle className="text-sm font-semibold text-slate-700">Perfil de evaluación</CardTitle>
           </CardHeader>
           <CardContent>
@@ -248,10 +234,36 @@ export default function DashboardPage() {
             )}
           </CardContent>
         </Card>
+      </div>
+
+      {/* ── Fila 2: tendencia mensual — ancho completo ───────────────────────── */}
+      <Card className="border-slate-200">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-semibold text-slate-700">Tendencia de score mensual</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {loading ? <Skeleton className="h-52 w-full" /> : (
+            <MonthlyTrendChart data={monthlyData} />
+          )}
+        </CardContent>
+      </Card>
+
+      {/* ── Fila 3: detalle accionable ───────────────────────────────────────── */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <Card className="border-slate-200 lg:col-span-2">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-semibold text-slate-700">Preguntas con menor calificación</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {loading ? <Skeleton className="h-52 w-full" /> : (
+              <QuestionRankingChart data={questionData} />
+            )}
+          </CardContent>
+        </Card>
 
         <Card className="border-slate-200">
           <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-semibold text-slate-700">Top 4 temas peor evaluados</CardTitle>
+            <CardTitle className="text-sm font-semibold text-slate-700">Temas peor evaluados</CardTitle>
           </CardHeader>
           <CardContent>
             {loading ? <Skeleton className="h-52 w-full" /> : (
