@@ -16,8 +16,7 @@ import dynamic from 'next/dynamic';
 import type { ReportData } from '@/types/report';
 import type { Submission, Answer } from '@/types/panel';
 
-const today    = new Date().toISOString().slice(0, 10);
-const monthAgo = new Date(Date.now() - 30 * 86400000).toISOString().slice(0, 10);
+const today = new Date().toISOString().slice(0, 10);
 
 const PdfReportTemplateLazy = dynamic(
   () => import('@/components/panel/PdfReportTemplate').then(m => ({ default: m.PdfReportTemplate })),
@@ -43,8 +42,8 @@ export default function ExportacionesPage() {
 
   // Filtros
   const [company, setCompany]       = useState(searchParams.get('empresa') ?? '__all__');
-  const [dateFrom, setDateFrom]     = useState(searchParams.get('date_from') ?? monthAgo);
-  const [dateTo, setDateTo]         = useState(searchParams.get('date_to') ?? today);
+  const [dateFrom, setDateFrom]     = useState(searchParams.get('date_from') ?? '');
+  const [dateTo, setDateTo]         = useState(searchParams.get('date_to') ?? '');
   const [dateError, setDateError]   = useState('');
 
   // Selección de encuestas (modo empresa)
@@ -241,7 +240,7 @@ export default function ExportacionesPage() {
                   variant="outline"
                   size="sm"
                   className="h-9"
-                  onClick={() => { setDateFrom(monthAgo); setDateTo(today); setDateError(''); }}
+                  onClick={() => { setDateFrom(''); setDateTo(''); setDateError(''); }}
                 >
                   Reset fechas
                 </Button>

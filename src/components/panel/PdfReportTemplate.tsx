@@ -343,12 +343,12 @@ function buildQuestionChunks(questions: QDetail[]): QDetail[][] {
   return chunks;
 }
 
-/** Tarjeta de una pregunta — promedio si hay 2+ respuestas, individual si hay 1 */
+/** Tarjeta de una pregunta — usa datos agregados del RPC (multi) o individuales (single) */
 function QuestionCard({ q }: { q: QDetail }) {
-  const count = q.answers.length;
-  const avgScore = count > 0
-    ? q.answers.reduce((s, a) => s + a.score, 0) / count
-    : 0;
+  const count    = q.aggregateCount ?? q.answers.length;
+  const avgScore = q.aggregateAvg  ?? (q.answers.length > 0
+    ? q.answers.reduce((s, a) => s + a.score, 0) / q.answers.length
+    : 0);
 
   return (
     <div style={{

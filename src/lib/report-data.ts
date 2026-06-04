@@ -137,13 +137,15 @@ async function buildMultiReport(
   if (dateFrom) params.date_from = dateFrom;
   if (dateTo)   params.date_to   = dateTo;
 
-  const [topicRes, trendRes] = await Promise.all([
-    getMetrics({ ...params, group_by: 'topic' }),
-    getMetrics({ ...params, group_by: 'day'   }),
+  const [topicRes, trendRes, questionRes] = await Promise.all([
+    getMetrics({ ...params, group_by: 'topic'    }),
+    getMetrics({ ...params, group_by: 'day'      }),
+    getMetrics({ ...params, group_by: 'question' }),
   ]);
 
-  const topicRaw  = topicRes.data ?? [];
-  const trendRaw  = trendRes.data ?? [];
+  const topicRaw    = topicRes.data    ?? [];
+  const trendRaw    = trendRes.data    ?? [];
+  const questionRaw = questionRes.data ?? [];
 
   const byCategory: CategoryStat[] = topicRaw.map(d => ({
     category:       d.topic ?? 'Sin categoría',
@@ -168,6 +170,17 @@ async function buildMultiReport(
 
   const diagnostics = buildDiagnostics(byCategory, trends);
 
+  // Preguntas agrupadas por tema para las páginas de detalle del PDF
+  const byQuestion = questionRaw
+    .filter(d => d.question_text)
+    .map(d => ({
+      questionText:   d.question_text ?? '',
+      topicName:      d.topic ?? 'Sin categoría',
+      answers:        [] as { fecha: string; score: number }[],
+      aggregateAvg:   d.avg_score,
+      aggregateCount: d.total_responses,
+    }));
+
   return {
     meta: {
       generatedAt: new Date().toISOString(),
@@ -183,6 +196,7 @@ async function buildMultiReport(
       status: scoreStatus(globalScore),
     },
     byCategory,
+    byQuestion: byQuestion.length ? byQuestion : undefined,
     trends,
     diagnostics,
   };

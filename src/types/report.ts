@@ -23,6 +23,8 @@ export interface QuestionDetail {
   questionText: string;
   topicName: string;
   answers: { fecha: string; score: number }[];
+  aggregateAvg?: number;   // modo multi: promedio del RPC
+  aggregateCount?: number; // modo multi: total de respuestas del RPC
 }
 
 export interface PrivateComment {
@@ -46,7 +48,7 @@ export interface ReportData {
     status: StatusLevel;
   };
   byCategory: CategoryStat[];
-  byQuestion?: QuestionDetail[]; // solo single
+  byQuestion?: QuestionDetail[];
   privateComments?: PrivateComment[]; // solo single
   trends: TrendPoint[];
   diagnostics: {
