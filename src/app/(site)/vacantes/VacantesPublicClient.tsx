@@ -34,7 +34,8 @@ export function VacantesPublicClient({ postings }: Props) {
   const [attempted, setAttempted] = useState(false);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [appliedIds, setAppliedIds] = useState<Set<string>>(new Set());
-  const fileRef = useRef<HTMLInputElement>(null);
+  const fileRef     = useRef<HTMLInputElement>(null);
+  const scrollRef   = useRef(0);
 
   useEffect(() => {
     try {
@@ -70,8 +71,19 @@ export function VacantesPublicClient({ postings }: Props) {
     });
   }
 
-  function handleOpenModal(posting: JobPosting) { resetForm(); setSelected(posting); }
-  function handleClose() { if (sending) return; setSelected(null); resetForm(); }
+  function handleOpenModal(posting: JobPosting) {
+    scrollRef.current = window.scrollY;
+    resetForm();
+    setSelected(posting);
+  }
+
+  function handleClose() {
+    if (sending) return;
+    setSelected(null);
+    resetForm();
+    // Restaurar posición de scroll — iOS mueve el body al abrir el teclado en el modal
+    requestAnimationFrame(() => window.scrollTo(0, scrollRef.current));
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
