@@ -62,12 +62,13 @@ export default function DashboardPage() {
 
   const { data: dashData, isLoading: loading } = useSWR(
     ready ? ['panel:dashboard', filters.from, filters.to] : null,
-    async () => {
+    // Parámetros recibidos del key — evita stale closure
+    async ([, from, to]: [string, string, string]) => {
       const [topicRes, trendRes, questionRes, stats] = await Promise.all([
-        getMetrics({ date_from: filters.from, date_to: filters.to, group_by: 'topic' }),
-        getMetrics({ date_from: filters.from, date_to: filters.to, group_by: 'week' }),
-        getMetrics({ date_from: filters.from, date_to: filters.to, group_by: 'question' }),
-        getLinkStats({ date_from: filters.from, date_to: filters.to }),
+        getMetrics({ date_from: from, date_to: to, group_by: 'topic' }),
+        getMetrics({ date_from: from, date_to: to, group_by: 'week' }),
+        getMetrics({ date_from: from, date_to: to, group_by: 'question' }),
+        getLinkStats({ date_from: from, date_to: to }),
       ]);
       return {
         topicData:    topicRes.data    ?? [],
