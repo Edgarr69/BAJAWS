@@ -53,13 +53,17 @@ export default function FormularioPage() {
   const [topicIdx, setTopicIdx]     = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [isPermanentError, setIsPermanentError] = useState(false);
 
-  useEffect(() => {
+  function loadForm() {
+    setState('loading');
+    setErrorMsg('');
     fetch(`/api/public/form?code=${code}`)
       .then(r => r.json())
       .then(data => {
         if (data.error) {
           setErrorMsg(ERROR_MESSAGES[data.error] ?? 'Este enlace no está disponible.');
+          setIsPermanentError(PERMANENT_ERRORS.has(data.error));
           setState('error');
         } else {
           setFormData(data);
@@ -68,8 +72,14 @@ export default function FormularioPage() {
       })
       .catch(() => {
         setErrorMsg('Error de conexión. Intenta de nuevo.');
+        setIsPermanentError(false);
         setState('error');
       });
+  }
+
+  useEffect(() => {
+    loadForm();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [code]);
 
   // Agrupar preguntas por tema
@@ -159,6 +169,14 @@ export default function FormularioPage() {
           </div>
           <h2 className="text-lg font-semibold text-slate-800">Enlace no disponible</h2>
           <p className="text-slate-500 text-sm max-w-xs">{errorMsg}</p>
+          {!isPermanentError && (
+            <button
+              onClick={loadForm}
+              className="mt-2 bg-primary-700 hover:bg-primary-600 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
+            >
+              Intentar de nuevo
+            </button>
+          )}
         </div>
       </Shell>
     );
@@ -213,10 +231,11 @@ export default function FormularioPage() {
       {/* Empresa (solo en la primera sección) */}
       {topicIdx === 0 && (
         <div className="mb-6">
-          <label className="block text-sm font-medium text-slate-700 mb-1.5">
+          <label htmlFor="company-name" className="block text-sm font-medium text-slate-700 mb-1.5">
             Nombre de empresa <span className="text-red-500">*</span>
           </label>
           <input
+            id="company-name"
             type="text"
             placeholder="Ej. Empresa XYZ"
             value={companyName}
@@ -241,6 +260,7 @@ export default function FormularioPage() {
               {[1, 2, 3, 4, 5].map(v => (
                 <button
                   key={v}
+                  aria-label={`${v} - ${RATING_LABELS[v - 1]}`}
                   onClick={() => setAnswer(q.id, v)}
                   className={`
                     flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all
@@ -266,10 +286,11 @@ export default function FormularioPage() {
         {/* Comentario privado (solo en la última sección) */}
         {topicIdx === totalTopics - 1 && (
           <div className="pt-2">
-            <label className="block text-sm font-medium text-slate-700 mb-1.5">
+            <label htmlFor="private-comment" className="block text-sm font-medium text-slate-700 mb-1.5">
               Comentario privado <span className="text-slate-400 text-xs font-normal">(opcional)</span>
             </label>
             <textarea
+              id="private-comment"
               placeholder="Algún comentario adicional para el equipo de Baja Wastewater Solution…"
               value={privateComment}
               onChange={e => setPrivateComment(e.target.value)}

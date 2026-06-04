@@ -112,15 +112,16 @@ export async function POST(req: NextRequest) {
   // riesgo de race condition con envíos concurrentes desde la misma NAT IP.
   if (company_name?.trim() || private_comment?.trim()) {
     const admin = getAdminClient();
-    const { data: link } = await admin
+    const { data: link, error: linkError } = await admin
       .from('feedback_links')
       .select('id')
       .eq('code', code.toUpperCase())
       .single();
 
-    if (link?.id) {
-      // Buscar la submission por link_id; fallback a feedback_link_id si la columna usa ese nombre
-      let { data: latest } = await admin
+    if (linkError) {
+      console.error('[public/submit] error buscando feedback_link para UPDATE secundario:', linkError.message);
+    } else if (link?.id) {
+      const { data: latest, error: submissionError } = await admin
         .from('feedback_submissions')
         .select('id')
         .eq('link_id', link.id)
@@ -129,25 +130,22 @@ export async function POST(req: NextRequest) {
         .limit(1)
         .maybeSingle();
 
-      if (!latest?.id) {
-        ({ data: latest } = await admin
-          .from('feedback_submissions')
-          .select('id')
-          .eq('feedback_link_id', link.id)
-          .eq('ip_hash', ipHash)
-          .order('submitted_at', { ascending: false })
-          .limit(1)
-          .maybeSingle());
-      }
-
-      if (latest?.id) {
-        await admin
+      if (submissionError) {
+        console.error('[public/submit] error buscando feedback_submission para UPDATE secundario:', submissionError.message);
+      } else if (latest?.id) {
+        const { error: updateError } = await admin
           .from('feedback_submissions')
           .update({
             ...(company_name?.trim() ? { company_name: company_name.trim() } : {}),
             ...(private_comment?.trim() ? { private_comment: private_comment.trim() } : {}),
           })
           .eq('id', latest.id);
+
+        if (updateError) {
+          console.error('[public/submit] error guardando company_name/private_comment en submission', latest.id, ':', updateError.message);
+        }
+      } else {
+        console.error('[public/submit] no se encontró submission para link_id', link.id, 'ip_hash', ipHash);
       }
     }
   }

@@ -10,6 +10,7 @@ import { getAdminClient } from '@/lib/supabase/admin';
 const createSchema = z.object({
   topic_id:      z.number().int().positive(),
   text:          z.string().min(5).max(500),
+  type:          z.enum(['likert', 'open', 'yesno']).optional(),
   display_order: z.number().int().min(0).optional(),
 });
 

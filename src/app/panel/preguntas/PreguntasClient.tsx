@@ -9,8 +9,9 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { createQuestion, updateQuestion, deleteQuestion } from '@/lib/api';
-import type { Question, Topic } from '@/types/panel';
+import type { Question, QuestionType, Topic } from '@/types/panel';
 
 export function PreguntasClient({ initialQuestions, topics }: { initialQuestions: Question[]; topics: Topic[] }) {
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
@@ -18,6 +19,7 @@ export function PreguntasClient({ initialQuestions, topics }: { initialQuestions
   const [editText, setEditText]   = useState('');
   const [newText, setNewText]     = useState('');
   const [newTopic, setNewTopic]   = useState(() => topics[0]?.id ?? 1);
+  const [newType, setNewType]     = useState<QuestionType>('likert');
   const [saving, setSaving]       = useState(false);
   const [delConfirm, setDelConfirm] = useState<Question | null>(null);
 
@@ -67,9 +69,10 @@ export function PreguntasClient({ initialQuestions, topics }: { initialQuestions
     try {
       const qs = byTopic(newTopic);
       const order = qs.length > 0 ? Math.max(...qs.map(q => q.display_order)) + 1 : 0;
-      const created = await createQuestion({ topic_id: newTopic, text: newText, display_order: order });
+      const created = await createQuestion({ topic_id: newTopic, text: newText, type: newType, display_order: order });
       setQuestions(qs => [...qs, { ...(created as Question), topic_id: newTopic }]);
       setNewText('');
+      setNewType('likert');
       toast.success('Pregunta creada');
     } catch { toast.error('Error al crear pregunta'); }
     finally { setSaving(false); }
@@ -135,23 +138,38 @@ export function PreguntasClient({ initialQuestions, topics }: { initialQuestions
                 ))}
 
                 {/* Nueva pregunta */}
-                <div className="flex gap-2 mt-4 pt-4 border-t border-slate-100">
-                  <Input
-                    placeholder="Nueva pregunta…"
-                    value={newTopic === topic.id ? newText : ''}
-                    onChange={e => { setNewTopic(topic.id); setNewText(e.target.value); }}
-                    onFocus={() => setNewTopic(topic.id)}
-                    maxLength={200}
-                    className="text-sm"
-                  />
-                  <Button
-                    size="sm"
-                    onClick={handleCreate}
-                    disabled={saving || newTopic !== topic.id || !newText.trim()}
-                    className="bg-primary-700 hover:bg-primary-600 gap-1.5 shrink-0"
-                  >
-                    <Plus className="w-3.5 h-3.5" /> Agregar
-                  </Button>
+                <div className="flex flex-col gap-2 mt-4 pt-4 border-t border-slate-100">
+                  <div className="flex gap-2">
+                    <Input
+                      placeholder="Nueva pregunta…"
+                      value={newTopic === topic.id ? newText : ''}
+                      onChange={e => { setNewTopic(topic.id); setNewText(e.target.value); }}
+                      onFocus={() => setNewTopic(topic.id)}
+                      maxLength={200}
+                      className="text-sm"
+                    />
+                    <Select
+                      value={newTopic === topic.id ? newType : 'likert'}
+                      onValueChange={val => { setNewTopic(topic.id); setNewType(val as QuestionType); }}
+                    >
+                      <SelectTrigger className="w-36 shrink-0 text-xs h-9">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="likert" className="text-xs">Likert (1-5)</SelectItem>
+                        <SelectItem value="open" className="text-xs">Texto libre</SelectItem>
+                        <SelectItem value="yesno" className="text-xs">Si/No</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      size="sm"
+                      onClick={handleCreate}
+                      disabled={saving || newTopic !== topic.id || !newText.trim()}
+                      className="bg-primary-700 hover:bg-primary-600 gap-1.5 shrink-0"
+                    >
+                      <Plus className="w-3.5 h-3.5" /> Agregar
+                    </Button>
+                  </div>
                 </div>
               </CardContent>
             </Card>

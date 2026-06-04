@@ -128,7 +128,7 @@ export const deleteSubmission = (id: string) =>
 // ── Preguntas ─────────────────────────────────────────────────────────────────
 export const getQuestions = () => apiFetchArray('/api/admin/questions', QuestionSchema);
 
-export const createQuestion = (body: { topic_id: number; text: string; display_order?: number }) =>
+export const createQuestion = (body: { topic_id: number; text: string; type?: 'likert' | 'open' | 'yesno'; display_order?: number }) =>
   apiFetch<unknown>('/api/admin/questions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
