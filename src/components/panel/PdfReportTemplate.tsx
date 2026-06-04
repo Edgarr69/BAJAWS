@@ -40,7 +40,7 @@ function ScoreBar({ value }: { value: number }) {
       <div style={{ width: 110, flexShrink: 0, height: 6, backgroundColor: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
         <div style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: 3 }} />
       </div>
-      <span style={{ fontSize: 12, fontWeight: 700, color, width: 34, flexShrink: 0, textAlign: 'right' }}>{fmt(value)}</span>
+      <span style={{ fontSize: 11, fontWeight: 700, color, width: 38, flexShrink: 0, textAlign: 'right' }}>{fmt(value)}</span>
     </div>
   );
 }
@@ -206,29 +206,41 @@ function Page1({ data }: { data: ReportData }) {
           <div style={{ fontSize: 13, fontWeight: 700, color: '#0B3C5D', marginBottom: 10, borderBottom: '1px solid #e2e8f0', paddingBottom: 6 }}>
             Resultados por categoría
           </div>
-          <div style={{ fontSize: 11, marginBottom: 16, border: '1px solid #f1f5f9', borderRadius: 6, overflow: 'hidden' }}>
-            {/* Header */}
-            <div style={{
-              display: 'grid', gridTemplateColumns: '2fr 3fr 90px 72px',
-              alignItems: 'center', backgroundColor: '#f1f5f9', padding: '7px 10px',
-            }}>
-              <span style={{ color: '#64748b', fontWeight: 600 }}>Categoría</span>
-              <span style={{ color: '#64748b', fontWeight: 600 }}>Promedio</span>
-              <span style={{ color: '#64748b', fontWeight: 600, textAlign: 'right' }}>% Positivo</span>
-              <span style={{ color: '#64748b', fontWeight: 600, textAlign: 'right' }}>Respuestas</span>
+          {/* Filas flex con height fijo y sin padding vertical en hijos — único mecanismo de centrado */}
+          <div style={{ marginBottom: 16, border: '1px solid #f1f5f9', borderRadius: 6, overflow: 'hidden', fontSize: 11 }}>
+            {/* Encabezado */}
+            <div style={{ display: 'flex', height: 30, backgroundColor: '#f1f5f9' }}>
+              <div style={{ width: '30%', height: 30, display: 'flex', alignItems: 'center', paddingLeft: 10, paddingRight: 10, fontWeight: 600, color: '#64748b' }}>Categoría</div>
+              <div style={{ flex: 1,      height: 30, display: 'flex', alignItems: 'center', paddingLeft: 10, paddingRight: 10, fontWeight: 600, color: '#64748b' }}>Promedio</div>
+              <div style={{ width: 90,   height: 30, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 10, paddingRight: 10, fontWeight: 600, color: '#64748b' }}>% Positivo</div>
+              <div style={{ width: 72,   height: 30, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 10, paddingRight: 10, fontWeight: 600, color: '#64748b' }}>Respuestas</div>
             </div>
-            {/* Filas */}
+            {/* Filas de datos */}
             {byCategory.map((c, i) => (
               <div key={c.category} style={{
-                display: 'grid', gridTemplateColumns: '2fr 3fr 90px 72px',
-                alignItems: 'center', padding: '8px 10px',
+                display: 'flex',
+                height: 36,
                 backgroundColor: i % 2 === 0 ? '#fff' : '#f8fafc',
                 borderTop: '1px solid #f1f5f9',
               }}>
-                <span style={{ fontWeight: 600, color: '#334155' }}>{c.category}</span>
-                <ScoreBar value={c.avgScore} />
-                <span style={{ textAlign: 'right', color: '#3D8B36', fontWeight: 600 }}>{fmt(c.pctPositive, 1)}%</span>
-                <span style={{ textAlign: 'right', color: '#64748b' }}>{c.totalResponses}</span>
+                <div style={{ width: '30%', height: 36, display: 'flex', alignItems: 'center', paddingLeft: 10, paddingRight: 10, fontWeight: 600, color: '#334155' }}>
+                  {c.category}
+                </div>
+                <div style={{ flex: 1, height: 36, display: 'flex', alignItems: 'center', paddingLeft: 10, paddingRight: 10, gap: 8 }}>
+                  {/* barra e número como hijos directos — mismo eje de centrado que el texto de Categoría */}
+                  <div style={{ width: 110, flexShrink: 0, height: 6, backgroundColor: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
+                    <div style={{ width: `${Math.max(0, Math.min(100, (c.avgScore / 5) * 100))}%`, height: '100%', backgroundColor: catColor(c.avgScore), borderRadius: 3 }} />
+                  </div>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: catColor(c.avgScore), width: 38, flexShrink: 0, textAlign: 'right', lineHeight: '11px' }}>
+                    {fmt(c.avgScore)}
+                  </span>
+                </div>
+                <div style={{ width: 90, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 10, paddingRight: 10, fontWeight: 600, color: '#3D8B36' }}>
+                  {fmt(c.pctPositive, 1)}%
+                </div>
+                <div style={{ width: 72, height: 36, display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingLeft: 10, paddingRight: 10, color: '#64748b' }}>
+                  {c.totalResponses}
+                </div>
               </div>
             ))}
           </div>

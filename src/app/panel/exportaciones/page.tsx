@@ -31,11 +31,13 @@ export default function ExportacionesPage() {
   const searchParams = useSearchParams();
 
   // Lista de empresas / submissions — cacheado con SWR
-  const { data: allSubs = [], isLoading: loadingCo } = useSWR(
+  // useMemo estabiliza la referencia del array para evitar loop infinito en el useEffect
+  const { data: allSubsRaw, isLoading: loadingCo } = useSWR(
     'panel:submissions',
     () => getSubmissions() as Promise<Submission[]>,
     { revalidateOnFocus: false, dedupingInterval: 60_000 }
   );
+  const allSubs = useMemo(() => allSubsRaw ?? [], [allSubsRaw]);
   const companies = useMemo(() =>
     [...new Set(allSubs.map(s => s.company_name).filter(Boolean) as string[])].sort()
   , [allSubs]);
