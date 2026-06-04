@@ -10,21 +10,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { createQuestion, updateQuestion, deleteQuestion } from '@/lib/api';
-import type { Question } from '@/types/panel';
+import type { Question, Topic } from '@/types/panel';
 
-const TOPICS = [
-  { id: 1, name: 'Atención a cliente' },
-  { id: 2, name: 'Ventas' },
-  { id: 3, name: 'Documentación' },
-  { id: 4, name: 'Operativo' },
-];
-
-export function PreguntasClient({ initialQuestions }: { initialQuestions: Question[] }) {
+export function PreguntasClient({ initialQuestions, topics }: { initialQuestions: Question[]; topics: Topic[] }) {
   const [questions, setQuestions] = useState<Question[]>(initialQuestions);
   const [editQ, setEditQ]         = useState<Question | null>(null);
   const [editText, setEditText]   = useState('');
   const [newText, setNewText]     = useState('');
-  const [newTopic, setNewTopic]   = useState(1);
+  const [newTopic, setNewTopic]   = useState(() => topics[0]?.id ?? 1);
   const [saving, setSaving]       = useState(false);
   const [delConfirm, setDelConfirm] = useState<Question | null>(null);
 
@@ -75,7 +68,7 @@ export function PreguntasClient({ initialQuestions }: { initialQuestions: Questi
       const qs = byTopic(newTopic);
       const order = qs.length > 0 ? Math.max(...qs.map(q => q.display_order)) + 1 : 0;
       const created = await createQuestion({ topic_id: newTopic, text: newText, display_order: order });
-      setQuestions(qs => [...qs, created as Question]);
+      setQuestions(qs => [...qs, { ...(created as Question), topic_id: newTopic }]);
       setNewText('');
       toast.success('Pregunta creada');
     } catch { toast.error('Error al crear pregunta'); }
@@ -96,16 +89,16 @@ export function PreguntasClient({ initialQuestions }: { initialQuestions: Questi
     <div className="max-w-4xl space-y-6">
       <h1 className="text-xl font-bold text-slate-800">Banco de preguntas</h1>
 
-      <Tabs defaultValue={String(TOPICS[0].id)}>
+      <Tabs defaultValue={String(topics[0]?.id ?? 1)}>
         <TabsList className="flex-wrap h-auto gap-1">
-          {TOPICS.map(t => (
+          {topics.map(t => (
             <TabsTrigger key={t.id} value={String(t.id)} className="text-xs">
               {t.name.split(' ')[0]}
             </TabsTrigger>
           ))}
         </TabsList>
 
-        {TOPICS.map(topic => (
+        {topics.map(topic => (
           <TabsContent key={topic.id} value={String(topic.id)} className="mt-4">
             <Card className="border-slate-200">
               <CardHeader className="pb-3">
@@ -148,6 +141,7 @@ export function PreguntasClient({ initialQuestions }: { initialQuestions: Questi
                     value={newTopic === topic.id ? newText : ''}
                     onChange={e => { setNewTopic(topic.id); setNewText(e.target.value); }}
                     onFocus={() => setNewTopic(topic.id)}
+                    maxLength={200}
                     className="text-sm"
                   />
                   <Button
