@@ -203,9 +203,9 @@ export default function FlotaGallery() {
             className="fixed left-0 right-0 bottom-0 z-50 flex items-center justify-center gap-4 p-4 pointer-events-none"
             style={{ top: "var(--header-height, 4rem)" }}
           >
-            {/* Flecha izquierda — fuera del modal */}
+            {/* Flecha izquierda — visible solo en sm+, en móvil va como overlay */}
             <button
-              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="hidden sm:flex flex-shrink-0 w-10 h-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               onClick={(e) => { e.stopPropagation(); prev(); }}
               aria-label="Ver foto anterior de la flota"
             >
@@ -215,7 +215,7 @@ export default function FlotaGallery() {
             </button>
 
             <div
-              className="bg-white rounded-2xl overflow-hidden overscroll-contain pointer-events-auto flex flex-col border border-gray-200"
+              className="relative bg-white rounded-2xl overflow-hidden overscroll-contain pointer-events-auto flex flex-col border border-gray-200"
               style={{
                 maxWidth: "min(900px, 92vw)",
                 maxHeight: "85vh",
@@ -232,7 +232,7 @@ export default function FlotaGallery() {
                   {selected + 1} / {images.length}
                 </span>
                 <button
-                  className="w-7 h-7 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                  className="w-10 h-10 flex items-center justify-center rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   onClick={(e) => { e.stopPropagation(); close(); }}
                   aria-label="Cerrar galería"
                 >
@@ -242,7 +242,7 @@ export default function FlotaGallery() {
                 </button>
               </div>
 
-              {/* Imagen — tamaño natural con máximos, ventana se adapta */}
+              {/* Imagen con flechas overlay en móvil */}
               <div className="relative overflow-hidden">
                 <div
                   key={imgKey}
@@ -264,12 +264,31 @@ export default function FlotaGallery() {
                     sizes="(max-width: 768px) 92vw, 900px"
                   />
                 </div>
+                {/* Flechas como overlay en móvil — evitan desbordar el viewport */}
+                <button
+                  className="sm:hidden absolute left-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm"
+                  onClick={(e) => { e.stopPropagation(); prev(); }}
+                  aria-label="Ver foto anterior de la flota"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  className="sm:hidden absolute right-2 top-1/2 -translate-y-1/2 z-10 w-10 h-10 flex items-center justify-center rounded-full bg-black/30 text-white backdrop-blur-sm"
+                  onClick={(e) => { e.stopPropagation(); next(); }}
+                  aria-label="Ver foto siguiente de la flota"
+                >
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
               </div>
             </div>
 
-            {/* Flecha derecha — fuera del modal */}
+            {/* Flecha derecha — visible solo en sm+ */}
             <button
-              className="flex-shrink-0 w-10 h-10 flex items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+              className="hidden sm:flex flex-shrink-0 w-10 h-10 items-center justify-center rounded-full bg-white/20 hover:bg-white/35 text-white backdrop-blur-sm transition-colors duration-150 pointer-events-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
               onClick={(e) => { e.stopPropagation(); next(); }}
               aria-label="Ver foto siguiente de la flota"
             >

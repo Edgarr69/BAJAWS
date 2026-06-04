@@ -246,7 +246,7 @@ export default function Header() {
 
             {/* Hamburger — móvil */}
             <button
-              className="md:hidden p-2.5 rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
+              className="md:hidden p-3 min-w-[44px] min-h-[44px] flex items-center justify-center rounded-md text-white/75 hover:text-white hover:bg-white/10 transition-colors"
               onClick={() => setIsOpen(true)}
               aria-label="Abrir menú"
               aria-expanded={isOpen}
@@ -294,7 +294,7 @@ export default function Header() {
             <Link
               href="/login"
               aria-label="Acceso interno"
-              className="p-2 text-white/25 [@media(hover:hover)]:hover:text-white/60 transition-colors"
+              className="p-3 min-w-[44px] min-h-[44px] flex items-center justify-center text-white/25 [@media(hover:hover)]:hover:text-white/60 transition-colors"
               onClick={() => setIsOpen(false)}
             >
               <LogIn className="w-3.5 h-3.5" />
@@ -303,7 +303,7 @@ export default function Header() {
               ref={closeBtnRef}
               onClick={() => setIsOpen(false)}
               aria-label="Cerrar menú"
-              className="p-2 text-white/75 hover:text-white hover:bg-white/10 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+              className="p-2.5 min-w-[44px] min-h-[44px] flex items-center justify-center text-white/75 hover:text-white hover:bg-white/10 rounded-md transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />

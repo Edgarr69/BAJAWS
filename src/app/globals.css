@@ -106,7 +106,7 @@
   }
 
   .input-base {
-    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500 outline-none text-base transition-colors duration-200 bg-white;
+    @apply w-full px-4 py-2.5 border border-gray-300 rounded-lg focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:border-primary-500 outline-none text-[16px] transition-colors duration-200 bg-white;
   }
 
   .section-title {
