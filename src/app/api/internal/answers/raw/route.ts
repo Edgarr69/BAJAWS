@@ -8,14 +8,11 @@
  *   date_to    YYYY-MM-DD  (opcional)
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
+import { dateRangeSchema } from '@/lib/schemas';
 
-const schema = z.object({
-  date_from: z.string().date().optional(),
-  date_to:   z.string().date().optional(),
-});
+const schema = dateRangeSchema;
 
 export async function GET(req: NextRequest) {
   const { errorResponse } = await requireRole('superadmin', 'admin');

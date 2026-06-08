@@ -12,11 +12,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
+import { dateRangeSchema } from '@/lib/schemas';
 
-const schema = z.object({
-  date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  date_to:   z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  group_by:  z.enum(['topic', 'question', 'day', 'week']).default('topic'),
+const schema = dateRangeSchema.extend({
+  group_by: z.enum(['topic', 'question', 'day', 'week']).default('topic'),
 });
 
 export async function GET(req: NextRequest) {
@@ -36,7 +35,7 @@ export async function GET(req: NextRequest) {
     p_group_by:  group_by,
   });
 
-  if (error) return serverError(error.message);
+  if (error) return serverError();
   if (data?.error) {
     return NextResponse.json(data, { status: data.error === 'FORBIDDEN' ? 403 : 400 });
   }
