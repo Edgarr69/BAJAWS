@@ -162,7 +162,7 @@ async function handleDeleteRow() {
             >
               {creating ? (
                 <span className="flex items-center gap-2">
-                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full motion-safe:animate-spin" />
                   Generando…
                 </span>
               ) : 'Generar enlace'}
@@ -321,7 +321,7 @@ async function handleDeleteRow() {
               disabled={resetting}
               className="gap-2"
             >
-              {resetting && <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />}
+              {resetting && <span className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full motion-safe:animate-spin" />}
               Sí, eliminar todo
             </Button>
           </DialogFooter>

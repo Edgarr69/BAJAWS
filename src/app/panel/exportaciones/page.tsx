@@ -18,6 +18,13 @@ import type { Submission, Answer } from '@/types/panel';
 
 const today = new Date().toISOString().slice(0, 10);
 
+function buildPdfFilename(company: string, dateFrom: string, dateTo: string): string {
+  const co   = company !== '__all__' ? company.toLowerCase().replace(/\s+/g, '-') : 'general';
+  const from = dateFrom || 'inicio';
+  const to   = dateTo   || 'fin';
+  return `reporte_evaluacion_${co}_${from}_${to}.pdf`;
+}
+
 const PdfReportTemplateLazy = dynamic(
   () => import('@/components/panel/PdfReportTemplate').then(m => ({ default: m.PdfReportTemplate })),
   { ssr: false }
@@ -135,10 +142,7 @@ export default function ExportacionesPage() {
 
       const { generatePdf }   = await import('@/lib/generate-pdf');
       const { getPdfPageIds } = await import('@/components/panel/PdfReportTemplate');
-      const co   = company !== '__all__' ? company.toLowerCase().replace(/\s+/g, '-') : 'general';
-      const from = dateFrom || 'inicio';
-      const to   = dateTo   || 'fin';
-      const filename = `reporte_evaluacion_${co}_${from}_${to}.pdf`;
+      const filename = buildPdfFilename(company, dateFrom, dateTo);
 
       await generatePdf(getPdfPageIds(data), filename);
       toast.success('PDF generado y descargado correctamente');
@@ -273,7 +277,7 @@ export default function ExportacionesPage() {
           >
             {generating ? (
               <>
-                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                <span className="w-4 h-4 border-2 border-white/40 border-t-white rounded-full motion-safe:animate-spin" />
                 Generando PDF…
               </>
             ) : (
