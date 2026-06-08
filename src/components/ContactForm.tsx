@@ -9,7 +9,7 @@ interface ContactFormProps {
   source?: 'contacto' | 'cotizacion';
 }
 
-type FormStatus = "idle" | "sending" | "success" | "error" | "rate_limited";
+type FormStatus = "idle" | "sending" | "success" | "error" | "timeout" | "rate_limited";
 
 const LIMITS = {
   nombre:   80,
@@ -122,6 +122,8 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
     setStatus("sending");
     lastSubmitRef.current = now;
 
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
     try {
       const res = await fetch("/api/contact", {
         method:  "POST",
@@ -133,12 +135,19 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
           mensaje:  form.mensaje.trim(),
           fuente:   source,
         }),
+        signal: controller.signal,
       });
       if (!res.ok) throw new Error("server_error");
       setStatus("success");
       setForm({ nombre: "", telefono: "", correo: "", mensaje: "", hp: "" });
-    } catch {
-      setStatus("error");
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") {
+        setStatus("timeout");
+      } else {
+        setStatus("error");
+      }
+    } finally {
+      clearTimeout(timeoutId);
     }
   };
 
@@ -288,6 +297,12 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
         </div>
       </div>
 
+      {status === "timeout" && (
+        <p role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
+          La conexión tardó demasiado. Intenta de nuevo.
+        </p>
+      )}
+
       {status === "error" && (
         <p role="alert" className="text-red-600 text-sm bg-red-50 border border-red-200 rounded-lg px-4 py-3">
           Error al enviar. Intenta de nuevo o llámanos al{" "}
@@ -313,7 +328,7 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
         className="w-full bg-primary-700 hover:bg-primary-600 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200 disabled:opacity-60 disabled:cursor-not-allowed text-sm"
       >
         {status === "sending" && (
-          <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin mr-2 align-middle" />
+          <span className="inline-block w-4 h-4 border-2 border-white/30 border-t-white rounded-full motion-safe:animate-spin mr-2 align-middle" />
         )}
         {status === "sending" ? "Enviando…" : ctaLabel}
       </button>

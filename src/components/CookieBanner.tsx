@@ -51,7 +51,7 @@ export default function CookieBanner() {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      className="cookie-overlay fixed inset-0 z-50 flex items-center justify-center p-4"
       style={{
         animation: leaving
           ? "overlay-out 0.3s ease forwards"
@@ -123,6 +123,10 @@ export default function CookieBanner() {
           @keyframes overlay-out { from { opacity: 1; } to { opacity: 0; } }
           @keyframes modal-in    { from { opacity: 0; } to { opacity: 1; } }
           @keyframes modal-out   { from { opacity: 1; } to { opacity: 0; } }
+          [role="dialog"], .cookie-overlay {
+            animation: none !important;
+            transition: none !important;
+          }
         }
       `}</style>
     </div>

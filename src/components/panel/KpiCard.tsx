@@ -23,11 +23,13 @@ export function KpiCard({ title, value, subtitle, color = 'blue', loading }: Kpi
     <Card className="border-slate-200">
       <CardContent className="pt-5 pb-4 px-5">
         <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">{title}</p>
-        {loading ? (
-          <Skeleton className="h-9 w-24 mt-1" />
-        ) : (
-          <p className={cn('text-3xl font-bold', colorMap[color])}>{value}</p>
-        )}
+        <div aria-live="polite" aria-atomic="true">
+          {loading ? (
+            <Skeleton className="h-9 w-24 mt-1" />
+          ) : (
+            <p className={cn('text-3xl font-bold', colorMap[color])}>{value}</p>
+          )}
+        </div>
         {subtitle && (
           <p className="text-xs text-slate-400 mt-1">{subtitle}</p>
         )}

@@ -13,6 +13,7 @@ import type { AggregateMetric } from '@/types/panel';
 
 export function TopicBarChart({ data }: { data: AggregateMetric[] }) {
   return (
+    <div role="img" aria-label="Gráfico de barras: promedio de score por tema">
     <ResponsiveContainer width="100%" height={210}>
       <BarChart data={data} margin={{ left: -20 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -25,11 +26,13 @@ export function TopicBarChart({ data }: { data: AggregateMetric[] }) {
         <Bar dataKey="avg_score" name="Promedio" fill="#0B3C5D" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={800} />
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
 export function TrendLineChart({ data }: { data: Array<AggregateMetric & { fecha: string }> }) {
   return (
+    <div role="img" aria-label="Gráfico de línea: tendencia de score promedio por período">
     <ResponsiveContainer width="100%" height={210}>
       <LineChart data={data} margin={{ left: -20 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -46,6 +49,7 @@ export function TrendLineChart({ data }: { data: Array<AggregateMetric & { fecha
         />
       </LineChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -53,6 +57,7 @@ export function StackedBarChart({ data }: {
   data: Array<{ topic: string; 'Negativo (1-2)': number; 'Neutral (3)': number; 'Positivo (4-5)': number }>;
 }) {
   return (
+    <div role="img" aria-label="Gráfico de barras apiladas: distribución de respuestas negativas, neutrales y positivas por tema">
     <ResponsiveContainer width="100%" height={210}>
       <BarChart data={data} margin={{ left: -20 }}>
         <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
@@ -65,12 +70,14 @@ export function StackedBarChart({ data }: {
         <Bar dataKey="Positivo (4-5)" stackId="a" fill="#3D8B36" radius={[4, 4, 0, 0]} isAnimationActive animationDuration={800} />
       </BarChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
 // Score mensual — agrega datos semanales en meses para una tendencia más legible
 export function MonthlyTrendChart({ data }: { data: Array<{ mes: string; score: number }> }) {
   return (
+    <div role="img" aria-label="Gráfico de área: tendencia mensual de score de satisfacción">
     <ResponsiveContainer width="100%" height={210}>
       <AreaChart data={data} margin={{ left: -20 }}>
         <defs>
@@ -96,6 +103,7 @@ export function MonthlyTrendChart({ data }: { data: Array<{ mes: string; score: 
         />
       </AreaChart>
     </ResponsiveContainer>
+    </div>
   );
 }
 
@@ -155,6 +163,7 @@ export function ProfileRadarChart({ data }: {
   data: Array<{ subject: string; score: number; fullMark: number }>;
 }) {
   return (
+    <div role="img" aria-label="Gráfico de radar: perfil de scores por dimensión de evaluación">
     <ResponsiveContainer width="100%" height={210}>
       <RadarChart data={data} outerRadius={70}>
         <PolarGrid stroke="#e2e8f0" />
@@ -174,5 +183,6 @@ export function ProfileRadarChart({ data }: {
         ]} />
       </RadarChart>
     </ResponsiveContainer>
+    </div>
   );
 }

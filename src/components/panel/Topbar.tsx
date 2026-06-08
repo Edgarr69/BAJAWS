@@ -49,7 +49,7 @@ export function Topbar({ user, onMenuClick }: TopbarProps) {
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <button className="focus:outline-none">
+            <button className="focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2 rounded-full">
               <Avatar className="w-8 h-8 bg-primary-700 cursor-pointer">
                 <AvatarFallback className="bg-primary-700 text-white text-xs font-semibold">
                   {initials}
