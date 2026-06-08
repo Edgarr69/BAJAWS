@@ -68,7 +68,7 @@ export default function EnlacesPage() {
       toast.success('Enlace generado');
       mutateLinks();
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al generar enlace');
+      toast.error(e instanceof Error ? e.message : 'Error al generar enlace');
     } finally {
       setCreating(false);
     }

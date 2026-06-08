@@ -61,7 +61,7 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
       resetForm();
       toast.success('Vacante publicada');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al crear la vacante');
+      toast.error(e instanceof Error ? e.message : 'Error al crear la vacante');
     } finally {
       setSaving(false);
     }
@@ -74,7 +74,7 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
       setItems(prev => prev.map(i => i.id === item.id ? updated : i));
       toast.success(updated.is_active ? 'Vacante activada' : 'Vacante desactivada');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al actualizar');
+      toast.error(e instanceof Error ? e.message : 'Error al actualizar');
     } finally {
       setToggling(null);
     }
@@ -89,7 +89,7 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
       setConfirmDel(null);
       toast.success('Vacante eliminada');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al eliminar');
+      toast.error(e instanceof Error ? e.message : 'Error al eliminar');
     } finally {
       setDeleting(null);
     }
