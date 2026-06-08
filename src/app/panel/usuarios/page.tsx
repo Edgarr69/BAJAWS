@@ -58,7 +58,7 @@ export default function UsuariosPage() {
       setConfirm(null);
       toast.success(`Rol actualizado a "${ROLE_LABEL[confirm.role]}"`);
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al cambiar rol');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }
@@ -73,7 +73,7 @@ export default function UsuariosPage() {
       setEditName(null);
       toast.success('Nombre actualizado');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al actualizar nombre');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }
@@ -93,7 +93,7 @@ export default function UsuariosPage() {
       setNewUser(null);
       toast.success('Usuario creado');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al crear usuario');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }
@@ -108,7 +108,7 @@ export default function UsuariosPage() {
       setConfirmDel(null);
       toast.success('Usuario eliminado');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al eliminar usuario');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }

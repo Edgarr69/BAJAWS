@@ -87,8 +87,10 @@ export default function EnlacesPage() {
       setNewLink(null);
       setConfirmReset(false);
       toast.success('Todos los datos han sido eliminados');
-    } catch { toast.error('Error al eliminar datos'); }
-    finally { setResetting(false); }
+    } catch (e) {
+      console.error('[enlaces] error al eliminar todos los datos:', e);
+      toast.error('Error al eliminar datos');
+    } finally { setResetting(false); }
   }
 
 async function handleDeleteRow() {
@@ -100,8 +102,10 @@ async function handleDeleteRow() {
       if (newLink?.code === confirmDeleteRow) setNewLink(null);
       setConfirmDeleteRow(null);
       toast.success(`Enlace ${confirmDeleteRow} eliminado`);
-    } catch { toast.error('Error al eliminar el enlace'); }
-    finally { setDeletingRow(false); }
+    } catch (e) {
+      console.error('[enlaces] error al eliminar enlace:', e);
+      toast.error('Error al eliminar el enlace');
+    } finally { setDeletingRow(false); }
   }
 
   function shareWhatsApp(code: string) {

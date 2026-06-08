@@ -118,7 +118,7 @@ export function AutorizacionesClient({ initialRows }: { initialRows: Autorizacio
       setNewSubmitted(false);
       toast.success('Autorización creada');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al crear');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }
@@ -141,7 +141,7 @@ export function AutorizacionesClient({ initialRows }: { initialRows: Autorizacio
       setEditSubmitted(false);
       toast.success('Autorización actualizada');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al actualizar');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }
@@ -156,7 +156,7 @@ export function AutorizacionesClient({ initialRows }: { initialRows: Autorizacio
       setDelTarget(null);
       toast.success('Autorización eliminada');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al eliminar');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }

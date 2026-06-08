@@ -4,6 +4,7 @@
  * de sesión de Supabase se envíen automáticamente.
  */
 import { z } from 'zod';
+import type { Question } from '@/types/panel';
 
 async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
   const res = await fetch(url, { credentials: 'include', ...options });
@@ -92,7 +93,7 @@ export const getLinkStats = async (params: { date_from: string; date_to: string 
   if (params.date_to)   p.date_to   = params.date_to;
   const links = await apiFetch<{ used_at: string | null }[]>(`/api/internal/links?${new URLSearchParams(p).toString()}`);
   const total = links.length;
-  const used  = links.filter(l => l.used_at != null).length;
+  const used  = links.filter(l => l.used_at !== null).length;
   const pct   = total > 0 ? Math.round((used / total) * 100) : 0;
   return { total, used, pct };
 };
@@ -129,14 +130,14 @@ export const deleteSubmission = (id: string) =>
 export const getQuestions = () => apiFetchArray('/api/admin/questions', QuestionSchema);
 
 export const createQuestion = (body: { topic_id: number; text: string; type?: 'likert' | 'open' | 'yesno'; display_order?: number }) =>
-  apiFetch<unknown>('/api/admin/questions', {
+  apiFetch<Question>('/api/admin/questions', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
 
 export const updateQuestion = (id: number, body: Partial<{ text: string; is_active: boolean; display_order: number; topic_id: number }>) =>
-  apiFetch<unknown>(`/api/admin/questions/${id}`, {
+  apiFetch<{ ok: boolean }>(`/api/admin/questions/${id}`, {
     method: 'PUT',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),

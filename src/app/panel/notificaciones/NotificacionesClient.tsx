@@ -72,7 +72,7 @@ export function NotificacionesClient({ initialItems }: { initialItems: Notificat
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, is_active: updated.is_active } : i));
       toast.success(updated.is_active ? 'Activado: contacto y cotización' : 'Desactivado: contacto y cotización');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al actualizar');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setToggling(null);
     }
@@ -85,7 +85,7 @@ export function NotificacionesClient({ initialItems }: { initialItems: Notificat
       setItems(prev => prev.map(i => i.id === item.id ? { ...i, notify_postulantes: updated.notify_postulantes } : i));
       toast.success(updated.notify_postulantes ? 'Activado: postulantes' : 'Desactivado: postulantes');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al actualizar');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setTogglingPost(null);
     }
@@ -100,7 +100,7 @@ export function NotificacionesClient({ initialItems }: { initialItems: Notificat
       setConfirmDel(null);
       toast.success('Correo eliminado');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al eliminar');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setDeleting(null);
     }
@@ -122,7 +122,7 @@ export function NotificacionesClient({ initialItems }: { initialItems: Notificat
       resetAddForm();
       toast.success('Correo agregado');
     } catch (e: unknown) {
-      toast.error((e as Error).message ?? 'Error al agregar correo');
+      toast.error(e instanceof Error ? e.message : 'Error inesperado');
     } finally {
       setSaving(false);
     }
