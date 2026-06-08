@@ -44,7 +44,7 @@ export function useInView(
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold, once]);
+  }, [threshold, once, rootMargin]);
 
   return { ref, inView };
 }

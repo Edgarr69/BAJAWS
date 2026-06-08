@@ -7,6 +7,10 @@ import { toast } from 'sonner';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+
+function ChartSkeleton() {
+  return <Skeleton className="h-64 w-full rounded-xl" />;
+}
 import { KpiCard } from '@/components/panel/KpiCard';
 import { getMetrics, getLinkStats } from '@/lib/api';
 import { createClient } from '@/lib/supabase/client';
@@ -14,10 +18,10 @@ import type { AggregateMetric } from '@/types/panel';
 import { NumberTicker } from '@/components/ui/number-ticker';
 
 // Charts cargados dinámicamente para sacar recharts (~120KB) del bundle inicial
-const TopicBarChart        = dynamic(() => import('./Charts').then(m => m.TopicBarChart),        { ssr: false, loading: () => null });
-const MonthlyTrendChart    = dynamic(() => import('./Charts').then(m => m.MonthlyTrendChart),    { ssr: false, loading: () => null });
-const QuestionRankingChart = dynamic(() => import('./Charts').then(m => m.QuestionRankingChart), { ssr: false, loading: () => null });
-const ProfileRadarChart    = dynamic(() => import('./Charts').then(m => m.ProfileRadarChart),    { ssr: false, loading: () => null });
+const TopicBarChart        = dynamic(() => import('./Charts').then(m => m.TopicBarChart),        { ssr: false, loading: () => <ChartSkeleton /> });
+const MonthlyTrendChart    = dynamic(() => import('./Charts').then(m => m.MonthlyTrendChart),    { ssr: false, loading: () => <ChartSkeleton /> });
+const QuestionRankingChart = dynamic(() => import('./Charts').then(m => m.QuestionRankingChart), { ssr: false, loading: () => <ChartSkeleton /> });
+const ProfileRadarChart    = dynamic(() => import('./Charts').then(m => m.ProfileRadarChart),    { ssr: false, loading: () => <ChartSkeleton /> });
 
 const today = new Date().toISOString().slice(0, 10);
 
