@@ -13,6 +13,10 @@ const hasUpstash =
   !!process.env.UPSTASH_REDIS_REST_URL &&
   !!process.env.UPSTASH_REDIS_REST_TOKEN;
 
+if (!hasUpstash && process.env.NODE_ENV === 'production') {
+  console.warn('[rate-limit] UPSTASH_REDIS_REST_URL/TOKEN no configurado — el rate-limit in-memory es ineficaz en serverless multi-instancia');
+}
+
 const limiters = new Map<string, Ratelimit>();
 
 function msToWindow(ms: number): `${number} ms` | `${number} s` | `${number} m` | `${number} h` | `${number} d` {

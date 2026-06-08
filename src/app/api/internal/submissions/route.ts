@@ -43,10 +43,10 @@ export async function GET(req: NextRequest) {
   let { data, error } = await buildQuery(true);
 
   // Si la columna company_name aún no existe (migración pendiente), reintentar sin ella
-  if (error && error.message?.toLowerCase().includes('company_name')) {
+  if (error && (error.code === '42703' || error.message?.toLowerCase().includes('company_name'))) {
     ({ data, error } = await buildQuery(false));
   }
 
-  if (error) return serverError(error.message);
+  if (error) return serverError();
   return NextResponse.json(data);
 }

@@ -92,7 +92,7 @@ const nextConfig: NextConfig = {
           // Impide que proxies o el navegador cacheen respuestas con datos sensibles
           { key: "Cache-Control",                    value: "no-store, max-age=0" },
           // Bloquea que otros sitios carguen este endpoint directamente (fetch desde otra web)
-          { key: "Cross-Origin-Resource-Policy",     value: "cross-origin" },
+          { key: "Cross-Origin-Resource-Policy",     value: "same-origin" },
         ],
       },
       // Seguridad HTTP — aplica a todas las rutas

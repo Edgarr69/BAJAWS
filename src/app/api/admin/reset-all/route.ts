@@ -40,7 +40,7 @@ export async function DELETE(req: NextRequest) {
         .from('feedback_submissions')
         .select('id')
         .eq('feedback_link_id', link.id);
-      if (subError2) return serverError(subError2.message);
+      if (subError2) return serverError();
       subsToDelete = subs2;
     }
 
@@ -51,13 +51,13 @@ export async function DELETE(req: NextRequest) {
         .from('feedback_answers')
         .delete()
         .in('submission_id', ids);
-      if (ansDelError) return serverError(ansDelError.message);
+      if (ansDelError) return serverError();
 
       const { error: subDelError } = await admin
         .from('feedback_submissions')
         .delete()
         .in('id', ids);
-      if (subDelError) return serverError(subDelError.message);
+      if (subDelError) return serverError();
     }
 
     // Eliminar el link
@@ -65,7 +65,7 @@ export async function DELETE(req: NextRequest) {
       .from('feedback_links')
       .delete()
       .eq('id', link.id);
-    if (linkError) return serverError(linkError.message);
+    if (linkError) return serverError();
 
     // Eliminar el servicio asociado si existe
     if (link.service_id) {
@@ -87,25 +87,25 @@ export async function DELETE(req: NextRequest) {
     .from('feedback_answers')
     .delete()
     .not('id', 'is', null);
-  if (ansError) return serverError(ansError.message);
+  if (ansError) return serverError();
 
   const { error: subError } = await admin
     .from('feedback_submissions')
     .delete()
     .not('id', 'is', null);
-  if (subError) return serverError(subError.message);
+  if (subError) return serverError();
 
   const { error: linkError } = await admin
     .from('feedback_links')
     .delete()
     .not('id', 'is', null);
-  if (linkError) return serverError(linkError.message);
+  if (linkError) return serverError();
 
   const { error: svcError } = await admin
     .from('services')
     .delete()
     .not('id', 'is', null);
-  if (svcError) return serverError(svcError.message);
+  if (svcError) return serverError();
 
   return NextResponse.json({ ok: true });
 }

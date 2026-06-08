@@ -13,8 +13,8 @@ import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { createClient } from '@/lib/supabase/server';
 
 const schema = z.object({
-  date_from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
-  date_to:   z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  date_from: z.string().date().optional(),
+  date_to:   z.string().date().optional(),
 });
 
 export async function GET(req: NextRequest) {
@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     p_date_to:   date_to   ?? null,
   });
 
-  if (error) return serverError(error.message);
+  if (error) return serverError();
   if (data?.error) {
     return NextResponse.json(data, { status: 403 });
   }
