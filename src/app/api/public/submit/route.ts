@@ -8,7 +8,6 @@
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
-import { createClient } from '@/lib/supabase/server';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validateShortCode } from '@/utils/shortcode';
@@ -81,7 +80,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'INVALID', message: 'Código inválido' }, { status: 400 });
   }
 
-  const supabase = await createClient();
+  // Service role: el visitante no tiene sesión y el RPC no depende de auth.uid().
+  // Permite revocar EXECUTE de anon/authenticated y cerrar el acceso directo vía PostgREST.
+  const supabase = getAdminClient();
   const { data, error } = await supabase.rpc('submit_feedback', {
     p_code:    code.toUpperCase(),
     p_answers: answers,

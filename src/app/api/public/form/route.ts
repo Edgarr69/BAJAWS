@@ -6,7 +6,7 @@
  * Rate limit: 30 req/min por IP.
  */
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validateShortCode } from '@/utils/shortcode';
 
@@ -39,7 +39,9 @@ export async function GET(req: NextRequest) {
     );
   }
 
-  const supabase = await createClient();
+  // Service role: el visitante no tiene sesión y el RPC no depende de auth.uid().
+  // Permite revocar EXECUTE de anon/authenticated y cerrar el acceso directo vía PostgREST.
+  const supabase = getAdminClient();
   const { data, error } = await supabase.rpc('get_public_form', { p_code: code });
 
   if (error) {
