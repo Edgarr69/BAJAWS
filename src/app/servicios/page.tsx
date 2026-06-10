@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 };
 
 export default function ServiciosPage() {
-  const { title, intro, question, cta, ctaHref, items } = siteContent.services;
+  const { title, question, cta, ctaHref, items } = siteContent.services;
 
   return (
     <>
@@ -104,23 +104,23 @@ export default function ServiciosPage() {
           }),
         }}
       />
+      {/* ── Encabezado — misma banda con línea divisoria que /integrales y /disposicion ── */}
+      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
+        <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">
+          <AnimateOnScroll direction="fade" once={false}>
+            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">
+              Soluciones integrales
+            </p>
+            <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
+            <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
+          </AnimateOnScroll>
+        </div>
+      </div>
+
       {/* ── Cards ── */}
       <div className="bg-slate-50 py-6 sm:py-8 md:py-4">
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 lg:px-8">
-
-          <AnimateOnScroll direction="fade" once={false} className="mb-5 sm:mb-6">
-            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-1">
-              Soluciones integrales
-            </p>
-            <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2">
-              <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">{title}</h1>
-              <p className="text-slate-500 text-sm max-w-md leading-relaxed sm:text-right">{intro}</p>
-            </div>
-            <div className="mt-3 w-8 h-1 bg-emerald-600 rounded-full" />
-          </AnimateOnScroll>
-
           <ServicesList />
-
         </div>
       </div>
 
