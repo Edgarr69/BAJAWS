@@ -34,6 +34,8 @@ export default function HeroVideo() {
         aria-hidden="true"
         style={{ backfaceVisibility: "hidden" }}
       >
+        {/* webm primero: Chrome/Firefox lo eligen (~10% más liviano); mp4 es el fallback de Safari */}
+        <source src="/videos/loop1.webm" type="video/webm" />
         <source src="/videos/loop1.mp4" type="video/mp4" />
       </video>
     </>
