@@ -22,7 +22,7 @@ const steps = [
     num: "01",
     title: "Recepción segura y controlada",
     description:
-      "Gestión documental y perfilado de residuos previo a su ingreso a las instalaciones, garantizando trazabilidad completa desde el punto de origen.",
+      "Antes del ingreso a instalaciones, realizamos el perfilado de cada residuo y gestionamos la documentación requerida, asegurando trazabilidad total desde su punto de generación.",
     Icon: ClipboardList,
     color: "emerald",
   },
@@ -30,7 +30,7 @@ const steps = [
     num: "02",
     title: "Análisis de viabilidad",
     description:
-      "Evaluación técnica de cada corriente para determinar su potencial de reciclaje o revalorización, maximizando el aprovechamiento con beneficio ambiental.",
+      "Estudiamos técnicamente cada corriente de residuos para identificar su capacidad de reciclaje o revalorización, priorizando siempre el máximo aprovechamiento y el menor impacto al entorno.",
     Icon: Search,
     color: "primary",
   },
@@ -38,7 +38,7 @@ const steps = [
     num: "03",
     title: "Procesos en planta",
     description:
-      "Determinación del tratamiento adecuado para cada residuo. Los materiales que requieren confinamiento se procesan para garantizar una disposición completamente segura.",
+      "Seleccionamos el proceso más adecuado para cada tipo de residuo recibido. Aquellos que no pueden valorizarse son acondicionados para asegurar su confinamiento definitivo sin riesgo.",
     Icon: Factory,
     color: "emerald",
   },
@@ -46,7 +46,7 @@ const steps = [
     num: "04",
     title: "Tratamiento",
     description:
-      "Estabilización y neutralización de materiales peligrosos con cero impacto ambiental. Cada cliente recibe un protocolo de tratamiento especializado y personalizado.",
+      "Aplicamos técnicas de estabilización y neutralización para eliminar la peligrosidad de los materiales. Cada generador cuenta con un protocolo de tratamiento diseñado a la medida de sus residuos.",
     Icon: Droplets,
     color: "primary",
   },
@@ -54,7 +54,7 @@ const steps = [
     num: "05",
     title: "Verificación",
     description:
-      "Confirmación de la efectividad de los tratamientos aplicados. Los materiales que no cumplen especificaciones se retreatan hasta alcanzar los resultados requeridos.",
+      "Evaluamos los resultados de cada tratamiento para confirmar su efectividad. Si algún material no alcanza las especificaciones requeridas, se somete a un nuevo ciclo hasta cumplir los estándares.",
     Icon: BadgeCheck,
     color: "emerald",
   },
@@ -62,7 +62,7 @@ const steps = [
     num: "06",
     title: "Celdas de seguridad",
     description:
-      "Confinamiento permanente de residuos no valorizados en celdas diseñadas para evitar cualquier contacto con el entorno natural.",
+      "Los residuos que no pueden revalorizarse son confinados de forma permanente en celdas especialmente diseñadas para aislarlos completamente del suelo, el agua y el entorno natural.",
     Icon: Lock,
     color: "primary",
   },
