@@ -24,7 +24,7 @@ const steps = [
     num: "01",
     title: "Primer contacto",
     description:
-      "Escuchamos y analizamos a fondo cada operación. Partimos del proceso actual del cliente para identificar oportunidades de optimización y diseñar propuestas alineadas a sus necesidades reales.",
+      "Analizamos a fondo cada operación para identificar oportunidades de optimización alineadas a sus necesidades reales.",
     Icon: Users2,
     color: "emerald",
   },
@@ -32,7 +32,7 @@ const steps = [
     num: "02",
     title: "Levantamiento",
     description:
-      "Diseñamos un plan de manejo específico para cada tipo de residuo generado, priorizando la valorización de materiales y asegurando alternativas de disposición segura para el resto.",
+      "Diseñamos un plan de manejo específico por tipo de residuo, priorizando la valorización de materiales y la disposición segura del resto.",
     Icon: ClipboardList,
     color: "primary",
   },
@@ -40,7 +40,7 @@ const steps = [
     num: "03",
     title: "Soluciones Integrales de Valor",
     description:
-      "Ponemos a disposición del cliente un equipo técnico especializado, incluyendo personal in plant gestionado directamente por Baja Wastewater Solution para una atención sin intermediarios.",
+      "Equipo técnico especializado, con personal in plant gestionado directamente por nosotros, sin intermediarios.",
     Icon: Layers,
     color: "emerald",
   },
@@ -48,7 +48,7 @@ const steps = [
     num: "04",
     title: "Disposición segura",
     description:
-      "Operamos instalaciones propias con autorizaciones regulatorias vigentes, lo que nos permite ofrecer disposición segura y documentada de residuos tanto valorizables como no valorizables.",
+      "Instalaciones propias con autorizaciones regulatorias vigentes para disposición segura y documentada.",
     Icon: ShieldCheck,
     color: "primary",
   },
@@ -56,7 +56,7 @@ const steps = [
     num: "05",
     title: "Mejora continua",
     description:
-      "Trabajamos junto al cliente en la búsqueda constante de nuevas formas de gestionar sus residuos, con el objetivo de aumentar la rentabilidad del proceso y reducir la huella ambiental.",
+      "Buscamos constantemente nuevas formas de gestionar sus residuos para aumentar la rentabilidad del proceso y reducir la huella ambiental.",
     Icon: RefreshCcw,
     color: "emerald",
   },
@@ -64,7 +64,7 @@ const steps = [
     num: "06",
     title: "Estándares de calidad",
     description:
-      "Cada proceso se ejecuta bajo los criterios de nuestras certificaciones vigentes, asegurando consistencia, calidad y respuesta específica a los requerimientos de cada industria.",
+      "Cada proceso se ejecuta bajo los criterios de nuestras certificaciones vigentes, asegurando consistencia y calidad.",
     Icon: Award,
     color: "primary",
   },
@@ -72,7 +72,7 @@ const steps = [
     num: "07",
     title: "Cadena de valor altamente rentable",
     description:
-      "A través de nuestra red de socios estratégicos, aseguramos que los residuos con potencial de valorización generen el mayor retorno económico posible para cada cliente.",
+      "Nuestra red de socios estratégicos maximiza el retorno económico de los residuos valorizables.",
     Icon: TrendingUp,
     color: "emerald",
   },
