@@ -92,7 +92,8 @@ export default function RespuestasPage() {
       )
     : submissions;
 
-  const canPurge = myRole === 'superadmin' || myRole === 'admin';
+  // El borrado masivo es exclusivo de superadmin (la API retorna 403 para admin)
+  const canPurge = myRole === 'superadmin';
 
   return (
     <div className="max-w-5xl space-y-6">

@@ -214,7 +214,7 @@ async function handleDeleteRow() {
         <CardHeader className="pb-3">
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-semibold text-slate-700">Historial de enlaces</CardTitle>
-            {(role === 'admin' || role === 'superadmin') && links.length > 0 && (
+            {role === 'superadmin' && links.length > 0 && (
               <Button
                 size="sm"
                 variant="ghost"

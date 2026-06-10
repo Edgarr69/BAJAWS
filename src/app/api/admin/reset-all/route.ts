@@ -2,6 +2,7 @@
  * DELETE /api/admin/reset-all?confirm=RESET_ALL → elimina todos los enlaces, submissions y servicios (SOLO superadmin)
  * DELETE /api/admin/reset-all?code=X            → elimina un enlace individual por código (admin y superadmin)
  * El borrado masivo requiere ?confirm=RESET_ALL para prevenir ejecución accidental.
+ * Ambas operaciones quedan registradas en audit_log.
  */
 import { NextRequest, NextResponse } from 'next/server';
 import { getSessionInfo, unauthorized, forbidden, serverError, badRequest } from '@/lib/auth';
@@ -72,10 +73,20 @@ export async function DELETE(req: NextRequest) {
       await admin.from('services').delete().eq('id', link.service_id);
     }
 
+    await admin.from('audit_log').insert({
+      actor_id:   session.userId,
+      action:     'delete',
+      table_name: 'feedback_links',
+      record_id:  link.id,
+      old_data:   { id: link.id, code, service_id: link.service_id },
+    });
+
     return NextResponse.json({ ok: true });
   }
 
-  // ── Eliminar todo — superadmin y admin + token de confirmación explícito ────
+  // ── Eliminar todo — SOLO superadmin + token de confirmación explícito ──────
+  if (session.role !== 'superadmin') return forbidden();
+
   if (confirm !== 'RESET_ALL') {
     return NextResponse.json(
       { error: 'CONFIRMATION_REQUIRED', message: 'Se requiere ?confirm=RESET_ALL para borrar todos los datos' },
@@ -106,6 +117,12 @@ export async function DELETE(req: NextRequest) {
     .delete()
     .not('id', 'is', null);
   if (svcError) return serverError();
+
+  await admin.from('audit_log').insert({
+    actor_id: session.userId,
+    action:   'reset_all',
+    old_data: { tables: ['feedback_answers', 'feedback_submissions', 'feedback_links', 'services'] },
+  });
 
   return NextResponse.json({ ok: true });
 }
