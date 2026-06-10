@@ -4,6 +4,7 @@ import { getAdminClient } from '@/lib/supabase/admin';
 import type { JobPosting } from '@/types/panel';
 import { VacantesPublicClient } from './VacantesPublicClient';
 
+export const revalidate = 300;
 export const metadata: Metadata = {
   title: { absolute: 'Vacantes | Baja Wastewater Solution' },
   description: 'Únete al equipo de Baja Wastewater Solution. Consulta las vacantes disponibles y envía tu postulación.',
