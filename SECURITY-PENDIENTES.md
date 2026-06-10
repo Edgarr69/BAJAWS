@@ -330,12 +330,12 @@ requieran revisión humana.
 
 - [x] 1. Quitar `unsafe-eval` del CSP
 - [x] 2. Reemplazar wildcard `*.supabase.co` por URL exacta
-- [ ] 3. Migrar `/api/me` a `createClient()` con RLS — **BLOQUEADO**: verificar policy SELECT en tabla `profiles` (Dashboard → Authentication → Policies) con `USING (auth.uid() = id)` antes de cambiar
+- [x] 3. Migrar `/api/me` a `createClient()` con RLS — resuelto: el route ya usa `createClient()` con cookies del usuario y RLS
 - [x] 4. Devolver 404 genérico en `/api/public/form` para todos los estados
 - [x] 5. Sanitizar mensajes de error — `serverError()` ya era seguro por diseño (loguea internamente, retorna genérico al cliente). No requería cambio.
 - [ ] 6. Migrar rate limit a Upstash Redis (cuando escale tráfico)
 - [x] 7. Auditoría en DELETE de autorizaciones, questions, users
-- [ ] 8. Verificar RPC `submit_feedback` valida question→form — **PENDIENTE MANUAL**: la migración no está en el repo local. Verificar en Supabase Dashboard → Database → Functions → `submit_feedback`.
+- [x] 8. Verificar RPC `submit_feedback` valida question→form — **VERIFICADO 2026-06-10** contra la BD remota: el RPC valida cada `question_id` contra `form_version_questions` del `form_version_id` del enlace (y que la pregunta esté activa), con lock de fila `FOR UPDATE`, uso único y límite de intentos. No era vulnerable. Definición versionada en `supabase/migrations/008_rpc_definitions.sql`.
 - [x] 9. Helper `parseUuid()` aplicado en `autorizaciones/[id]` y `users/[id]`
 - [x] 10. `next` pineado a `15.5.15` en `package.json`
 
