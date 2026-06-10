@@ -23,6 +23,7 @@ function parseRequirements(text: string): string[] {
 export function VacantesPublicClient({ postings }: Props) {
   const [selected, setSelected]   = useState<JobPosting | null>(null);
   const [success, setSuccess]     = useState(false);
+  const [duplicate, setDuplicate] = useState(false);
   const [sending, setSending]     = useState(false);
   const [error, setError]         = useState<string | null>(null);
 
@@ -59,7 +60,7 @@ export function VacantesPublicClient({ postings }: Props) {
 
   function resetForm() {
     setNombre(''); setCorreo(''); setTelefono(''); setMensaje('');
-    setCvFile(null); setAttempted(false); setError(null); setSuccess(false);
+    setCvFile(null); setAttempted(false); setError(null); setSuccess(false); setDuplicate(false);
     if (fileRef.current) fileRef.current.value = '';
   }
 
@@ -112,9 +113,10 @@ export function VacantesPublicClient({ postings }: Props) {
       const data = await res.json();
       if (!res.ok) {
         if (res.status === 409) {
-          // Ya aplicó — marcar localmente y mostrar el estado de éxito
+          // Ya aplicó con este correo — marcar localmente y mostrar la alerta de duplicado
+          // (NO es éxito: no se registró nada ni se envió correo)
           markApplied(selected!.id);
-          setSuccess(true);
+          setDuplicate(true);
           return;
         }
         setError(
@@ -285,11 +287,34 @@ export function VacantesPublicClient({ postings }: Props) {
         >
           <DialogHeader>
             <DialogTitle>
-              {success ? 'Postulación enviada' : `Aplicar — ${selected?.titulo}`}
+              {success ? 'Postulación enviada' : duplicate ? 'Correo ya registrado' : `Aplicar — ${selected?.titulo}`}
             </DialogTitle>
           </DialogHeader>
 
-          {success ? (
+          {duplicate ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-8 text-center">
+              <div className="w-14 h-14 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <svg className="w-7 h-7 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 9v3.75m0 3.75h.008M10.34 3.94l-7.5 13a1.5 1.5 0 001.3 2.25h15a1.5 1.5 0 001.3-2.25l-7.5-13a1.5 1.5 0 00-2.6 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-amber-800 mb-2">Este correo ya está registrado</h3>
+              <p className="text-amber-700 text-sm leading-relaxed">
+                Ya recibimos una postulación con este correo para esta vacante. No necesitas
+                volver a enviarla.
+              </p>
+              <p className="text-amber-700 text-sm leading-relaxed mt-3 font-semibold">
+                Volver a postular usando otro correo puede causar que tu postulación no sea
+                considerada por duplicidad.
+              </p>
+              <button
+                onClick={handleClose}
+                className="mt-5 text-primary-600 hover:text-primary-800 underline text-sm transition-colors"
+              >
+                Entendido, cerrar
+              </button>
+            </div>
+          ) : success ? (
             <div className="bg-accent-50 border border-accent-200 rounded-xl p-8 text-center">
               <div className="w-14 h-14 bg-accent-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <svg className="w-7 h-7 text-accent-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
