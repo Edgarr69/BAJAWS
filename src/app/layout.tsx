@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import GoogleTagManager from "@/components/GoogleTagManager";
+import { siteContent } from "@/content/site";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,15 +44,17 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
-              "@type": "Organization",
+              // LocalBusiness es subtipo de Organization — entidad única del negocio
+              "@type": "LocalBusiness",
               "@id": "https://bajaws.com.mx/#organization",
-              "name": "Baja Wastewater Solution",
+              "name": siteContent.company.name,
+              "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en México. Autorizaciones SEMARNAT, CESPT, SEMAR y SCT.",
               "url": "https://bajaws.com.mx",
               "logo": "https://bajaws.com.mx/logoo.webp",
               "image": "https://bajaws.com.mx/images/nosotros.webp",
-              "telephone": "(664) 647 5020",
-              "email": "damian@bajaws.com.mx",
-              "foundingDate": "2009",
+              "telephone": "+52-664-647-5020",
+              "email": siteContent.contacto.info.correo,
+              "foundingDate": String(siteContent.company.foundingYear),
               "address": {
                 "@type": "PostalAddress",
                 "streetAddress": "Fray Junípero Serra No.17501, Garita de Otay",
@@ -60,6 +63,25 @@ export default function RootLayout({
                 "postalCode": "22430",
                 "addressCountry": "MX",
               },
+              "openingHoursSpecification": {
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+                "opens": "08:00",
+                "closes": "17:00",
+              },
+              "geo": {
+                "@type": "GeoCoordinates",
+                "latitude": 32.5368,
+                "longitude": -116.9320,
+              },
+              "areaServed": [
+                { "@type": "Country", "name": "México" },
+                { "@type": "State", "name": "Baja California" },
+                { "@type": "City", "name": "Tijuana" },
+                { "@type": "City", "name": "Tecate" },
+                { "@type": "City", "name": "Mexicali" },
+                { "@type": "City", "name": "Ensenada" },
+              ],
               "sameAs": [
                 "https://www.facebook.com/p/Baja-Wastewater-Solution-S-de-RL-100064142435861/",
                 "https://www.linkedin.com/company/baja-waste-water-solution/",
