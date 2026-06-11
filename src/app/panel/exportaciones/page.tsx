@@ -61,9 +61,17 @@ export default function ExportacionesPage() {
     { revalidateOnFocus: false, dedupingInterval: 60_000 }
   );
   const allSubs = useMemo(() => allSubsRaw ?? [], [allSubsRaw]);
-  const companies = useMemo(() =>
-    [...new Set(allSubs.map(s => s.company_name).filter(Boolean) as string[])].sort()
-  , [allSubs]);
+  // Dedup case-insensitive: "ACME" y "Acme" son la misma empresa (el filtrado
+  // de encuestas ya compara en minúsculas) — se muestra la primera variante
+  const companies = useMemo(() => {
+    const byKey = new Map<string, string>();
+    for (const s of allSubs) {
+      if (!s.company_name) continue;
+      const key = s.company_name.toLowerCase();
+      if (!byKey.has(key)) byKey.set(key, s.company_name);
+    }
+    return [...byKey.values()].sort((a, b) => a.localeCompare(b, 'es'));
+  }, [allSubs]);
 
   // Filtros
   const [company, setCompany]       = useState(searchParams.get('empresa') ?? '__all__');
