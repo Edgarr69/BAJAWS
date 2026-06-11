@@ -4,11 +4,13 @@ import { useEffect, useRef, useState, useMemo } from 'react';
 import useSWR from 'swr';
 import { useSearchParams } from 'next/navigation';
 import { toast } from 'sonner';
-import { FileDown, Calendar, Eye } from 'lucide-react';
+import { FileDown, Calendar, Eye, Check, ChevronsUpDown } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from '@/components/ui/command';
+import { cn } from '@/lib/utils';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { getSubmissions, getSubmission } from '@/lib/api';
@@ -34,6 +36,20 @@ function fmtSub(iso: string) {
   return new Date(iso).toLocaleDateString('es-MX', { day: '2-digit', month: 'short', year: 'numeric' });
 }
 
+// Normaliza para búsqueda: minúsculas y sin acentos (ej. "lópez" coincide con "lopez")
+function normalizeSearch(s: string): string {
+  return s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '');
+}
+
+// Filtro del combobox: prioriza empresas que empiezan con lo escrito, luego las que lo contienen
+function companyFilter(value: string, search: string): number {
+  const v = normalizeSearch(value);
+  const q = normalizeSearch(search);
+  if (v.startsWith(q)) return 2;
+  if (v.includes(q)) return 1;
+  return 0;
+}
+
 export default function ExportacionesPage() {
   const searchParams = useSearchParams();
 
@@ -51,6 +67,7 @@ export default function ExportacionesPage() {
 
   // Filtros
   const [company, setCompany]       = useState(searchParams.get('empresa') ?? '__all__');
+  const [companyOpen, setCompanyOpen] = useState(false);
   const [dateFrom, setDateFrom]     = useState(searchParams.get('date_from') ?? '');
   const [dateTo, setDateTo]         = useState(searchParams.get('date_to') ?? '');
   const [dateError, setDateError]   = useState('');
@@ -177,17 +194,48 @@ export default function ExportacionesPage() {
             {loadingCo ? (
               <Skeleton className="h-9 w-full" />
             ) : (
-              <Select value={company} onValueChange={setCompany}>
-                <SelectTrigger className="h-9 text-base md:text-sm bg-white">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="__all__">Todas las evaluaciones (general)</SelectItem>
-                  {companies.map(c => (
-                    <SelectItem key={c} value={c}>{c}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <Popover open={companyOpen} onOpenChange={setCompanyOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    role="combobox"
+                    aria-expanded={companyOpen}
+                    className="h-9 w-full justify-between bg-white font-normal text-base md:text-sm border-slate-200 hover:bg-white"
+                  >
+                    <span className="truncate">
+                      {company === '__all__' ? 'Todas las evaluaciones (general)' : company}
+                    </span>
+                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-[--radix-popover-trigger-width] p-0" align="start">
+                  <Command filter={companyFilter}>
+                    <CommandInput placeholder="Buscar empresa…" />
+                    <CommandList>
+                      <CommandEmpty>No se encontró ninguna empresa.</CommandEmpty>
+                      <CommandGroup>
+                        <CommandItem
+                          value="Todas las evaluaciones (general)"
+                          onSelect={() => { setCompany('__all__'); setCompanyOpen(false); }}
+                        >
+                          <Check className={cn('h-4 w-4', company === '__all__' ? 'opacity-100' : 'opacity-0')} />
+                          Todas las evaluaciones (general)
+                        </CommandItem>
+                        {companies.map(c => (
+                          <CommandItem
+                            key={c}
+                            value={c}
+                            onSelect={() => { setCompany(c); setCompanyOpen(false); }}
+                          >
+                            <Check className={cn('h-4 w-4', company === c ? 'opacity-100' : 'opacity-0')} />
+                            {c}
+                          </CommandItem>
+                        ))}
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             )}
             {!loadingCo && companies.length === 0 && (
               <p className="text-xs text-slate-400">
