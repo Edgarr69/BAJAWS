@@ -1,8 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Users, Mail, Phone, Trash2, Eye, FileText, Briefcase } from 'lucide-react';
+import { Users, Mail, Phone, Trash2, Eye, FileText, Briefcase, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -18,7 +18,10 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
   const [items, setItems]           = useState<JobApplication[]>(initialItems);
   const [detail, setDetail]         = useState<JobApplication | null>(null);
   const [deleting, setDeleting]     = useState<string | null>(null);
-  const [loadingCv, setLoadingCv]   = useState<string | null>(null);
+  // url === null → descargando (el modal muestra spinner)
+  const [cvPreview, setCvPreview]   = useState<{ id: string; nombre: string; url: string | null } | null>(null);
+  // Caché de blobs por postulación — reabrir un CV ya visto es instantáneo, sin llamadas nuevas
+  const cvCacheRef = useRef<Map<string, string>>(new Map());
 
   const vacantes = Array.from(
     new Set(items.map(i => i.job_postings?.titulo ?? 'Sin vacante'))
@@ -43,16 +46,34 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
     }
   }
 
-  async function handleViewCv(id: string) {
-    setLoadingCv(id);
+  // Abre el modal de inmediato; si el blob ya está en caché no hay ninguna llamada
+  function handleViewCv(id: string, nombre: string) {
+    const cached = cvCacheRef.current.get(id);
+    setCvPreview({ id, nombre, url: cached ?? null });
+    if (!cached) void loadCv(id);
+  }
+
+  // Descarga el PDF como blob para mostrarlo en un modal — el CSP no permite
+  // embeber la URL firmada de Supabase directamente (object-src solo acepta blob:)
+  async function loadCv(id: string) {
     try {
       const { url } = await getJobApplicationCvUrl(id);
-      window.open(url, '_blank', 'noopener,noreferrer');
+      const res = await fetch(url);
+      if (!res.ok) throw new Error('CV_FETCH_FAILED');
+      const blob = await res.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      cvCacheRef.current.set(id, blobUrl);
+      // Solo actualizar si el modal sigue mostrando esta postulación
+      setCvPreview(prev => (prev && prev.id === id ? { ...prev, url: blobUrl } : prev));
     } catch {
-      toast.error('No se pudo obtener el enlace del CV');
-    } finally {
-      setLoadingCv(null);
+      toast.error('No se pudo cargar el CV');
+      setCvPreview(prev => (prev && prev.id === id && !prev.url ? null : prev));
     }
+  }
+
+  function handleCloseCv() {
+    // No se revoca el blob: queda en caché para reaperturas instantáneas
+    setCvPreview(null);
   }
 
   return (
@@ -202,8 +223,12 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
       </Card>
 
       {/* Modal de detalle */}
-      <Dialog open={!!detail} onOpenChange={open => !open && setDetail(null)}>
-        <DialogContent className="sm:max-w-lg">
+      <Dialog open={!!detail} onOpenChange={open => { if (!open && !cvPreview) setDetail(null); }}>
+        <DialogContent
+          className="sm:max-w-lg"
+          onInteractOutside={e => { if (cvPreview) e.preventDefault(); }}
+          onEscapeKeyDown={e => { if (cvPreview) e.preventDefault(); }}
+        >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               {detail?.nombre}
@@ -256,11 +281,10 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
                     variant="outline"
                     size="sm"
                     className="gap-1.5 text-primary-700 border-primary-200 hover:bg-primary-50"
-                    disabled={loadingCv === detail.id}
-                    onClick={() => handleViewCv(detail.id)}
+                    onClick={() => handleViewCv(detail.id, detail.nombre)}
                   >
                     <FileText className="w-3.5 h-3.5" />
-                    {loadingCv === detail.id ? 'Cargando…' : 'Ver CV (PDF)'}
+                    Ver CV (PDF)
                   </Button>
                 ) : (
                   <span className="text-xs text-slate-400">Sin CV adjunto</span>
@@ -280,6 +304,50 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* ─── Modal vista previa del CV ─────────────────────────────────────────
+           Mismo patrón que la vista previa de /vacantes: Dialog de Radix con
+           <embed> sobre un blob: URL (permitido por object-src en el CSP).
+      ─────────────────────────────────────────────────────────────────────── */}
+      <Dialog
+        open={!!cvPreview}
+        onOpenChange={open => { if (!open) handleCloseCv(); }}
+      >
+        <DialogContent
+          className="max-w-4xl p-0 overflow-hidden gap-0"
+          style={{ height: '85vh', display: 'grid', gridTemplateRows: 'auto 1fr' }}
+          onEscapeKeyDown={e => { e.stopPropagation(); handleCloseCv(); }}
+          onOpenAutoFocus={e => e.preventDefault()}
+        >
+          <DialogHeader className="px-4 py-3 border-b border-slate-100 flex-row items-center justify-between space-y-0">
+            <DialogTitle className="flex items-center gap-2 text-sm font-medium text-slate-700 min-w-0 pr-8">
+              <FileText className="w-4 h-4 text-primary-600 shrink-0" />
+              <span className="truncate">CV — {cvPreview?.nombre}</span>
+            </DialogTitle>
+            <button
+              type="button"
+              disabled={!cvPreview?.url}
+              onClick={() => cvPreview?.url && window.open(cvPreview.url, '_blank', 'noopener,noreferrer')}
+              className="text-slate-400 hover:text-primary-600 transition-colors p-1 shrink-0 mr-6 disabled:opacity-40 disabled:pointer-events-none"
+              title="Abrir en pestaña nueva"
+            >
+              <ExternalLink className="w-4 h-4" />
+            </button>
+          </DialogHeader>
+          {cvPreview && (cvPreview.url ? (
+            <embed
+              src={cvPreview.url}
+              type="application/pdf"
+              className="w-full h-full block"
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400">
+              <span className="w-8 h-8 border-[3px] border-primary-100 border-t-primary-600 rounded-full motion-safe:animate-spin" />
+              <span className="text-xs">Cargando CV…</span>
+            </div>
+          ))}
         </DialogContent>
       </Dialog>
     </div>
