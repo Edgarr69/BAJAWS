@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import HeroTypewriter from './HeroTypewriter';
 import HeroStats from './HeroStats';
 import { useReducedMotion } from '@/hooks/useReducedMotion';
@@ -22,7 +22,7 @@ function fadeStyle(visible: boolean, delayMs: number, reduced: boolean): React.C
 }
 
 export default function HeroContent({ yearsExperience, authorizationsCount }: Props) {
-  const [eyebrowVisible,  setEyebrowVisible]  = useState(true);
+  const [eyebrowVisible]                      = useState(true);
   const [contentVisible,  setContentVisible]  = useState(false);
   const [statsReady,      setStatsReady]      = useState(false);
   const reducedMotion = useReducedMotion();

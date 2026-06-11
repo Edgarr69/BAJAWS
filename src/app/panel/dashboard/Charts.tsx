@@ -5,7 +5,6 @@ import {
   XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer,
   RadarChart, Radar, PolarGrid, PolarAngleAxis,
-  Cell,
 } from 'recharts';
 import type { AggregateMetric } from '@/types/panel';
 

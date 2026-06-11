@@ -22,9 +22,11 @@ export default async function Image() {
           padding: '60px',
         }}
       >
-        {/* Logo */}
+        {/* Logo — next/og renderiza en un canvas propio, no soporta next/image */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={`${SITE_URL}/logoo.webp`}
+          alt=""
           width={340}
           height={132}
           style={{ objectFit: 'contain' }}

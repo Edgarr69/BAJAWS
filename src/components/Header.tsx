@@ -121,7 +121,7 @@ export default function Header() {
   const handleDropItemKeyDown = (e: React.KeyboardEvent<HTMLAnchorElement>, idx: number) => {
     if (e.key === "Escape") { setDropOpen(false); dropTriggerRef.current?.focus(); return; }
     if (e.key === "ArrowDown") { e.preventDefault(); dropItemRefs.current[idx + 1]?.focus(); }
-    if (e.key === "ArrowUp")   { e.preventDefault(); idx === 0 ? dropTriggerRef.current?.focus() : dropItemRefs.current[idx - 1]?.focus(); }
+    if (e.key === "ArrowUp")   { e.preventDefault(); if (idx === 0) dropTriggerRef.current?.focus(); else dropItemRefs.current[idx - 1]?.focus(); }
     if (e.key === "Tab" && !e.shiftKey && idx === DROP_ITEMS.length - 1) setDropOpen(false);
   };
 

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 type QuestionType = 'likert' | 'open' | 'yesno';
 
@@ -196,12 +197,12 @@ export default function FormularioPage() {
           <p className="text-slate-500 text-sm max-w-xs">
             Tu opinión es muy importante para nosotros y nos ayuda a mejorar nuestros servicios.
           </p>
-          <a
+          <Link
             href="/"
             className="mt-2 inline-block bg-primary-700 hover:bg-primary-600 text-white text-sm font-medium px-6 py-2.5 rounded-xl transition-colors"
           >
             Salir
-          </a>
+          </Link>
         </div>
       </Shell>
     );

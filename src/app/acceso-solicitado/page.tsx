@@ -14,6 +14,9 @@ export default function AccesoSolicitadoPage() {
     supabase.auth.getUser().then(({ data }) => {
       if (data.user?.email) setEmail(data.user.email);
     });
+    // Solo al montar: el cliente de Supabase se recrea en cada render y meterlo
+    // en las deps relanzaría el efecto en cada ciclo
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleReintentar() {

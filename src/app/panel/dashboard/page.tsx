@@ -14,7 +14,6 @@ function ChartSkeleton() {
 import { KpiCard } from '@/components/panel/KpiCard';
 import { getMetrics, getLinkStats } from '@/lib/api';
 import { createClient } from '@/lib/supabase/client';
-import type { AggregateMetric } from '@/types/panel';
 import { NumberTicker } from '@/components/ui/number-ticker';
 
 // Charts cargados dinámicamente para sacar recharts (~120KB) del bundle inicial
@@ -89,7 +88,9 @@ export default function DashboardPage() {
   );
 
   const topicData    = dashData?.topicData    ?? [];
-  const trendData    = dashData?.trendData    ?? [];
+  // useMemo estabiliza la referencia: sin él, el ?? [] crea un array nuevo en
+  // cada render y el useMemo de monthlyData se recalcularía siempre
+  const trendData    = useMemo(() => dashData?.trendData ?? [], [dashData]);
   const questionData = dashData?.questionData ?? [];
   const linkStats    = dashData?.linkStats    ?? { total: 0, used: 0, pct: 0 };
 

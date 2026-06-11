@@ -26,6 +26,8 @@ export default function LoginPage() {
       })
       .catch(() => { clearTimeout(timeout); setChecking(false); });
     return () => clearTimeout(timeout);
+    // Solo al montar: es un chequeo único de sesión; router es estable y no debe relanzarlo
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleLogin(e: React.FormEvent) {

@@ -5,7 +5,6 @@ import {
 } from "lucide-react";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { ROOT_MARGIN_FIXED } from "@/hooks/useInView";
-import Section from "@/components/Section";
 
 export const metadata: Metadata = {
   title: "Servicios Integrales | Baja Wastewater Solution",

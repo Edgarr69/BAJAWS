@@ -48,7 +48,6 @@ const razones = [
 export default async function HomePage() {
   const services             = siteContent.services.items.slice(0, 3) as { id: string; title: string; description: string; icon: 'truck' | 'water' | 'warehouse' }[];
   const yearsExperience      = getYearsExperience();
-  const servicesCount        = services.length;
   const agencias             = siteContent.landing.autorizaciones.items;
 
   let authorizationsCount = 0;

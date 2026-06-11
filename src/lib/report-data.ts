@@ -1,9 +1,8 @@
 'use client';
 
 import { getMetrics, getSubmissions, getSubmission } from '@/lib/api';
-import type { AggregateMetric } from '@/types/panel';
 import type {
-  ReportData, ReportScope, StatusLevel,
+  ReportData, StatusLevel,
   CategoryStat, QuestionDetail, TrendPoint, PrivateComment,
 } from '@/types/report';
 

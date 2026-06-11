@@ -1,6 +1,6 @@
 'use client';
 
-import type { ReportData, CategoryStat, PrivateComment } from '@/types/report';
+import type { ReportData, CategoryStat } from '@/types/report';
 
 // ── Constantes de estilo ──────────────────────────────────────────────────────
 
@@ -31,19 +31,6 @@ function catColor(avg: number) {
 }
 
 // ── Componentes reutilizables ─────────────────────────────────────────────────
-
-function ScoreBar({ value }: { value: number }) {
-  const pct   = Math.max(0, Math.min(100, (value / 5) * 100));
-  const color = catColor(value);
-  return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-      <div style={{ width: 110, flexShrink: 0, height: 6, backgroundColor: '#e2e8f0', borderRadius: 3, overflow: 'hidden' }}>
-        <div style={{ width: `${pct}%`, height: '100%', backgroundColor: color, borderRadius: 3 }} />
-      </div>
-      <span style={{ fontSize: 11, fontWeight: 700, color, width: 38, flexShrink: 0, textAlign: 'right' }}>{fmt(value)}</span>
-    </div>
-  );
-}
 
 /** Mini-encabezado de contexto para páginas 2 y 3 */
 function PageContext({ data }: { data: ReportData }) {
@@ -491,7 +478,7 @@ function PrivateCommentsPage({ data }: { data: ReportData }) {
               <span style={{ fontSize: 10, color: '#94a3b8' }}>{c.fecha}</span>
             </div>
             <p style={{ margin: 0, fontSize: 11, color: '#475569', fontStyle: 'italic', lineHeight: 1.6 }}>
-              "{c.comment}"
+              &ldquo;{c.comment}&rdquo;
             </p>
           </div>
         ))}
