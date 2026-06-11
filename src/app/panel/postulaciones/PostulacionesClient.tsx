@@ -2,11 +2,11 @@
 
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Users, Mail, Phone, Trash2, Eye, FileText, Briefcase, ExternalLink } from 'lucide-react';
+import { Users, Mail, Phone, Trash2, Eye, FileText, Briefcase, ExternalLink, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { deleteJobApplication, getJobApplicationCvUrl } from '@/lib/api';
 import { usePanelUser } from '../user-context';
 import type { JobApplication } from '@/types/panel';
@@ -17,7 +17,8 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
 
   const [items, setItems]           = useState<JobApplication[]>(initialItems);
   const [detail, setDetail]         = useState<JobApplication | null>(null);
-  const [deleting, setDeleting]     = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting]     = useState(false);
   // url === null → descargando (el modal muestra spinner)
   const [cvPreview, setCvPreview]   = useState<{ id: string; nombre: string; url: string | null } | null>(null);
   // Caché de blobs por postulación — reabrir un CV ya visto es instantáneo, sin llamadas nuevas
@@ -32,17 +33,19 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
     ? items
     : items.filter(i => (i.job_postings?.titulo ?? 'Sin vacante') === filter);
 
-  async function handleDelete(id: string) {
-    setDeleting(id);
+  async function handleDelete() {
+    if (!confirmDeleteId) return;
+    setDeleting(true);
     try {
-      await deleteJobApplication(id);
-      setItems(prev => prev.filter(i => i.id !== id));
+      await deleteJobApplication(confirmDeleteId);
+      setItems(prev => prev.filter(i => i.id !== confirmDeleteId));
+      setConfirmDeleteId(null);
       setDetail(null);
       toast.success('Postulación eliminada');
     } catch {
       toast.error('Error al eliminar');
     } finally {
-      setDeleting(null);
+      setDeleting(false);
     }
   }
 
@@ -208,8 +211,7 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
                         size="sm"
                         variant="outline"
                         className="h-8 w-8 p-0 text-red-500 border-red-200 hover:bg-red-50"
-                        disabled={deleting === item.id}
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => setConfirmDeleteId(item.id)}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
@@ -223,11 +225,11 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
       </Card>
 
       {/* Modal de detalle */}
-      <Dialog open={!!detail} onOpenChange={open => { if (!open && !cvPreview) setDetail(null); }}>
+      <Dialog open={!!detail} onOpenChange={open => { if (!open && !cvPreview && !confirmDeleteId) setDetail(null); }}>
         <DialogContent
           className="sm:max-w-lg"
-          onInteractOutside={e => { if (cvPreview) e.preventDefault(); }}
-          onEscapeKeyDown={e => { if (cvPreview) e.preventDefault(); }}
+          onInteractOutside={e => { if (cvPreview || confirmDeleteId) e.preventDefault(); }}
+          onEscapeKeyDown={e => { if (cvPreview || confirmDeleteId) e.preventDefault(); }}
         >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -294,16 +296,42 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
                     variant="outline"
                     size="sm"
                     className="text-red-600 border-red-200 hover:bg-red-50 gap-1.5"
-                    disabled={deleting === detail.id}
-                    onClick={() => handleDelete(detail.id)}
+                    onClick={() => setConfirmDeleteId(detail.id)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    {deleting === detail.id ? 'Eliminando…' : 'Eliminar'}
+                    Eliminar
                   </Button>
                 )}
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Dialog confirmar eliminar */}
+      <Dialog open={!!confirmDeleteId} onOpenChange={open => !open && !deleting && setConfirmDeleteId(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+              Eliminar postulación
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 py-2">
+            Se eliminará la postulación junto con su CV adjunto. Esta acción no se puede deshacer.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDeleteId(null)} disabled={deleting}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              {deleting ? 'Eliminando…' : 'Eliminar'}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
 

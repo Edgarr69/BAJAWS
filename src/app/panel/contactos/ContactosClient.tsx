@@ -2,11 +2,11 @@
 
 import { useState } from 'react';
 import { toast } from 'sonner';
-import { Mail, Phone, Trash2, Eye } from 'lucide-react';
+import { Mail, Phone, Trash2, Eye, AlertTriangle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { deleteContacto } from '@/lib/api';
 import { usePanelUser } from '../user-context';
 import type { ContactRequest } from '@/types/panel';
@@ -17,20 +17,23 @@ export function ContactosClient({ initialItems }: { initialItems: ContactRequest
 
   const [items, setItems]       = useState<ContactRequest[]>(initialItems);
   const [detail, setDetail]     = useState<ContactRequest | null>(null);
-  const [deleting, setDeleting] = useState<string | null>(null);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState(false);
   const [filter, setFilter]     = useState<'all' | 'contacto' | 'cotizacion'>('all');
 
-  async function handleDelete(id: string) {
-    setDeleting(id);
+  async function handleDelete() {
+    if (!confirmDeleteId) return;
+    setDeleting(true);
     try {
-      await deleteContacto(id);
-      setItems(prev => prev.filter(i => i.id !== id));
+      await deleteContacto(confirmDeleteId);
+      setItems(prev => prev.filter(i => i.id !== confirmDeleteId));
+      setConfirmDeleteId(null);
       setDetail(null);
       toast.success('Mensaje eliminado');
     } catch {
       toast.error('Error al eliminar');
     } finally {
-      setDeleting(null);
+      setDeleting(false);
     }
   }
 
@@ -166,8 +169,7 @@ export function ContactosClient({ initialItems }: { initialItems: ContactRequest
                         size="sm"
                         variant="outline"
                         className="h-8 w-8 p-0 text-red-500 border-red-200 hover:bg-red-50"
-                        disabled={deleting === item.id}
-                        onClick={() => handleDelete(item.id)}
+                        onClick={() => setConfirmDeleteId(item.id)}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </Button>
@@ -180,9 +182,43 @@ export function ContactosClient({ initialItems }: { initialItems: ContactRequest
         </CardContent>
       </Card>
 
+      {/* Dialog confirmar eliminar */}
+      <Dialog open={!!confirmDeleteId} onOpenChange={open => !open && !deleting && setConfirmDeleteId(null)}>
+        <DialogContent className="sm:max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4 text-red-500" />
+              Eliminar mensaje
+            </DialogTitle>
+          </DialogHeader>
+          <p className="text-sm text-slate-600 py-2">
+            Se eliminará este mensaje de forma permanente. Esta acción no se puede deshacer.
+          </p>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setConfirmDeleteId(null)} disabled={deleting}>
+              Cancelar
+            </Button>
+            <Button
+              onClick={handleDelete}
+              disabled={deleting}
+              className="bg-red-600 hover:bg-red-500 text-white"
+            >
+              {deleting ? 'Eliminando…' : 'Eliminar'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Modal de detalle */}
-      <Dialog open={!!detail} onOpenChange={open => !open && setDetail(null)}>
-        <DialogContent className="sm:max-w-lg">
+      <Dialog
+        open={!!detail}
+        onOpenChange={open => { if (!open && !confirmDeleteId) setDetail(null); }}
+      >
+        <DialogContent
+          className="sm:max-w-lg"
+          onInteractOutside={e => { if (confirmDeleteId) e.preventDefault(); }}
+          onEscapeKeyDown={e => { if (confirmDeleteId) e.preventDefault(); }}
+        >
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               Mensaje de {detail?.nombre}
@@ -235,11 +271,10 @@ export function ContactosClient({ initialItems }: { initialItems: ContactRequest
                     variant="outline"
                     size="sm"
                     className="text-red-600 border-red-200 hover:bg-red-50 gap-1.5"
-                    disabled={deleting === detail.id}
-                    onClick={() => handleDelete(detail.id)}
+                    onClick={() => setConfirmDeleteId(detail.id)}
                   >
                     <Trash2 className="w-3.5 h-3.5" />
-                    {deleting === detail.id ? 'Eliminando…' : 'Eliminar mensaje'}
+                    Eliminar mensaje
                   </Button>
                 </div>
               )}
