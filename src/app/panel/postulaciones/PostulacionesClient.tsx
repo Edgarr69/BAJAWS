@@ -2,7 +2,7 @@
 
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { Users, Mail, Phone, Trash2, Eye, FileText, Briefcase, ExternalLink, AlertTriangle } from 'lucide-react';
+import { Users, Mail, Phone, Trash2, Eye, FileText, Briefcase, ExternalLink, AlertTriangle, ChevronDown, ChevronRight } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -19,19 +19,31 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
   const [detail, setDetail]         = useState<JobApplication | null>(null);
   const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
   const [deleting, setDeleting]     = useState(false);
-  // url === null → descargando (el modal muestra spinner)
   const [cvPreview, setCvPreview]   = useState<{ id: string; nombre: string; url: string | null } | null>(null);
-  // Caché de blobs por postulación — reabrir un CV ya visto es instantáneo, sin llamadas nuevas
   const cvCacheRef = useRef<Map<string, string>>(new Map());
 
-  const vacantes = Array.from(
-    new Set(items.map(i => i.job_postings?.titulo ?? 'Sin vacante'))
-  );
-  const [filter, setFilter] = useState<string>('all');
+  // Grupos colapsables por vacante
+  const [collapsed, setCollapsed] = useState<Set<string>>(new Set());
+  function toggleCollapse(key: string) {
+    setCollapsed(prev => {
+      const next = new Set(prev);
+      next.has(key) ? next.delete(key) : next.add(key);
+      return next;
+    });
+  }
 
-  const filtered = filter === 'all'
-    ? items
-    : items.filter(i => (i.job_postings?.titulo ?? 'Sin vacante') === filter);
+  // Agrupar por vacante preservando orden de aparición
+  const groups: { key: string; titulo: string; apps: JobApplication[] }[] = [];
+  const seen = new Map<string, number>();
+  for (const item of items) {
+    const key   = item.posting_id ?? '__sin__';
+    const titulo = item.job_postings?.titulo ?? 'Sin vacante asignada';
+    if (!seen.has(key)) {
+      seen.set(key, groups.length);
+      groups.push({ key, titulo, apps: [] });
+    }
+    groups[seen.get(key)!].apps.push(item);
+  }
 
   async function handleDelete() {
     if (!confirmDeleteId) return;
@@ -49,15 +61,12 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
     }
   }
 
-  // Abre el modal de inmediato; si el blob ya está en caché no hay ninguna llamada
   function handleViewCv(id: string, nombre: string) {
     const cached = cvCacheRef.current.get(id);
     setCvPreview({ id, nombre, url: cached ?? null });
     if (!cached) void loadCv(id);
   }
 
-  // Descarga el PDF como blob para mostrarlo en un modal — el CSP no permite
-  // embeber la URL firmada de Supabase directamente (object-src solo acepta blob:)
   async function loadCv(id: string) {
     try {
       const { url } = await getJobApplicationCvUrl(id);
@@ -66,7 +75,6 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
       const blob = await res.blob();
       const blobUrl = URL.createObjectURL(blob);
       cvCacheRef.current.set(id, blobUrl);
-      // Solo actualizar si el modal sigue mostrando esta postulación
       setCvPreview(prev => (prev && prev.id === id ? { ...prev, url: blobUrl } : prev));
     } catch {
       toast.error('No se pudo cargar el CV');
@@ -75,154 +83,136 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
   }
 
   function handleCloseCv() {
-    // No se revoca el blob: queda en caché para reaperturas instantáneas
     setCvPreview(null);
   }
 
   return (
     <div className="max-w-4xl space-y-6">
-      <div>
-        <h1 className="text-xl font-bold text-slate-800">Postulaciones</h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Candidatos que aplicaron a las vacantes publicadas.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="text-xl font-bold text-slate-800">Postulaciones</h1>
+          <p className="text-xs text-slate-400 mt-1">
+            Candidatos que aplicaron a las vacantes publicadas.
+          </p>
+        </div>
+        {items.length > 0 && (
+          <span className="text-xs text-slate-400 mt-1">
+            {items.length} postulación{items.length !== 1 ? 'es' : ''} en total
+          </span>
+        )}
       </div>
 
-      <Card className="border-slate-200">
-        <CardHeader className="pb-3">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
-              <Users className="w-4 h-4 text-primary-600" />
-              {filter === 'all' ? 'Todos los candidatos' : filter}
-              {filtered.length > 0 && (
-                <span className="ml-1 bg-primary-100 text-primary-700 text-xs font-bold px-2 py-0.5 rounded-full">
-                  {filtered.length}
-                </span>
-              )}
-            </CardTitle>
-
-            {vacantes.length > 1 && (
-              <div className="flex items-center gap-1 bg-slate-100 rounded-lg p-1 flex-wrap">
-                <button
-                  onClick={() => setFilter('all')}
-                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all ${
-                    filter === 'all'
-                      ? 'bg-white text-slate-800 shadow-sm'
-                      : 'text-slate-500 hover:text-slate-700'
-                  }`}
-                >
-                  Todos ({items.length})
-                </button>
-                {vacantes.map(v => (
+      {items.length === 0 ? (
+        <Card className="border-slate-200">
+          <CardContent className="py-12 text-center">
+            <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
+              <Users className="w-5 h-5 text-slate-400" />
+            </div>
+            <p className="text-sm text-slate-400">No hay postulaciones todavía</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          {groups.map(group => {
+            const isCollapsed = collapsed.has(group.key);
+            return (
+              <Card key={group.key} className="border-slate-200 overflow-hidden">
+                <CardHeader className="pb-0 pt-0 px-0">
                   <button
-                    key={v}
-                    onClick={() => setFilter(v)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium transition-all max-w-[180px] truncate ${
-                      filter === v
-                        ? 'bg-white text-slate-800 shadow-sm'
-                        : 'text-slate-500 hover:text-slate-700'
-                    }`}
+                    onClick={() => toggleCollapse(group.key)}
+                    className="w-full flex items-center justify-between px-5 py-4 hover:bg-slate-50 transition-colors text-left"
                   >
-                    {v} ({items.filter(i => (i.job_postings?.titulo ?? 'Sin vacante') === v).length})
+                    <CardTitle className="text-sm font-semibold text-slate-700 flex items-center gap-2">
+                      <Briefcase className="w-4 h-4 text-primary-600 shrink-0" />
+                      <span className="truncate">{group.titulo}</span>
+                      <span className="ml-1 bg-primary-100 text-primary-700 text-xs font-bold px-2 py-0.5 rounded-full shrink-0">
+                        {group.apps.length}
+                      </span>
+                    </CardTitle>
+                    {isCollapsed
+                      ? <ChevronRight className="w-4 h-4 text-slate-400 shrink-0" />
+                      : <ChevronDown  className="w-4 h-4 text-slate-400 shrink-0" />}
                   </button>
-                ))}
-              </div>
-            )}
-          </div>
-        </CardHeader>
+                </CardHeader>
 
-        <CardContent className="p-0">
-          {filtered.length === 0 ? (
-            <div className="text-center py-12">
-              <div className="w-12 h-12 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                <Users className="w-5 h-5 text-slate-400" />
-              </div>
-              <p className="text-sm text-slate-400">
-                {items.length === 0
-                  ? 'No hay postulaciones todavía'
-                  : 'No hay postulaciones para esta vacante'}
-              </p>
-            </div>
-          ) : (
-            <div className="divide-y divide-slate-100">
-              {filtered.map(item => (
-                <div
-                  key={item.id}
-                  className="flex items-start justify-between px-5 py-4 hover:bg-slate-50 transition-colors gap-4"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2 flex-wrap mb-1">
-                      <span className="text-sm font-semibold text-slate-800 truncate">
-                        {item.nombre}
-                      </span>
-                      {item.job_postings?.titulo && (
-                        <Badge
-                          variant="outline"
-                          className="text-primary-700 border-primary-200 bg-primary-50 text-[10px] px-1.5 py-0 flex items-center gap-1"
+                {!isCollapsed && (
+                  <CardContent className="p-0">
+                    <div className="border-t border-slate-100 divide-y divide-slate-100">
+                      {group.apps.map(item => (
+                        <div
+                          key={item.id}
+                          className="flex items-start justify-between px-5 py-4 hover:bg-slate-50 transition-colors gap-4"
                         >
-                          <Briefcase className="w-2.5 h-2.5" />
-                          {item.job_postings.titulo}
-                        </Badge>
-                      )}
-                      {item.cv_path && (
-                        <Badge
-                          variant="outline"
-                          className="text-accent-700 border-accent-300 bg-accent-50 text-[10px] px-1.5 py-0 flex items-center gap-1"
-                        >
-                          <FileText className="w-2.5 h-2.5" />
-                          CV
-                        </Badge>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
-                      <span className="flex items-center gap-1">
-                        <Mail className="w-3 h-3" />
-                        {item.correo}
-                      </span>
-                      {item.telefono && (
-                        <span className="flex items-center gap-1">
-                          <Phone className="w-3 h-3" />
-                          {item.telefono}
-                        </span>
-                      )}
-                    </div>
-                    {item.mensaje && (
-                      <p className="text-xs text-slate-400 mt-0.5 truncate">{item.mensaje}</p>
-                    )}
-                    <p className="text-[10px] text-slate-300 mt-1">
-                      {new Date(item.created_at).toLocaleDateString('es-MX', {
-                        day: '2-digit', month: 'short', year: 'numeric',
-                        hour: '2-digit', minute: '2-digit',
-                      })}
-                    </p>
-                  </div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 flex-wrap mb-1">
+                              <span className="text-sm font-semibold text-slate-800 truncate">
+                                {item.nombre}
+                              </span>
+                              {item.cv_path && (
+                                <Badge
+                                  variant="outline"
+                                  className="text-accent-700 border-accent-300 bg-accent-50 text-[10px] px-1.5 py-0 flex items-center gap-1"
+                                >
+                                  <FileText className="w-2.5 h-2.5" />
+                                  CV
+                                </Badge>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-3 text-xs text-slate-400 flex-wrap">
+                              <span className="flex items-center gap-1">
+                                <Mail className="w-3 h-3" />
+                                {item.correo}
+                              </span>
+                              {item.telefono && (
+                                <span className="flex items-center gap-1">
+                                  <Phone className="w-3 h-3" />
+                                  {item.telefono}
+                                </span>
+                              )}
+                            </div>
+                            {item.mensaje && (
+                              <p className="text-xs text-slate-400 mt-0.5 truncate">{item.mensaje}</p>
+                            )}
+                            <p className="text-[10px] text-slate-300 mt-1">
+                              {new Date(item.created_at).toLocaleDateString('es-MX', {
+                                day: '2-digit', month: 'short', year: 'numeric',
+                                hour: '2-digit', minute: '2-digit',
+                              })}
+                            </p>
+                          </div>
 
-                  <div className="flex items-center gap-1.5 shrink-0">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="h-8 w-8 p-0 text-slate-500 border-slate-200"
-                      onClick={() => setDetail(item)}
-                    >
-                      <Eye className="w-3.5 h-3.5" />
-                    </Button>
-                    {canDelete && (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 w-8 p-0 text-red-500 border-red-200 hover:bg-red-50"
-                        onClick={() => setConfirmDeleteId(item.id)}
-                      >
-                        <Trash2 className="w-3.5 h-3.5" />
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              title="Ver detalle"
+                              className="h-8 w-8 p-0 text-slate-500 border-slate-200"
+                              onClick={() => setDetail(item)}
+                            >
+                              <Eye className="w-3.5 h-3.5" />
+                            </Button>
+                            {canDelete && (
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                title="Eliminar postulación"
+                                className="h-8 w-8 p-0 text-red-500 border-red-200 hover:bg-red-50"
+                                onClick={() => setConfirmDeleteId(item.id)}
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </CardContent>
+                )}
+              </Card>
+            );
+          })}
+        </div>
+      )}
 
       {/* Modal de detalle */}
       <Dialog open={!!detail} onOpenChange={open => { if (!open && !cvPreview && !confirmDeleteId) setDetail(null); }}>
@@ -232,13 +222,10 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
           onEscapeKeyDown={e => { if (cvPreview || confirmDeleteId) e.preventDefault(); }}
         >
           <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
+            <DialogTitle className="flex items-center gap-2 flex-wrap">
               {detail?.nombre}
               {detail?.job_postings?.titulo && (
-                <Badge
-                  variant="outline"
-                  className="text-primary-700 border-primary-200 bg-primary-50 text-[10px]"
-                >
+                <Badge variant="outline" className="text-primary-700 border-primary-200 bg-primary-50 text-[10px]">
                   {detail.job_postings.titulo}
                 </Badge>
               )}
@@ -324,25 +311,15 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
             <Button variant="outline" onClick={() => setConfirmDeleteId(null)} disabled={deleting}>
               Cancelar
             </Button>
-            <Button
-              onClick={handleDelete}
-              disabled={deleting}
-              className="bg-red-600 hover:bg-red-500 text-white"
-            >
+            <Button onClick={handleDelete} disabled={deleting} className="bg-red-600 hover:bg-red-500 text-white">
               {deleting ? 'Eliminando…' : 'Eliminar'}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* ─── Modal vista previa del CV ─────────────────────────────────────────
-           Mismo patrón que la vista previa de /vacantes: Dialog de Radix con
-           <embed> sobre un blob: URL (permitido por object-src en el CSP).
-      ─────────────────────────────────────────────────────────────────────── */}
-      <Dialog
-        open={!!cvPreview}
-        onOpenChange={open => { if (!open) handleCloseCv(); }}
-      >
+      {/* Modal vista previa del CV */}
+      <Dialog open={!!cvPreview} onOpenChange={open => { if (!open) handleCloseCv(); }}>
         <DialogContent
           className="max-w-4xl p-0 overflow-hidden gap-0"
           style={{ height: '85vh', display: 'grid', gridTemplateRows: 'auto 1fr' }}
@@ -365,11 +342,7 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
             </button>
           </DialogHeader>
           {cvPreview && (cvPreview.url ? (
-            <embed
-              src={cvPreview.url}
-              type="application/pdf"
-              className="w-full h-full block"
-            />
+            <embed src={cvPreview.url} type="application/pdf" className="w-full h-full block" />
           ) : (
             <div className="flex flex-col items-center justify-center h-full gap-3 text-slate-400">
               <span className="w-8 h-8 border-[3px] border-primary-100 border-t-primary-600 rounded-full motion-safe:animate-spin" />
