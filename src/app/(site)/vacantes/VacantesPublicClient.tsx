@@ -159,14 +159,13 @@ export function VacantesPublicClient({ postings }: Props) {
   /* ─── Lista de vacantes ──────────────────────────────────────────────────── */
   return (
     <>
-      <div className="h-full flex flex-col gap-4">
+      <div className="space-y-6">
 
-        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest shrink-0">
+        <p className="text-xs font-semibold text-slate-400 uppercase tracking-widest">
           {postings.length === 1 ? '1 vacante abierta' : `${postings.length} vacantes abiertas`}
         </p>
 
-        {/* Tarjetas — scroll interno si hay muchas */}
-        <div className="flex-1 overflow-y-auto space-y-4 pr-1">
+        <div className="space-y-4">
           {postings.map(posting => {
             const modalidad = MODALIDAD[posting.modalidad] ?? MODALIDAD.presencial;
             const reqs = posting.requisitos ? parseRequirements(posting.requisitos) : [];
@@ -232,6 +231,22 @@ export function VacantesPublicClient({ postings }: Props) {
                           <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
                             <span className="w-1.5 h-1.5 rounded-full bg-primary-500 mt-[5px] shrink-0" />
                             {req}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {posting.prestaciones && parseRequirements(posting.prestaciones).length > 0 && (
+                    <div className="bg-accent-50 rounded-xl p-4 border border-accent-100">
+                      <p className="text-[11px] font-semibold text-accent-600 uppercase tracking-widest mb-3">
+                        Prestaciones
+                      </p>
+                      <ul className="space-y-2">
+                        {parseRequirements(posting.prestaciones).map((p, i) => (
+                          <li key={i} className="flex items-start gap-2.5 text-sm text-slate-600">
+                            <span className="w-1.5 h-1.5 rounded-full bg-accent-500 mt-[5px] shrink-0" />
+                            {p}
                           </li>
                         ))}
                       </ul>

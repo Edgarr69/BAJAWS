@@ -15,17 +15,17 @@ export default async function VacantesPage() {
   const admin = getAdminClient();
   const { data } = await admin
     .from('job_postings')
-    .select('id, titulo, descripcion, requisitos, ubicacion, modalidad, created_at')
+    .select('id, titulo, descripcion, requisitos, prestaciones, ubicacion, modalidad, created_at')
     .eq('is_active', true)
     .order('created_at', { ascending: false });
 
   const postings = (data ?? []) as JobPosting[];
 
   return (
-    <div className="flex flex-col bg-white overflow-hidden h-[calc(var(--dvh,100svh)-var(--header-height,4rem))]">
+    <div className="bg-white">
 
       {/* Encabezado */}
-      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5 shrink-0">
+      <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-8 sm:py-12">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll direction="fade">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary-700 mb-2">
@@ -40,8 +40,8 @@ export default async function VacantesPage() {
       </div>
 
       {/* Cuerpo */}
-      <div className="flex-1 overflow-hidden py-4 sm:py-6">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
+      <div className="py-8 sm:py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <VacantesPublicClient postings={postings} />
         </div>
       </div>
