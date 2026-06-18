@@ -21,10 +21,11 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
   const [confirmDel, setConfirmDel] = useState<JobPosting | null>(null);
   const [attempted, setAttempted] = useState(false);
 
-  const [titulo, setTitulo]           = useState('');
-  const [descripcion, setDescripcion] = useState('');
-  const [requisitos, setRequisitos]   = useState('');
-  const [ubicacion, setUbicacion]     = useState('Tijuana, B.C.');
+  const [titulo, setTitulo]             = useState('');
+  const [descripcion, setDescripcion]   = useState('');
+  const [requisitos, setRequisitos]     = useState('');
+  const [prestaciones, setPrestaciones] = useState('');
+  const [ubicacion, setUbicacion]       = useState('Tijuana, B.C.');
 
   const tituloValid      = titulo.trim().length >= 2;
   const descripcionValid = descripcion.trim().length >= 10;
@@ -33,6 +34,7 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
     setTitulo('');
     setDescripcion('');
     setRequisitos('');
+    setPrestaciones('');
     setUbicacion('Tijuana, B.C.');
     setAttempted(false);
   }
@@ -49,12 +51,13 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
     setSaving(true);
     try {
       const created = await createJobPosting({
-        titulo:      titulo.trim(),
-        descripcion: descripcion.trim(),
-        requisitos:  requisitos.trim() || null,
-        ubicacion:   ubicacion.trim() || 'Tijuana, B.C.',
-        modalidad:   'presencial',
-        is_active:   true,
+        titulo:       titulo.trim(),
+        descripcion:  descripcion.trim(),
+        requisitos:   requisitos.trim() || null,
+        prestaciones: prestaciones.trim() || null,
+        ubicacion:    ubicacion.trim() || 'Tijuana, B.C.',
+        modalidad:    'presencial',
+        is_active:    true,
       });
       setItems(prev => [created, ...prev]);
       setShowAdd(false);
@@ -294,6 +297,18 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
                 placeholder="Lista los requisitos: experiencia, habilidades, documentos, etc."
                 value={requisitos}
                 onChange={e => setRequisitos(e.target.value)}
+                maxLength={3000}
+                rows={4}
+                className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300 resize-y"
+              />
+            </div>
+
+            <div className="space-y-1">
+              <Label className="text-xs font-medium text-slate-600">Prestaciones (opcional)</Label>
+              <textarea
+                placeholder="Lista las prestaciones: seguro, vacaciones, horario, etc."
+                value={prestaciones}
+                onChange={e => setPrestaciones(e.target.value)}
                 maxLength={3000}
                 rows={4}
                 className="w-full text-base md:text-sm border border-slate-200 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary-500 text-slate-700 placeholder:text-slate-300 resize-y"

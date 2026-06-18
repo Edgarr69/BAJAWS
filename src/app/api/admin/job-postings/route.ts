@@ -8,12 +8,13 @@ import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
 
 const createSchema = z.object({
-  titulo:      z.string().trim().min(2).max(120),
-  descripcion: z.string().trim().min(10).max(3000),
-  requisitos:  z.string().trim().max(3000).optional().nullable(),
-  ubicacion:   z.string().trim().min(2).max(100).default('Tijuana, B.C.'),
-  modalidad:   z.enum(['presencial', 'remoto', 'hibrido']).default('presencial'),
-  is_active:   z.boolean().default(true),
+  titulo:       z.string().trim().min(2).max(120),
+  descripcion:  z.string().trim().min(10).max(3000),
+  requisitos:   z.string().trim().max(3000).optional().nullable(),
+  prestaciones: z.string().trim().max(3000).optional().nullable(),
+  ubicacion:    z.string().trim().min(2).max(100).default('Tijuana, B.C.'),
+  modalidad:    z.enum(['presencial', 'remoto', 'hibrido']).default('presencial'),
+  is_active:    z.boolean().default(true),
 });
 
 export async function GET() {

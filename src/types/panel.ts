@@ -113,6 +113,7 @@ export interface JobPosting {
   titulo: string;
   descripcion: string;
   requisitos: string | null;
+  prestaciones: string | null;
   ubicacion: string;
   modalidad: 'presencial' | 'remoto' | 'hibrido';
   is_active: boolean;
