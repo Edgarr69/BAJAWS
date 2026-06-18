@@ -10,12 +10,13 @@ import { getAdminClient } from '@/lib/supabase/admin';
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const patchSchema = z.object({
-  titulo:      z.string().trim().min(2).max(120).optional(),
-  descripcion: z.string().trim().min(10).max(3000).optional(),
-  requisitos:  z.string().trim().max(3000).nullable().optional(),
-  ubicacion:   z.string().trim().min(2).max(100).optional(),
-  modalidad:   z.enum(['presencial', 'remoto', 'hibrido']).optional(),
-  is_active:   z.boolean().optional(),
+  titulo:       z.string().trim().min(2).max(120).optional(),
+  descripcion:  z.string().trim().min(10).max(3000).optional(),
+  requisitos:   z.string().trim().max(3000).nullable().optional(),
+  prestaciones: z.string().trim().max(3000).nullable().optional(),
+  ubicacion:    z.string().trim().min(2).max(100).optional(),
+  modalidad:    z.enum(['presencial', 'remoto', 'hibrido']).optional(),
+  is_active:    z.boolean().optional(),
 }).refine(obj => Object.keys(obj).length > 0, { message: 'Se requiere al menos un campo' });
 
 export async function PATCH(

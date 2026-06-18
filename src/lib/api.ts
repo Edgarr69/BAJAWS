@@ -268,6 +268,16 @@ export const createJobPosting = (body: Omit<JobPosting, 'id' | 'created_by' | 'c
     body: JSON.stringify(body),
   });
 
+export const updateJobPosting = (
+  id: string,
+  body: Partial<Pick<JobPosting, 'titulo' | 'descripcion' | 'requisitos' | 'prestaciones' | 'ubicacion' | 'modalidad'>>
+) =>
+  apiFetch<JobPosting>(`/api/admin/job-postings/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+
 export const toggleJobPosting = (id: string, is_active: boolean) =>
   apiFetch<JobPosting>(`/api/admin/job-postings/${id}`, {
     method: 'PATCH',
