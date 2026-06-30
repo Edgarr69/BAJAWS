@@ -251,7 +251,7 @@ async function buildSingleReport(
 
   const details = await fetchBatched(ids, id => getSubmission(id) as Promise<SubmissionDetail>);
 
-  const byCategoryMap = new Map<string, { sum: number; count: number; d: [number,number,number,number,number] }>();
+  const byCategoryMap = new Map<string, { sum: number; count: number; subs: number; d: [number,number,number,number,number] }>();
   const byQuestionMap = new Map<number, { text: string; topic: string; answers: { fecha: string; score: number }[] }>();
   const privateComments: PrivateComment[] = [];
   const trends: TrendPoint[] = [];
@@ -263,6 +263,7 @@ async function buildSingleReport(
     const pc = detail.submission?.private_comment?.trim();
     if (pc) privateComments.push({ fecha, companyName, comment: pc });
 
+    const topicsInSubmission = new Set<string>();
     let subSum = 0;
     for (const a of subAnswers) {
       const score = a.value_int;
@@ -271,14 +272,17 @@ async function buildSingleReport(
       const qId   = a.questions?.id ?? -1;
       const qText = a.questions?.text ?? '';
 
-      if (!byCategoryMap.has(topic)) byCategoryMap.set(topic, { sum: 0, count: 0, d: [0,0,0,0,0] });
+      if (!byCategoryMap.has(topic)) byCategoryMap.set(topic, { sum: 0, count: 0, subs: 0, d: [0,0,0,0,0] });
       const cat = byCategoryMap.get(topic)!;
       cat.sum += score; cat.count += 1;
       if (score >= 1 && score <= 5) cat.d[score - 1]++;
+      topicsInSubmission.add(topic);
 
       if (!byQuestionMap.has(qId)) byQuestionMap.set(qId, { text: qText, topic, answers: [] });
       byQuestionMap.get(qId)!.answers.push({ fecha, score });
     }
+    // Una submission puede tocar N topics — incrementar el contador de submissions por topic visto
+    for (const topic of topicsInSubmission) byCategoryMap.get(topic)!.subs++;
     if (subAnswers.length > 0) trends.push({ fecha, avgScore: subSum / subAnswers.length });
   }
 
@@ -286,7 +290,7 @@ async function buildSingleReport(
     const avg = v.sum / v.count;
     const pos = (v.d[3] + v.d[4]) / v.count;
     const neg = (v.d[0] + v.d[1]) / v.count;
-    return { category, avgScore: avg, totalResponses: v.count, pctPositive: pos * 100, pctNegative: neg * 100, dist: v.d, status: scoreStatus(avg) };
+    return { category, avgScore: avg, totalResponses: v.subs, pctPositive: pos * 100, pctNegative: neg * 100, dist: v.d, status: scoreStatus(avg) };
   });
 
   const byQuestion: QuestionDetail[] = Array.from(byQuestionMap.values()).map(q => ({
