@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
 
@@ -56,5 +57,6 @@ export async function POST(request: Request) {
     return serverError(dbError.message);
   }
 
+  revalidatePath('/nosotros');
   return NextResponse.json({ ok: true, foto }, { status: 201 });
 }

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { revalidatePath } from 'next/cache';
 import { requireRole, badRequest, serverError } from '@/lib/auth';
 import { getAdminClient } from '@/lib/supabase/admin';
 
@@ -20,6 +21,7 @@ export async function PATCH(
     .eq('id', id);
 
   if (error) return serverError(error.message);
+  revalidatePath('/nosotros');
   return NextResponse.json({ ok: true });
 }
 
@@ -52,5 +54,6 @@ export async function DELETE(
     await admin.storage.from('galeria').remove([foto.storage_path]);
   }
 
+  revalidatePath('/nosotros');
   return NextResponse.json({ ok: true });
 }
