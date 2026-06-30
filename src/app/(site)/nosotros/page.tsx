@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import AnimateOnScroll from "@/components/AnimateOnScroll";
-import FlotaGallery from "@/components/FlotaGallery";
+import FlotaGallery, { type FlotaImage } from "@/components/FlotaGallery";
 import { siteContent } from "@/content/site";
+import { getAdminClient } from "@/lib/supabase/admin";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   ...siteContent.nosotros.meta,
@@ -15,8 +18,23 @@ export const metadata: Metadata = {
   },
 };
 
-export default function NosotrosPage() {
+export default async function NosotrosPage() {
   const { title, paragraphs, mision, vision } = siteContent.nosotros;
+
+  let galeriaImages: FlotaImage[] | undefined;
+  try {
+    const admin = getAdminClient();
+    const { data } = await admin
+      .from("galeria_fotos")
+      .select("url, alt, width, height")
+      .eq("visible", true)
+      .order("orden");
+    if (data && data.length > 0) {
+      galeriaImages = data.map((f) => ({ src: f.url, alt: f.alt, width: f.width, height: f.height }));
+    }
+  } catch {
+    // fallback silencioso — FlotaGallery usa el array hardcodeado
+  }
 
   return (
     <>
@@ -140,7 +158,7 @@ export default function NosotrosPage() {
                 <div className="flex-1 h-px bg-gray-200" />
               </div>
             </AnimateOnScroll>
-            <FlotaGallery />
+            <FlotaGallery images={galeriaImages} />
           </div>
 
         </div>

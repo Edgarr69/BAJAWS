@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   LayoutDashboard, Link2, MessageSquare, HelpCircle,
-  Users, Download, X, Mail, FileCheck, Bell, Briefcase, UserCheck,
+  Users, Download, X, Mail, FileCheck, Bell, Briefcase, UserCheck, Images,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { UserRole } from '@/types/panel';
@@ -27,6 +27,7 @@ const NAV: NavItem[] = [
   { href: '/panel/notificaciones',  label: 'Notificaciones',  icon: Bell,        roles: ['superadmin', 'admin'] },
   { href: '/panel/vacantes',        label: 'Vacantes',        icon: Briefcase,   roles: ['superadmin', 'admin'] },
   { href: '/panel/postulaciones',   label: 'Postulaciones',   icon: UserCheck,   roles: ['superadmin', 'admin'] },
+  { href: '/panel/galeria',         label: 'Galeria',         icon: Images,      roles: ['superadmin', 'admin'] },
   { href: '/panel/exportaciones',   label: 'Exportaciones',   icon: Download,    roles: ['superadmin', 'admin', 'atencion'] },
 ];
 

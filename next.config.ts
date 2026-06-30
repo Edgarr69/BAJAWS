@@ -16,8 +16,8 @@ const CSP = [
   "style-src 'self' 'unsafe-inline'",
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
-  // Imágenes locales + data URIs
-  "img-src 'self' data: blob: https://i.ytimg.com https://www.googletagmanager.com",
+  // Imágenes locales + data URIs + Supabase Storage (fotos de galería)
+  `img-src 'self' data: blob: https://i.ytimg.com https://www.googletagmanager.com ${SUPABASE_HOST}`,
   // Video local (src/videos/*)
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
@@ -60,6 +60,7 @@ const nextConfig: NextConfig = {
     imageSizes: [16, 32, 48, 64, 96, 128, 192, 256, 320, 384],
     remotePatterns: [
       { protocol: "https", hostname: "i.ytimg.com" },
+      { protocol: "https", hostname: "dlgergnuqxzexsjeuztg.supabase.co" },
     ],
   },
   async redirects() {

@@ -4,32 +4,33 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 
-const IMAGES = [
-  { n: 1,  w: 1200, h: 1600 },
-  { n: 7,  w: 1296, h: 972  },
-  { n: 2,  w: 960,  h: 1280 },
-  { n: 11, w: 1600, h: 900  },
-  { n: 3,  w: 1200, h: 1600 },
-  { n: 12, w: 1600, h: 1204 },
-  { n: 10, w: 960,  h: 1280 },
-  { n: 9,  w: 1600, h: 1204 },
-  { n: 8,  w: 1600, h: 1600 },
-  { n: 14, w: 1600, h: 1204 },
-  { n: 15, w: 1352, h: 918  },
-].map(({ n, w, h }) => ({
-  src: `/galeria/${n}.webp`,
-  alt: `Unidad Baja Wastewater Solution ${n}`,
-  width: w,
-  height: h,
-}));
-const images = IMAGES;
+export interface FlotaImage {
+  src: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+const FALLBACK_IMAGES: FlotaImage[] = [
+  { src: "/galeria/1.webp",  alt: "Unidad Baja Wastewater Solution", width: 1200, height: 1600 },
+  { src: "/galeria/7.webp",  alt: "Unidad Baja Wastewater Solution", width: 1296, height: 972  },
+  { src: "/galeria/2.webp",  alt: "Unidad Baja Wastewater Solution", width: 960,  height: 1280 },
+  { src: "/galeria/11.webp", alt: "Unidad Baja Wastewater Solution", width: 1600, height: 900  },
+  { src: "/galeria/3.webp",  alt: "Unidad Baja Wastewater Solution", width: 1200, height: 1600 },
+  { src: "/galeria/12.webp", alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1204 },
+  { src: "/galeria/10.webp", alt: "Unidad Baja Wastewater Solution", width: 960,  height: 1280 },
+  { src: "/galeria/9.webp",  alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1204 },
+  { src: "/galeria/8.webp",  alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1600 },
+  { src: "/galeria/14.webp", alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1204 },
+  { src: "/galeria/15.webp", alt: "Unidad Baja Wastewater Solution", width: 1352, height: 918  },
+];
 
 // grid-auto-rows value and gap-3 (0.75rem = 12px at 16px base)
 const ROW_SIZE = 10;
 const ROW_GAP  = 12;
 
-function calcSpans(colWidth: number): number[] {
-  return images.map(({ width, height }) => {
+function calcSpans(colWidth: number, imgs: FlotaImage[]): number[] {
+  return imgs.map(({ width, height }) => {
     const rh = (height / width) * colWidth;
     // span × ROW_SIZE + (span - 1) × ROW_GAP >= rh
     // span >= (rh + ROW_GAP) / (ROW_SIZE + ROW_GAP)
@@ -37,7 +38,13 @@ function calcSpans(colWidth: number): number[] {
   });
 }
 
-export default function FlotaGallery() {
+interface FlotaGalleryProps {
+  images?: FlotaImage[];
+}
+
+export default function FlotaGallery({ images: imagesProp }: FlotaGalleryProps = {}) {
+  const images = imagesProp ?? FALLBACK_IMAGES;
+
   const [selected, setSelected]     = useState<number | null>(null);
   const [isClosing, setIsClosing]   = useState(false);
   const [imgKey, setImgKey]         = useState(0);
@@ -45,27 +52,27 @@ export default function FlotaGallery() {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [mounted, setMounted]       = useState(false);
   // 370px ≈ typical column width across all breakpoints (1-col mobile ~375, 2-col ~376, 3-col ~384)
-  const [spans, setSpans]           = useState<number[]>(() => calcSpans(370));
+  const [spans, setSpans]           = useState<number[]>(() => calcSpans(370, images));
   const lightboxRef = useRef<HTMLDivElement>(null);
   const openerRef   = useRef<HTMLButtonElement | null>(null);
   const gridRef     = useRef<HTMLDivElement>(null);
 
   useEffect(() => setMounted(true), []);
 
-  // Recalculate spans whenever the grid resizes (breakpoint changes, orientation, etc.)
+  // Recalculate spans whenever images change or the grid resizes
   useEffect(() => {
     const grid = gridRef.current;
     if (!grid) return;
     const compute = () => {
       const colWidth = (grid.firstElementChild as HTMLElement | null)?.offsetWidth;
       if (!colWidth) return;
-      setSpans(calcSpans(colWidth));
+      setSpans(calcSpans(colWidth, images));
     };
     const ro = new ResizeObserver(compute);
     ro.observe(grid);
     compute();
     return () => ro.disconnect();
-  }, []);
+  }, [images]);
 
   const close = useCallback(() => {
     setIsClosing(true);
@@ -80,13 +87,13 @@ export default function FlotaGallery() {
     setDirection("prev");
     setImgKey((k) => k + 1);
     setSelected((i) => (i !== null ? (i - 1 + images.length) % images.length : null));
-  }, []);
+  }, [images.length]);
 
   const next = useCallback(() => {
     setDirection("next");
     setImgKey((k) => k + 1);
     setSelected((i) => (i !== null ? (i + 1) % images.length : null));
-  }, []);
+  }, [images.length]);
 
   useEffect(() => {
     if (selected === null) return;

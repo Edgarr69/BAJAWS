@@ -134,6 +134,18 @@ export interface JobApplication {
   job_postings?: { titulo: string } | null;
 }
 
+export interface GaleriaFoto {
+  id: string;
+  url: string;
+  storage_path: string | null;
+  alt: string;
+  width: number;
+  height: number;
+  orden: number;
+  visible: boolean;
+  created_at: string;
+}
+
 export type LinkStatus = 'vigente' | 'usado' | 'expirado' | 'bloqueado';
 
 export function getLinkStatus(link: FeedbackLink): LinkStatus {
