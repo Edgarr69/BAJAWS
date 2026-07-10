@@ -37,8 +37,9 @@ const CSP = [
 const securityHeaders = [
   // Evita que el navegador detecte MIME types distintos al declarado
   { key: "X-Content-Type-Options", value: "nosniff" },
-  // Protección XSS para navegadores antiguos
-  { key: "X-XSS-Protection", value: "1; mode=block" },
+  // Deshabilitado a propósito: el auditor XSS legacy de navegadores antiguos
+  // puede introducir vulnerabilidades. La protección real la da el CSP.
+  { key: "X-XSS-Protection", value: "0" },
   // Bloquea embebido en iframes externos (compatibilidad con navegadores sin soporte CSP frame-ancestors)
   { key: "X-Frame-Options", value: "DENY" },
   // Solo enviar el origen en requests cross-origin
