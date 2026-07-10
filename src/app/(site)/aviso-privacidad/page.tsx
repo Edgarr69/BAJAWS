@@ -160,10 +160,10 @@ export default function AvisoPrivacidadPage() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">VII. Uso de cookies</h2>
           <p>
-            Este sitio web utiliza cookies propias y de terceros. Las cookies esenciales son necesarias
-            para el correcto funcionamiento del sitio. Las cookies analíticas nos permiten entender cómo
-            los visitantes navegan por el sitio con el fin de mejorar nuestros servicios; no se utilizan
-            para publicidad ni para identificar personas.
+            Este sitio web utiliza únicamente cookies esenciales, necesarias para el correcto
+            funcionamiento del sitio (por ejemplo, para mantener tu sesión en el área privada). No
+            utilizamos cookies de analítica, publicidad ni rastreo. Para medir el tráfico de forma
+            agregada empleamos una herramienta que no utiliza cookies (ver más abajo).
           </p>
 
           <h3 className="text-base font-semibold text-slate-700 mt-4 mb-2">Cookies esenciales</h3>
@@ -178,11 +178,6 @@ export default function AvisoPrivacidadPage() {
               </thead>
               <tbody>
                 <tr>
-                  <td className="px-3 py-2 border border-slate-200 font-mono text-xs">cookie-consent</td>
-                  <td className="px-3 py-2 border border-slate-200">Guarda tu preferencia de cookies</td>
-                  <td className="px-3 py-2 border border-slate-200">1 año</td>
-                </tr>
-                <tr className="bg-slate-50">
                   <td className="px-3 py-2 border border-slate-200 font-mono text-xs">sb-* (Supabase)</td>
                   <td className="px-3 py-2 border border-slate-200">Sesión de usuario autenticado (solo área privada)</td>
                   <td className="px-3 py-2 border border-slate-200">Sesión</td>
@@ -191,50 +186,13 @@ export default function AvisoPrivacidadPage() {
             </table>
           </div>
 
-          <h3 className="text-base font-semibold text-slate-700 mt-4 mb-2">Cookies analíticas (Google Analytics)</h3>
+          <h3 className="text-base font-semibold text-slate-700 mt-4 mb-2">Analítica de tráfico (Cloudflare Web Analytics)</h3>
           <p className="text-sm text-slate-600 mb-2">
-            Utilizamos Google Analytics para analizar el comportamiento de navegación de forma agregada
-            y anónima. La información recopilada no permite identificar a usuarios individuales.
-            Puedes rechazar estas cookies en el banner de consentimiento o a través de la extensión
-            oficial{' '}
-            <a
-              href="https://tools.google.com/dlpage/gaoptout"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-secondary-500 underline"
-            >
-              Google Analytics Opt-out
-            </a>
-            .
+            Utilizamos Cloudflare Web Analytics para medir el tráfico del sitio de forma agregada y
+            anónima. A diferencia de otras herramientas de análisis, <strong>no utiliza cookies</strong>{' '}
+            ni almacena identificadores en tu dispositivo, y no recopila datos personales que permitan
+            identificarte. Por este motivo no requiere tu consentimiento para funcionar.
           </p>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-slate-100">
-                  <th className="text-left px-3 py-2 font-semibold text-slate-700 border border-slate-200">Cookie</th>
-                  <th className="text-left px-3 py-2 font-semibold text-slate-700 border border-slate-200">Propósito</th>
-                  <th className="text-left px-3 py-2 font-semibold text-slate-700 border border-slate-200">Duración</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="px-3 py-2 border border-slate-200 font-mono text-xs">_ga</td>
-                  <td className="px-3 py-2 border border-slate-200">Distingue usuarios únicos de forma anónima</td>
-                  <td className="px-3 py-2 border border-slate-200">2 años</td>
-                </tr>
-                <tr className="bg-slate-50">
-                  <td className="px-3 py-2 border border-slate-200 font-mono text-xs">_ga_*</td>
-                  <td className="px-3 py-2 border border-slate-200">Mantiene el estado de sesión de Google Analytics 4</td>
-                  <td className="px-3 py-2 border border-slate-200">2 años</td>
-                </tr>
-                <tr>
-                  <td className="px-3 py-2 border border-slate-200 font-mono text-xs">_gid</td>
-                  <td className="px-3 py-2 border border-slate-200">Distingue usuarios únicos (sesión corta)</td>
-                  <td className="px-3 py-2 border border-slate-200">24 horas</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </section>
 
         {/* VIII. Cambios */}
