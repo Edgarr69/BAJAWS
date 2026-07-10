@@ -160,38 +160,11 @@ export default function AvisoPrivacidadPage() {
         <section>
           <h2 className="text-lg font-bold text-slate-800 mb-3">VII. Uso de cookies</h2>
           <p>
-            Este sitio web utiliza únicamente cookies esenciales, necesarias para el correcto
-            funcionamiento del sitio (por ejemplo, para mantener tu sesión en el área privada). No
-            utilizamos cookies de analítica, publicidad ni rastreo. Para medir el tráfico de forma
-            agregada empleamos una herramienta que no utiliza cookies (ver más abajo).
-          </p>
-
-          <h3 className="text-base font-semibold text-slate-700 mt-4 mb-2">Cookies esenciales</h3>
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm border-collapse">
-              <thead>
-                <tr className="bg-slate-100">
-                  <th className="text-left px-3 py-2 font-semibold text-slate-700 border border-slate-200">Cookie</th>
-                  <th className="text-left px-3 py-2 font-semibold text-slate-700 border border-slate-200">Propósito</th>
-                  <th className="text-left px-3 py-2 font-semibold text-slate-700 border border-slate-200">Duración</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td className="px-3 py-2 border border-slate-200 font-mono text-xs">sb-* (Supabase)</td>
-                  <td className="px-3 py-2 border border-slate-200">Sesión de usuario autenticado (solo área privada)</td>
-                  <td className="px-3 py-2 border border-slate-200">Sesión</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <h3 className="text-base font-semibold text-slate-700 mt-4 mb-2">Analítica de tráfico (Cloudflare Web Analytics)</h3>
-          <p className="text-sm text-slate-600 mb-2">
-            Utilizamos Cloudflare Web Analytics para medir el tráfico del sitio de forma agregada y
-            anónima. A diferencia de otras herramientas de análisis, <strong>no utiliza cookies</strong>{' '}
-            ni almacena identificadores en tu dispositivo, y no recopila datos personales que permitan
-            identificarte. Por este motivo no requiere tu consentimiento para funcionar.
+            Este sitio solo utiliza una cookie de sesión estrictamente necesaria para el área privada
+            de acceso restringido; los visitantes del sitio público no reciben ninguna cookie. No
+            utilizamos cookies de analítica, publicidad ni rastreo: la medición de tráfico se realiza
+            de forma agregada y anónima con una herramienta que no emplea cookies ni almacena
+            identificadores en tu dispositivo.
           </p>
         </section>
 
