@@ -11,7 +11,10 @@ import { z } from 'zod';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validateShortCode } from '@/utils/shortcode';
-import { getHashedIp } from '@/lib/request-utils';
+import { getHashedIp, bodyTooLarge } from '@/lib/request-utils';
+
+// Límite de body JSON: 50 respuestas + comentarios caben de sobra en 128 KB.
+const MAX_BODY = 128 * 1024;
 
 const answerSchema = z.object({
   question_id: z.number().int().positive(),
@@ -40,6 +43,10 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[public/submit] origin inválido en verificación CSRF:', err);
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+
+  if (bodyTooLarge(req, MAX_BODY)) {
+    return NextResponse.json({ error: 'PAYLOAD_TOO_LARGE' }, { status: 413 });
   }
 
   let ipHash: string;

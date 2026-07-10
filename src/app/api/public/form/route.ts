@@ -9,14 +9,18 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
 import { validateShortCode } from '@/utils/shortcode';
+import { getHashedIp } from '@/lib/request-utils';
 
 export async function GET(req: NextRequest) {
-  // Rate limiting por IP
-  // x-real-ip lo fija Vercel/CDN — no puede ser falsificado por el cliente
-  const ip = req.headers.get('x-real-ip')
-           ?? req.headers.get('x-forwarded-for')?.split(',').at(-1)?.trim()
-           ?? 'unknown';
-  const rl = await checkRateLimit(`form:${ip}`, 30, 60_000);
+  // Rate limiting por IP hasheada (consistente con el resto de endpoints)
+  let ipHash: string;
+  try {
+    ipHash = getHashedIp(req);
+  } catch {
+    console.error('IP_HASH_SECRET no está configurado');
+    return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
+  }
+  const rl = await checkRateLimit(`form:${ipHash}`, 30, 60_000);
 
   if (!rl.allowed) {
     return NextResponse.json(

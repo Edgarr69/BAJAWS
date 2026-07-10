@@ -7,14 +7,21 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { getHashedIp } from '@/lib/request-utils';
+import { getHashedIp, bodyTooLarge } from '@/lib/request-utils';
 import { sendContactNotification } from '@/lib/email';
 
+// Límite de body JSON: corta payloads gigantes antes de bufferizar en memoria.
+const MAX_BODY = 64 * 1024; // 64 KB — sobra para el formulario
+
 const schema = z.object({
-  nombre:   z.string().trim().min(2).max(80),
+  // Se eliminan saltos de línea y null bytes: el nombre llega al subject del
+  // email de notificación y \r\n permite header injection.
+  nombre:   z.string().trim().min(2).max(80)
+              .transform((s) => s.replace(/[\r\n\0]/g, ' ')),
   telefono: z.string().trim().max(20).optional().or(z.literal('')),
   correo:   z.string().trim().email().max(120),
-  mensaje:  z.string().trim().min(10).max(1000),
+  mensaje:  z.string().trim().min(10).max(1000)
+              .transform((s) => s.replace(/\0/g, '')),
   fuente:   z.enum(['contacto', 'cotizacion']).default('contacto'),
 });
 
@@ -32,6 +39,10 @@ export async function POST(req: NextRequest) {
   } catch (err) {
     console.error('[contact] origin inválido en verificación CSRF:', err);
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+
+  if (bodyTooLarge(req, MAX_BODY)) {
+    return NextResponse.json({ error: 'PAYLOAD_TOO_LARGE' }, { status: 413 });
   }
 
   let ipHash: string;

@@ -6,8 +6,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getAdminClient } from '@/lib/supabase/admin';
 import { checkRateLimit } from '@/lib/rate-limit';
-import { getHashedIp } from '@/lib/request-utils';
+import { getHashedIp, bodyTooLarge } from '@/lib/request-utils';
 import { sendPostulanteNotification } from '@/lib/email';
+
+// Tope de body: alineado con el cap de plataforma de Vercel (~4.5 MB).
+// El CV se limita a 4 MB (abajo) para dejar margen a los campos del form.
+const MAX_BODY = Math.floor(4.5 * 1024 * 1024);
+const MAX_CV   = 4 * 1024 * 1024;
 
 const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const EMAIL_RE   = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -31,6 +36,10 @@ export async function POST(req: NextRequest) {
     if (new URL(origin).host !== host) return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
   } catch {
     return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+  }
+
+  if (bodyTooLarge(req, MAX_BODY)) {
+    return NextResponse.json({ error: 'PAYLOAD_TOO_LARGE', message: 'El envío es demasiado grande.' }, { status: 413 });
   }
 
   let ipHash: string;
@@ -77,8 +86,8 @@ export async function POST(req: NextRequest) {
     if (cvFile.type !== 'application/pdf') {
       return NextResponse.json({ error: 'INVALID', field: 'cv', message: 'Solo se aceptan archivos PDF' }, { status: 400 });
     }
-    if (cvFile.size > 5 * 1024 * 1024) {
-      return NextResponse.json({ error: 'INVALID', field: 'cv', message: 'El CV no puede superar 5 MB' }, { status: 400 });
+    if (cvFile.size > MAX_CV) {
+      return NextResponse.json({ error: 'INVALID', field: 'cv', message: 'El CV no puede superar 4 MB' }, { status: 400 });
     }
   }
 
@@ -103,17 +112,25 @@ export async function POST(req: NextRequest) {
     .eq('posting_id', posting_id)
     .eq('correo', correo);
 
+  // Duplicado: respondemos igual que un alta exitosa para no revelar si un
+  // correo ya postuló a esta vacante (evita enumeración de postulantes).
   if (existing && existing > 0) {
-    return NextResponse.json(
-      { error: 'DUPLICATE', message: 'Ya enviaste una postulación para esta vacante.' },
-      { status: 409 }
-    );
+    return NextResponse.json({ ok: true }, { status: 201 });
   }
 
   // Subir CV si se proporcionó
   let cv_path: string | null = null;
   if (cvFile) {
     const bytes  = await cvFile.arrayBuffer();
+
+    // Un PDF válido tiene al menos la firma %PDF (4 bytes). Evita el
+    // RangeError de new Uint8Array(bytes, 0, 4) con archivos de 1–3 bytes.
+    if (bytes.byteLength < 4) {
+      return NextResponse.json(
+        { error: 'INVALID', field: 'cv', message: 'El archivo no es un PDF válido.' },
+        { status: 400 }
+      );
+    }
 
     // Verificar magic bytes reales — el MIME del navegador puede ser spoofed
     // PDF válido comienza con %PDF (0x25 0x50 0x44 0x46)
@@ -152,12 +169,10 @@ export async function POST(req: NextRequest) {
   });
 
   if (insertErr) {
-    // 23505 = unique_violation — duplicado que pasó la carrera entre el check y el insert
+    // 23505 = unique_violation — duplicado que pasó la carrera entre el check y el insert.
+    // Misma respuesta genérica que el alta exitosa (anti-enumeración).
     if ((insertErr as { code?: string }).code === '23505') {
-      return NextResponse.json(
-        { error: 'DUPLICATE', message: 'Ya enviaste una postulación para esta vacante.' },
-        { status: 409 }
-      );
+      return NextResponse.json({ ok: true }, { status: 201 });
     }
     console.error('[apply] insert error:', insertErr.message);
     return NextResponse.json({ error: 'SERVER_ERROR' }, { status: 500 });
