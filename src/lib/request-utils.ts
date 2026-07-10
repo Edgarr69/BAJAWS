@@ -21,3 +21,13 @@ export function getHashedIp(request: Request): string {
 
   return createHash('sha256').update(ip + secret).digest('hex');
 }
+
+/**
+ * Rechaza payloads demasiado grandes leyendo Content-Length ANTES de
+ * bufferizar el body (req.json()/req.formData() cargan todo en memoria).
+ * Devuelve true si el body declarado supera maxBytes.
+ */
+export function bodyTooLarge(request: Request, maxBytes: number): boolean {
+  const len = Number(request.headers.get('content-length') ?? 0);
+  return Number.isFinite(len) && len > maxBytes;
+}
