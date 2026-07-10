@@ -12,7 +12,34 @@ import { createServerClient } from '@supabase/ssr';
  * Estrategia de cookies idéntica a src/lib/supabase/server.ts:
  *   sin maxAge ni expires → cookies de sesión del navegador.
  */
+// Métodos que no mutan estado — no requieren verificación de origen.
+const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
+
 export async function middleware(request: NextRequest) {
+  // ── Defensa CSRF centralizada para /api/* ──────────────────────────────
+  // Toda petición mutante a la API debe originarse en el mismo host. Los
+  // route handlers aplican su propia auth por rol; aquí solo cerramos el
+  // vector cross-origin en un único punto (evita depender de SameSite=Lax).
+  if (request.nextUrl.pathname.startsWith('/api/')) {
+    if (!SAFE_METHODS.has(request.method)) {
+      const origin = request.headers.get('origin');
+      const host   = request.headers.get('host');
+      let sameOrigin = false;
+      if (origin) {
+        try {
+          sameOrigin = new URL(origin).host === host;
+        } catch {
+          sameOrigin = false;
+        }
+      }
+      if (!sameOrigin) {
+        return NextResponse.json({ error: 'FORBIDDEN' }, { status: 403 });
+      }
+    }
+    // Las rutas /api gestionan su propia sesión; no corremos la lógica de panel.
+    return NextResponse.next({ request });
+  }
+
   // Respuesta base: si Supabase refresca tokens, escribimos las cookies aquí
   // y devolvemos esta misma respuesta para que lleguen al navegador.
   let response = NextResponse.next({ request });
@@ -102,5 +129,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/panel/:path*', '/acceso-solicitado'],
+  matcher: ['/panel/:path*', '/acceso-solicitado', '/api/:path*'],
 };
