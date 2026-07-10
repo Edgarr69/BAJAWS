@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import GoogleTagManager from "@/components/GoogleTagManager";
 import { siteContent } from "@/content/site";
 
 const inter = Inter({
@@ -37,7 +36,6 @@ export default function RootLayout({
   return (
     <html lang="es-MX" className={inter.className} suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <GoogleTagManager />
         {children}
         <script
           type="application/ld+json"

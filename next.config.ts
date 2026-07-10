@@ -12,18 +12,19 @@ const SUPABASE_HOST = "https://dlgergnuqxzexsjeuztg.supabase.co";
 const CSP = [
   "default-src 'self'",
   // Next.js App Router requiere unsafe-inline para hidratación; unsafe-eval solo en dev (HMR)
-  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://www.googletagmanager.com https://static.cloudflareinsights.com`,
+  // Cloudflare Web Analytics: beacon servido desde static.cloudflareinsights.com
+  `script-src 'self' 'unsafe-inline'${isDev ? " 'unsafe-eval'" : ""} https://static.cloudflareinsights.com`,
   "style-src 'self' 'unsafe-inline'",
   // next/font descarga y sirve las fuentes localmente
   "font-src 'self' data:",
   // Imágenes locales + data URIs + Supabase Storage (fotos de galería)
-  `img-src 'self' data: blob: https://i.ytimg.com https://www.googletagmanager.com ${SUPABASE_HOST}`,
+  `img-src 'self' data: blob: https://i.ytimg.com ${SUPABASE_HOST}`,
   // Video local (src/videos/*)
   "media-src 'self'",
   // Iframes permitidos: YouTube (sin cookies) y Google Maps
-  "frame-src blob: https://www.youtube-nocookie.com https://maps.google.com https://www.google.com https://www.googletagmanager.com",
-  // Peticiones fetch/XHR: mismo origen + host exacto de Supabase (requerido para signInWithPassword y realtime)
-  `connect-src 'self' ${SUPABASE_HOST} https://www.google-analytics.com https://analytics.google.com https://stats.g.doubleclick.net https://cloudflareinsights.com`,
+  "frame-src blob: https://www.youtube-nocookie.com https://maps.google.com https://www.google.com",
+  // Peticiones fetch/XHR: mismo origen + Supabase (auth/realtime) + Cloudflare Web Analytics
+  `connect-src 'self' ${SUPABASE_HOST} https://cloudflareinsights.com`,
   // El formulario solo puede enviar datos al mismo origen
   "form-action 'self'",
   // Evita inyección de <base>
