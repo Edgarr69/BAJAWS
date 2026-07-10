@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState, useEffect } from "react";
+import Link from "next/link";
 import { siteContent } from "@/content/site";
 
 interface ContactFormProps {
@@ -334,6 +335,14 @@ export default function ContactForm({ ctaLabel = "Enviar", source = "contacto" }
 
       <p className="text-xs text-gray-400 text-center">
         <span className="text-primary-600">*</span> Campos requeridos
+      </p>
+
+      <p className="text-xs text-gray-400 text-center">
+        Al enviar, aceptas nuestro{" "}
+        <Link href="/aviso-privacidad" className="text-primary-600 hover:underline">
+          Aviso de Privacidad
+        </Link>
+        .
       </p>
     </form>
   );

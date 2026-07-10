@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Link from 'next/link';
 import { MapPin, Briefcase, Send, X, FileText, Eye, CheckCircle2 } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
@@ -489,6 +490,14 @@ export function VacantesPublicClient({ postings }: Props) {
                   {sending ? 'Enviando…' : 'Enviar postulación'}
                 </Button>
               </div>
+
+              <p className="text-xs text-slate-400 text-center pt-1">
+                Al enviar, aceptas nuestro{' '}
+                <Link href="/aviso-privacidad" className="text-primary-600 hover:underline">
+                  Aviso de Privacidad
+                </Link>
+                .
+              </p>
             </form>
           )}
         </DialogContent>
