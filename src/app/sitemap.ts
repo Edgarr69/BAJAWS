@@ -56,7 +56,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified,
       changeFrequency: "yearly",
       priority: 0.8,
-      images: [`${SITE_URL}/images/contacto.jpeg`],
+      images: [`${SITE_URL}/images/contactoo.webp`],
     },
     {
       url: `${SITE_URL}/aviso-privacidad`,

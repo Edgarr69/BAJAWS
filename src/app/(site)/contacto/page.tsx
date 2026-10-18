@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: siteContent.contacto.meta.title,
     description: siteContent.contacto.meta.description,
-    images: [{ url: "https://bajaws.com.mx/images/contacto.jpeg", width: 700, height: 400, alt: "Recepción e instalaciones de Baja Wastewater Solution en Tijuana" }],
+    images: [{ url: "https://bajaws.com.mx/images/contactoo.webp", width: 700, height: 400, alt: "Recepción e instalaciones de Baja Wastewater Solution en Tijuana" }],
   },
 };
 
@@ -133,7 +133,7 @@ export default function ContactoPage() {
               <AnimateOnScroll direction="left" delay={100}>
                 <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 mb-3">
                   <Image
-                    src="/images/contacto.jpeg"
+                    src="/images/contactoo.webp"
                     alt="Recepción Baja Wastewater Solution"
                     width={700}
                     height={400}
