@@ -292,7 +292,7 @@ export default function FormularioPage() {
             </label>
             <textarea
               id="private-comment"
-              placeholder="Algún comentario adicional para el equipo de Baja Wastewater Solution…"
+              placeholder="Algún comentario adicional para el equipo de Baja Wastewater Solutions…"
               value={privateComment}
               onChange={e => setPrivateComment(e.target.value)}
               rows={3}
@@ -358,7 +358,7 @@ function Shell({ children }: { children: React.ReactNode }) {
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
             </svg>
           </div>
-          <h1 className="text-base font-bold text-primary-900">Baja Wastewater Solution</h1>
+          <h1 className="text-base font-bold text-primary-900">Baja Wastewater Solutions</h1>
           <p className="text-xs text-slate-400 mt-0.5">Evaluación del servicio · Menos de 1 minuto</p>
         </div>
 

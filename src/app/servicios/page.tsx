@@ -6,12 +6,12 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.services.meta,
-  title: { absolute: "Tratamiento de Residuos Industriales | Baja Wastewater Solution" },
+  title: { absolute: "Tratamiento de Residuos Industriales | Baja Wastewater Solutions" },
   alternates: { canonical: "/servicios" },
   openGraph: {
     title: siteContent.services.meta.title,
     description: siteContent.services.meta.description,
-    images: [{ url: "https://bajaws.com.mx/images/autorizaciones.jpg", width: 600, height: 600, alt: "Servicios de tratamiento y disposición de residuos industriales de Baja Wastewater Solution" }],
+    images: [{ url: "https://bajaws.com.mx/images/autorizaciones.jpg", width: 600, height: 600, alt: "Servicios de tratamiento y disposición de residuos industriales de Baja Wastewater Solutions" }],
   },
 };
 
@@ -26,7 +26,7 @@ export default function ServiciosPage() {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ItemList",
-            "name": "Servicios de Baja Wastewater Solution",
+            "name": "Servicios de Baja Wastewater Solutions",
             "itemListElement": items.map((s, i) => ({
               "@type": "ListItem",
               "position": i + 1,
@@ -34,7 +34,7 @@ export default function ServiciosPage() {
                 "@type": "Service",
                 "name": s.title,
                 "description": s.description,
-                "provider": { "@type": "Organization", "name": "Baja Wastewater Solution", "url": "https://bajaws.com.mx" },
+                "provider": { "@type": "Organization", "name": "Baja Wastewater Solutions", "url": "https://bajaws.com.mx" },
               },
             })),
           }),
@@ -61,7 +61,7 @@ export default function ServiciosPage() {
             "@type": "CollectionPage",
             "@id": "https://bajaws.com.mx/servicios#webpage",
             "url": "https://bajaws.com.mx/servicios",
-            "name": "Tratamiento de Residuos Industriales | Baja Wastewater Solution",
+            "name": "Tratamiento de Residuos Industriales | Baja Wastewater Solutions",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },

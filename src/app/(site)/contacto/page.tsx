@@ -6,12 +6,12 @@ import { siteContent } from "@/content/site";
 
 export const metadata: Metadata = {
   ...siteContent.contacto.meta,
-  title: { absolute: "Contacto y Cotización de Servicios | Baja Wastewater Solution" },
+  title: { absolute: "Contacto y Cotización de Servicios | Baja Wastewater Solutions" },
   alternates: { canonical: "/contacto" },
   openGraph: {
     title: siteContent.contacto.meta.title,
     description: siteContent.contacto.meta.description,
-    images: [{ url: "https://bajaws.com.mx/images/contactoo.webp", width: 700, height: 400, alt: "Recepción e instalaciones de Baja Wastewater Solution en Tijuana" }],
+    images: [{ url: "https://bajaws.com.mx/images/contactoo.webp", width: 700, height: 400, alt: "Recepción e instalaciones de Baja Wastewater Solutions en Tijuana" }],
   },
 };
 
@@ -94,7 +94,7 @@ export default function ContactoPage() {
             "@type": "ContactPage",
             "@id": "https://bajaws.com.mx/contacto#webpage",
             "url": "https://bajaws.com.mx/contacto",
-            "name": "Contacto y Cotización de Servicios | Baja Wastewater Solution",
+            "name": "Contacto y Cotización de Servicios | Baja Wastewater Solutions",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
@@ -134,7 +134,7 @@ export default function ContactoPage() {
                 <div className="rounded-2xl overflow-hidden shadow-md border border-gray-100 mb-3">
                   <Image
                     src="/images/contactoo.webp"
-                    alt="Recepción Baja Wastewater Solution"
+                    alt="Recepción Baja Wastewater Solutions"
                     width={700}
                     height={400}
                     className="w-full h-36 sm:h-48 md:h-44 object-cover"
@@ -191,7 +191,7 @@ export default function ContactoPage() {
             <h2 className="text-base font-bold text-gray-900 mb-3">Cómo llegarnos</h2>
             <div className="rounded-2xl overflow-hidden shadow-md border border-gray-200 w-full h-72 sm:h-80">
               <iframe
-                title="Ubicación Baja Wastewater Solution"
+                title="Ubicación Baja Wastewater Solutions"
                 src="https://maps.google.com/maps?q=Fray+Junipero+Serra+17501,+Garita+de+Otay,+Tijuana,+Baja+California+22430,+Mexico&output=embed&hl=es&z=16"
                 width="100%"
                 height="100%"

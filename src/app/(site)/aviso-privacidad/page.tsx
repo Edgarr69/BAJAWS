@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Aviso de Privacidad | Baja Wastewater Solution",
-  description: "Aviso de privacidad de Baja Wastewater Solution conforme a la LFPDPPP.",
+  title: "Aviso de Privacidad | Baja Wastewater Solutions",
+  description: "Aviso de privacidad de Baja Wastewater Solutions conforme a la LFPDPPP.",
   alternates: { canonical: "/aviso-privacidad" },
 };
 
@@ -17,7 +17,7 @@ export default function AvisoPrivacidadPage() {
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/aviso-privacidad#webpage",
             "url": "https://bajaws.com.mx/aviso-privacidad",
-            "name": "Aviso de Privacidad | Baja Wastewater Solution",
+            "name": "Aviso de Privacidad | Baja Wastewater Solutions",
             "dateModified": "2026-04-01",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },

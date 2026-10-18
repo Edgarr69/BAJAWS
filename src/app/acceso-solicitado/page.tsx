@@ -62,7 +62,7 @@ export default function AccesoSolicitadoPage() {
             </svg>
           </div>
           <h1 className="text-2xl font-bold text-white">Solicitud enviada</h1>
-          <p className="text-primary-200 text-sm mt-1">Baja Wastewater Solution — Panel interno</p>
+          <p className="text-primary-200 text-sm mt-1">Baja Wastewater Solutions — Panel interno</p>
         </div>
 
         {/* Card */}

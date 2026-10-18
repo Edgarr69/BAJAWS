@@ -61,7 +61,7 @@ export default function LoginPage() {
               <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
             </svg>
           </div>
-          <h1 className="text-2xl font-bold text-white">Baja Wastewater Solution</h1>
+          <h1 className="text-2xl font-bold text-white">Baja Wastewater Solutions</h1>
           <p className="text-primary-200 text-sm mt-1">Panel de administración interno</p>
         </div>
 
@@ -120,7 +120,7 @@ export default function LoginPage() {
                 ) : 'Entrar'}
               </Button>
               <p className="text-xs text-center text-muted-foreground">
-                Solo personal autorizado de Baja Wastewater Solution
+                Solo personal autorizado de Baja Wastewater Solutions
               </p>
               <Link
                 href="/"

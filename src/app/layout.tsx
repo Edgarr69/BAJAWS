@@ -13,13 +13,13 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "https://bajaws.com.mx"
   ),
   title: {
-    default: "Baja Wastewater Solution",
+    default: "Baja Wastewater Solutions",
     template: "%s | Baja Wastewater Solutions",
   },
   description:
     "Empresa de soluciones para el tratamiento de aguas residuales industriales en Baja California.",
   openGraph: {
-    siteName: "Baja Wastewater Solution",
+    siteName: "Baja Wastewater Solutions",
     locale: "es_MX",
     type: "website",
   },
@@ -108,7 +108,7 @@ export default function RootLayout({
               "@type": "WebSite",
               "@id": "https://bajaws.com.mx/#website",
               "url": "https://bajaws.com.mx",
-              "name": "Baja Wastewater Solution",
+              "name": "Baja Wastewater Solutions",
               "inLanguage": "es-MX",
             }),
           }}

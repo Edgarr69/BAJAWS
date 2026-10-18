@@ -17,7 +17,7 @@ export default function Footer() {
           <div className="flex flex-col gap-5">
             <Image
               src="/logoo.webp"
-              alt="Baja Wastewater Solution"
+              alt="Baja Wastewater Solutions"
               width={160}
               height={62}
               sizes="160px"

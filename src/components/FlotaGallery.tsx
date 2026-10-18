@@ -12,17 +12,17 @@ export interface FlotaImage {
 }
 
 const FALLBACK_IMAGES: FlotaImage[] = [
-  { src: "/galeria/1.webp",  alt: "Unidad Baja Wastewater Solution", width: 1200, height: 1600 },
-  { src: "/galeria/7.webp",  alt: "Unidad Baja Wastewater Solution", width: 1296, height: 972  },
-  { src: "/galeria/2.webp",  alt: "Unidad Baja Wastewater Solution", width: 960,  height: 1280 },
-  { src: "/galeria/11.webp", alt: "Unidad Baja Wastewater Solution", width: 1600, height: 900  },
-  { src: "/galeria/3.webp",  alt: "Unidad Baja Wastewater Solution", width: 1200, height: 1600 },
-  { src: "/galeria/12.webp", alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1204 },
-  { src: "/galeria/10.webp", alt: "Unidad Baja Wastewater Solution", width: 960,  height: 1280 },
-  { src: "/galeria/9.webp",  alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1204 },
-  { src: "/galeria/8.webp",  alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1600 },
-  { src: "/galeria/14.webp", alt: "Unidad Baja Wastewater Solution", width: 1600, height: 1204 },
-  { src: "/galeria/15.webp", alt: "Unidad Baja Wastewater Solution", width: 1352, height: 918  },
+  { src: "/galeria/1.webp",  alt: "Unidad Baja Wastewater Solutions", width: 1200, height: 1600 },
+  { src: "/galeria/7.webp",  alt: "Unidad Baja Wastewater Solutions", width: 1296, height: 972  },
+  { src: "/galeria/2.webp",  alt: "Unidad Baja Wastewater Solutions", width: 960,  height: 1280 },
+  { src: "/galeria/11.webp", alt: "Unidad Baja Wastewater Solutions", width: 1600, height: 900  },
+  { src: "/galeria/3.webp",  alt: "Unidad Baja Wastewater Solutions", width: 1200, height: 1600 },
+  { src: "/galeria/12.webp", alt: "Unidad Baja Wastewater Solutions", width: 1600, height: 1204 },
+  { src: "/galeria/10.webp", alt: "Unidad Baja Wastewater Solutions", width: 960,  height: 1280 },
+  { src: "/galeria/9.webp",  alt: "Unidad Baja Wastewater Solutions", width: 1600, height: 1204 },
+  { src: "/galeria/8.webp",  alt: "Unidad Baja Wastewater Solutions", width: 1600, height: 1600 },
+  { src: "/galeria/14.webp", alt: "Unidad Baja Wastewater Solutions", width: 1600, height: 1204 },
+  { src: "/galeria/15.webp", alt: "Unidad Baja Wastewater Solutions", width: 1352, height: 918  },
 ];
 
 // grid-auto-rows value and gap-3 (0.75rem = 12px at 16px base)

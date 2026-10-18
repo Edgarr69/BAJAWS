@@ -17,7 +17,7 @@ export async function POST(request: Request) {
   const file   = formData.get('file') as File | null;
   const width  = parseInt((formData.get('width')  as string) ?? '0', 10);
   const height = parseInt((formData.get('height') as string) ?? '0', 10);
-  const alt    = (formData.get('alt') as string) || 'Unidad Baja Wastewater Solution';
+  const alt    = (formData.get('alt') as string) || 'Unidad Baja Wastewater Solutions';
 
   if (!file || !width || !height) return badRequest('Datos incompletos');
 

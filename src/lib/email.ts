@@ -38,7 +38,7 @@ function emailWrapper(headerHtml: string, bodyHtml: string, footerHtml: string):
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Baja Wastewater Solution</title>
+  <title>Baja Wastewater Solutions</title>
 </head>
 <body style="margin:0;padding:0;background-color:#f1f5f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
   <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f1f5f9;padding:32px 16px;">
@@ -78,7 +78,7 @@ function emailHeader(badge: string, badgeColor: string, badgeBg: string): string
         <tr>
           <td>
             <p style="margin:0 0 4px;color:#93c5e8;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;">
-              Baja Wastewater Solution
+              Baja Wastewater Solutions
             </p>
             <p style="margin:0;color:#ffffff;font-size:20px;font-weight:700;letter-spacing:-0.3px;">
               Panel de administración
@@ -130,7 +130,7 @@ function emailFooter(): string {
     <tr>
       <td>
         <p style="margin:0 0 4px;font-size:12px;color:${TEXT_MUTED};">
-          Baja Wastewater Solution &mdash; Tijuana, B.C., México
+          Baja Wastewater Solutions &mdash; Tijuana, B.C., México
         </p>
         <p style="margin:0;font-size:11px;color:#94a3b8;">
           Este correo es un aviso automático del sistema. No responder directamente.

@@ -14,14 +14,14 @@ import { getAdminClient } from "@/lib/supabase/admin";
 export const revalidate = 3600;
 export const metadata: Metadata = {
   title: {
-    absolute: "Baja Wastewater Solution | Tratamiento Residuos Industriales",
+    absolute: "Baja Wastewater Solutions | Tratamiento Residuos Industriales",
   },
   description: siteContent.home.meta.description,
   alternates: { canonical: "/" },
   openGraph: {
-    title: "Baja Wastewater Solution | Tratamiento de Aguas Residuales Industriales en Baja California",
+    title: "Baja Wastewater Solutions | Tratamiento de Aguas Residuales Industriales en Baja California",
     description: siteContent.home.meta.description,
-    images: [{ url: "https://bajaws.com.mx/images/nosotros.webp", width: 600, height: 600, alt: "Instalaciones y laboratorio de Baja Wastewater Solution en Tijuana, Baja California" }],
+    images: [{ url: "https://bajaws.com.mx/images/nosotros.webp", width: 600, height: 600, alt: "Instalaciones y laboratorio de Baja Wastewater Solutions en Tijuana, Baja California" }],
   },
 };
 
@@ -159,7 +159,7 @@ export default async function HomePage() {
           <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-gray-200 aspect-video">
             <YoutubeEmbed
               videoId="UyetZ7i_Mg4"
-              title="Baja Wastewater Solution — Video institucional"
+              title="Baja Wastewater Solutions — Video institucional"
             />
           </div>
         </AnimateOnScroll>
@@ -298,7 +298,7 @@ export default async function HomePage() {
             "@context": "https://schema.org",
             "@type": "VideoObject",
             "name": "BWS video promo",
-            "description": "Conoce las instalaciones y los procesos de tratamiento de aguas residuales industriales y gestión de residuos peligrosos de Baja Wastewater Solution en Tijuana, Baja California.",
+            "description": "Conoce las instalaciones y los procesos de tratamiento de aguas residuales industriales y gestión de residuos peligrosos de Baja Wastewater Solutions en Tijuana, Baja California.",
             "thumbnailUrl": "https://i.ytimg.com/vi/UyetZ7i_Mg4/hqdefault.jpg",
             "embedUrl": "https://www.youtube-nocookie.com/embed/UyetZ7i_Mg4",
             "url": "https://www.youtube.com/watch?v=UyetZ7i_Mg4",
@@ -318,7 +318,7 @@ export default async function HomePage() {
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/#webpage",
             "url": "https://bajaws.com.mx",
-            "name": "Baja Wastewater Solution | Tratamiento Residuos Industriales",
+            "name": "Baja Wastewater Solutions | Tratamiento Residuos Industriales",
             "datePublished": "2009-01-01",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },

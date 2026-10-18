@@ -9,12 +9,12 @@ export const revalidate = 3600;
 
 export const metadata: Metadata = {
   ...siteContent.nosotros.meta,
-  title: { absolute: "Empresa Tratadora Baja California | Baja Wastewater Solution" },
+  title: { absolute: "Empresa Tratadora Baja California | Baja Wastewater Solutions" },
   alternates: { canonical: "/nosotros" },
   openGraph: {
     title: siteContent.nosotros.meta.title,
     description: siteContent.nosotros.meta.description,
-    images: [{ url: "https://bajaws.com.mx/images/nosotros.webp", width: 600, height: 600, alt: "Análisis de calidad del agua en laboratorio de Baja Wastewater Solution" }],
+    images: [{ url: "https://bajaws.com.mx/images/nosotros.webp", width: 600, height: 600, alt: "Análisis de calidad del agua en laboratorio de Baja Wastewater Solutions" }],
   },
 };
 
@@ -59,7 +59,7 @@ export default async function NosotrosPage() {
             "@type": "AboutPage",
             "@id": "https://bajaws.com.mx/nosotros#webpage",
             "url": "https://bajaws.com.mx/nosotros",
-            "name": "Empresa Tratadora Baja California | Baja Wastewater Solution",
+            "name": "Empresa Tratadora Baja California | Baja Wastewater Solutions",
             "datePublished": "2009-01-01",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
@@ -71,7 +71,7 @@ export default async function NosotrosPage() {
       <div className="bg-gradient-to-b from-slate-50 to-white border-b border-slate-100 py-4 sm:py-5">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <AnimateOnScroll direction="fade">
-            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Baja Wastewater Solution</p>
+            <p className="text-xs font-semibold uppercase tracking-widest text-emerald-700 mb-2">Baja Wastewater Solutions</p>
             <h1 className="text-3xl sm:text-4xl font-bold text-slate-900">{title}</h1>
             <div className="mt-3 w-10 h-1 bg-emerald-600 rounded-full" />
           </AnimateOnScroll>

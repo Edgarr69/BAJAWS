@@ -109,7 +109,7 @@ async function handleDeleteRow() {
 
   function shareWhatsApp(code: string) {
     const text = encodeURIComponent(
-      `Hola, te compartimos el formulario de evaluación de Baja Wastewater Solution:\n${BASE_URL}${code}\nTe tomará menos de 1 minuto. ¡Gracias!`
+      `Hola, te compartimos el formulario de evaluación de Baja Wastewater Solutions:\n${BASE_URL}${code}\nTe tomará menos de 1 minuto. ¡Gracias!`
     );
     window.open(`https://wa.me/?text=${text}`, '_blank');
   }

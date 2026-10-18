@@ -7,12 +7,12 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { ROOT_MARGIN_FIXED } from "@/hooks/useInView";
 
 export const metadata: Metadata = {
-  title: "Proceso de Disposición | Baja Wastewater Solution",
+  title: "Proceso de Disposición | Baja Wastewater Solutions",
   description:
     "Conoce nuestro proceso de disposición segura de residuos industriales: desde la recepción controlada hasta el confinamiento definitivo en celdas de seguridad.",
   alternates: { canonical: "/servicios/disposicion" },
   openGraph: {
-    title: "Proceso de Disposición | Baja Wastewater Solution",
+    title: "Proceso de Disposición | Baja Wastewater Solutions",
     description: "Conoce nuestro proceso de disposición segura de residuos industriales: desde la recepción controlada hasta el confinamiento definitivo en celdas de seguridad.",
   },
 };
@@ -130,7 +130,7 @@ export default function DisposicionPage() {
               "@type": "Service",
               "name": "Disposición Segura de Residuos Industriales",
               "description": "Proceso de disposición segura de residuos industriales: recepción controlada, análisis de viabilidad, procesos en planta, tratamiento, verificación y confinamiento en celdas de seguridad.",
-              "provider": { "@type": "Organization", "@id": "https://bajaws.com.mx/#organization", "name": "Baja Wastewater Solution" },
+              "provider": { "@type": "Organization", "@id": "https://bajaws.com.mx/#organization", "name": "Baja Wastewater Solutions" },
               "areaServed": { "@type": "Country", "name": "México" },
               "serviceType": "Disposición de residuos peligrosos",
             },
@@ -146,7 +146,7 @@ export default function DisposicionPage() {
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/servicios/disposicion#webpage",
             "url": "https://bajaws.com.mx/servicios/disposicion",
-            "name": "Proceso de Disposición | Baja Wastewater Solution",
+            "name": "Proceso de Disposición | Baja Wastewater Solutions",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },

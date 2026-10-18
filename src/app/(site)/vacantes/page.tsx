@@ -6,8 +6,8 @@ import { VacantesPublicClient } from './VacantesPublicClient';
 
 export const revalidate = 300;
 export const metadata: Metadata = {
-  title: { absolute: 'Vacantes | Baja Wastewater Solution' },
-  description: 'Únete al equipo de Baja Wastewater Solution. Consulta las vacantes disponibles y envía tu postulación.',
+  title: { absolute: 'Vacantes | Baja Wastewater Solutions' },
+  description: 'Únete al equipo de Baja Wastewater Solutions. Consulta las vacantes disponibles y envía tu postulación.',
   alternates: { canonical: '/vacantes' },
 };
 

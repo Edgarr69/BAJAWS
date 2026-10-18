@@ -7,12 +7,12 @@ import AnimateOnScroll from "@/components/AnimateOnScroll";
 import { ROOT_MARGIN_FIXED } from "@/hooks/useInView";
 
 export const metadata: Metadata = {
-  title: "Servicios Integrales | Baja Wastewater Solution",
+  title: "Servicios Integrales | Baja Wastewater Solutions",
   description:
     "Conoce nuestro proceso integral de gestión de residuos: desde el primer contacto hasta la mejora continua con estándares de calidad certificados.",
   alternates: { canonical: "/servicios/integrales" },
   openGraph: {
-    title: "Servicios Integrales | Baja Wastewater Solution",
+    title: "Servicios Integrales | Baja Wastewater Solutions",
     description: "Conoce nuestro proceso integral de gestión de residuos: desde el primer contacto hasta la mejora continua con estándares de calidad certificados.",
   },
 };
@@ -138,7 +138,7 @@ export default function ServiciosIntegralesPage() {
               "@type": "Service",
               "name": "Servicios Integrales de Gestión de Residuos Industriales",
               "description": "Proceso integral de gestión de residuos: primer contacto, levantamiento, soluciones con personal especializado, disposición segura, mejora continua y estándares de calidad certificados.",
-              "provider": { "@type": "Organization", "@id": "https://bajaws.com.mx/#organization", "name": "Baja Wastewater Solution" },
+              "provider": { "@type": "Organization", "@id": "https://bajaws.com.mx/#organization", "name": "Baja Wastewater Solutions" },
               "areaServed": { "@type": "Country", "name": "México" },
               "serviceType": "Gestión integral de residuos industriales",
             },
@@ -154,7 +154,7 @@ export default function ServiciosIntegralesPage() {
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/servicios/integrales#webpage",
             "url": "https://bajaws.com.mx/servicios/integrales",
-            "name": "Servicios Integrales | Baja Wastewater Solution",
+            "name": "Servicios Integrales | Baja Wastewater Solutions",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },

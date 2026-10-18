@@ -10,12 +10,12 @@ import type { Autorizacion } from "@/types/panel";
 export const revalidate = 3600;
 export const metadata: Metadata = {
   ...siteContent.autorizaciones.meta,
-  title: { absolute: "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solution" },
+  title: { absolute: "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solutions" },
   alternates: { canonical: "/autorizaciones" },
   openGraph: {
     title: siteContent.autorizaciones.meta.title,
     description: siteContent.autorizaciones.meta.description,
-    images: [{ url: "https://bajaws.com.mx/images/autorizaciones.jpg", width: 600, height: 600, alt: "Autorizaciones oficiales de Baja Wastewater Solution emitidas por CESPT, SEMAR y SEMARNAT" }],
+    images: [{ url: "https://bajaws.com.mx/images/autorizaciones.jpg", width: 600, height: 600, alt: "Autorizaciones oficiales de Baja Wastewater Solutions emitidas por CESPT, SEMAR y SEMARNAT" }],
   },
 };
 
@@ -64,7 +64,7 @@ export default async function AutorizacionesPage() {
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/autorizaciones#webpage",
             "url": "https://bajaws.com.mx/autorizaciones",
-            "name": "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solution",
+            "name": "Autorizaciones SEMARNAT, CESPT y SCT | Baja Wastewater Solutions",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
@@ -96,7 +96,7 @@ export default async function AutorizacionesPage() {
             <div className="rounded-2xl overflow-hidden shadow-lg border border-gray-100">
               <Image
                 src="/images/autorizaciones.jpg"
-                alt="Autorizaciones oficiales de Baja Wastewater Solution"
+                alt="Autorizaciones oficiales de Baja Wastewater Solutions"
                 width={600}
                 height={600}
                 className="w-full h-56 md:h-60 lg:h-64 object-cover"

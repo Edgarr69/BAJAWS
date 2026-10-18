@@ -4,7 +4,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
-  title: "Página no encontrada | Baja Wastewater Solution",
+  title: "Página no encontrada | Baja Wastewater Solutions",
   robots: { index: false, follow: false },
 };
 

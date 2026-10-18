@@ -40,7 +40,7 @@ function PageContext({ data }: { data: ReportData }) {
       borderBottom: '2px solid #0B3C5D', paddingBottom: 10, marginBottom: 20,
     }}>
       <div>
-        <span style={{ fontSize: 14, fontWeight: 800, color: '#0B3C5D' }}>Baja Wastewater Solution</span>
+        <span style={{ fontSize: 14, fontWeight: 800, color: '#0B3C5D' }}>Baja Wastewater Solutions</span>
         {data.meta.companyName && (
           <span style={{ fontSize: 12, color: '#64748b', marginLeft: 8 }}>· {data.meta.companyName}</span>
         )}
@@ -58,7 +58,7 @@ function PageFooter() {
       marginTop: 28, paddingTop: 10, borderTop: '1px solid #e2e8f0',
       fontSize: 9, color: '#94a3b8', textAlign: 'center',
     }}>
-      Reporte generado automáticamente — Baja Wastewater Solution
+      Reporte generado automáticamente — Baja Wastewater Solutions
     </div>
   );
 }
@@ -150,7 +150,7 @@ function Page1({ data }: { data: ReportData }) {
         <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
           <div>
             <div style={{ fontSize: 22, fontWeight: 800, color: '#0B3C5D', letterSpacing: '-0.3px' }}>
-              Baja Wastewater Solution
+              Baja Wastewater Solutions
             </div>
             <div style={{ fontSize: 13, color: '#64748b', marginTop: 3 }}>
               Reporte de Evaluación del Servicio

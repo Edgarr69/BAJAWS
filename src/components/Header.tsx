@@ -138,13 +138,13 @@ export default function Header() {
             {/* Logo */}
             <Link
               href="/"
-              aria-label="Baja Wastewater Solution - Inicio"
+              aria-label="Baja Wastewater Solutions - Inicio"
               className="flex-shrink-0"
               onClick={() => { setIsOpen(false); window.scrollTo({ top: 0 }); }}
             >
               <Image
                 src="/logoo.webp"
-                alt="Baja Wastewater Solution"
+                alt="Baja Wastewater Solutions"
                 width={160}
                 height={62}
                 sizes="96px"
@@ -284,7 +284,7 @@ export default function Header() {
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
           <Image
             src="/logoo.webp"
-            alt="Baja Wastewater Solution"
+            alt="Baja Wastewater Solutions"
             width={120}
             height={47}
             sizes="72px"

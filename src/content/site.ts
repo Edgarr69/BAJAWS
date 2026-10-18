@@ -1,5 +1,5 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// Archivo centralizado de contenido — Baja Wastewater Solution
+// Archivo centralizado de contenido — Baja Wastewater Solutions
 // Edita aquí para actualizar el contenido de todo el sitio.
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -35,7 +35,7 @@ export const siteContent = {
   home: {
     title: "UNA EMPRESA DE SOLUCIONES",
     description:
-      "En Baja Wastewater Solution, creemos que cada gota de agua cuenta, por eso nos dedicamos a dar tratamiento a este vital líquido, buscando generar un impacto positivo duradero en el ecosistema, a través de la innovación, la tecnología de vanguardia y nuestro compromiso con el medio ambiente, trabajamos para ofrecer soluciones que no solo benefician a nuestros clientes, sino que también contribuyen al cuidado de nuestro planeta.",
+      "En Baja Wastewater Solutions, creemos que cada gota de agua cuenta, por eso nos dedicamos a dar tratamiento a este vital líquido, buscando generar un impacto positivo duradero en el ecosistema, a través de la innovación, la tecnología de vanguardia y nuestro compromiso con el medio ambiente, trabajamos para ofrecer soluciones que no solo benefician a nuestros clientes, sino que también contribuyen al cuidado de nuestro planeta.",
     stats: [
       { value: `${getYearsExperience()}+`,  label: "Años de experiencia" },
       { value: "8",    label: "Autorizaciones vigentes" },
@@ -131,7 +131,7 @@ export const siteContent = {
     meta: {
       title: "Empresa de Tratamiento de Residuos Industriales en Baja California",
       description:
-        `Conoce a Baja Wastewater Solution — más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en México.`,
+        `Conoce a Baja Wastewater Solutions — más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en México.`,
     },
   },
 
@@ -151,7 +151,7 @@ export const siteContent = {
   contacto: {
     title: "CONTACTO",
     intro:
-      "En Baja Wastewater Solution, nos complace asistirte a través de nuestro formulario de contacto o cualquiera de nuestros canales tradicionales. Estamos aquí para responder a tus consultas y brindarte el mejor servicio posible.",
+      "En Baja Wastewater Solutions, nos complace asistirte a través de nuestro formulario de contacto o cualquiera de nuestros canales tradicionales. Estamos aquí para responder a tus consultas y brindarte el mejor servicio posible.",
     info: {
       direccion: "Fray Junípero Serra No.17501, Garita de Otay, Tijuana B.C. 22430",
       telefono:  "(664) 647 5020",
@@ -163,7 +163,7 @@ export const siteContent = {
     meta: {
       title: "Contacto y Cotización de Servicios de Tratamiento de Residuos",
       description:
-        "Solicita cotización o contáctanos en Baja Wastewater Solution. Tijuana, Baja California. Tel: (664) 647 5020. Atención Lunes a Viernes 8:00 AM - 5:00 PM.",
+        "Solicita cotización o contáctanos en Baja Wastewater Solutions. Tijuana, Baja California. Tel: (664) 647 5020. Atención Lunes a Viernes 8:00 AM - 5:00 PM.",
     },
   },
 

@@ -192,7 +192,7 @@ export function GaleriaClient({ fotos: initial }: GaleriaClientProps) {
       formData.append('file', file);
       formData.append('width',  String(dims.width));
       formData.append('height', String(dims.height));
-      formData.append('alt', 'Unidad Baja Wastewater Solution');
+      formData.append('alt', 'Unidad Baja Wastewater Solutions');
 
       const res = await fetch('/api/admin/galeria/upload', { method: 'POST', body: formData });
       if (!res.ok) throw new Error();
