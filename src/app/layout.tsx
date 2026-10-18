@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   ),
   title: {
     default: "Baja Wastewater Solution",
-    template: "%s | Baja Wastewater Solution",
+    template: "%s | Baja Wastewater Solutions",
   },
   description:
     "Empresa de soluciones para el tratamiento de aguas residuales industriales en Baja California.",

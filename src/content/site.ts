@@ -13,7 +13,7 @@ export function getYearsExperience(): number {
 
 export const siteContent = {
   company: {
-    name: "Baja Wastewater Solution",
+    name: "Baja Wastewater Solutions",
     tagline: "Empresa tratadora de aguas industriales residuales",
     domain: "bajaws.com.mx",
     foundingYear: FOUNDING_YEAR,
