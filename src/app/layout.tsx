@@ -81,9 +81,10 @@ export default function RootLayout({
                 { "@type": "City", "name": "Ensenada" },
               ],
               "sameAs": [
-                "https://www.facebook.com/p/Baja-Wastewater-Solution-S-de-RL-100064142435861/",
+                "https://www.facebook.com/profile.php?id=61595411423064",
                 "https://www.linkedin.com/company/baja-waste-water-solution/",
                 "https://www.instagram.com/bajawstj/",
+                "https://www.tiktok.com/@bajawastewater",
               ],
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",

@@ -136,7 +136,7 @@ export default function Footer() {
           {/* Redes sociales */}
           <div className="flex gap-5">
             <a
-              href="https://www.facebook.com/p/Baja-Wastewater-Solution-S-de-RL-100064142435861/"
+              href="https://www.facebook.com/profile.php?id=61595411423064"
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Facebook"
@@ -144,6 +144,17 @@ export default function Footer() {
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M22 12c0-5.522-4.477-10-10-10S2 6.478 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987H7.898V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" />
+              </svg>
+            </a>
+            <a
+              href="https://www.tiktok.com/@bajawastewater"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="TikTok"
+              className="text-gray-500 hover:text-[#010101] transition-colors duration-150"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M16.6 5.82s.51.5 0 0A4.278 4.278 0 0 1 15.54 3h-3.09v12.4a2.592 2.592 0 0 1-2.59 2.5c-1.42 0-2.6-1.16-2.6-2.6 0-1.72 1.66-3.01 3.37-2.48V9.66c-3.45-.46-6.47 2.22-6.47 5.64 0 3.33 2.76 5.7 5.69 5.7 3.14 0 5.69-2.55 5.69-5.7V9.01a7.35 7.35 0 0 0 4.3 1.38V7.3s-1.88.09-3.24-1.48z" />
               </svg>
             </a>
             <a
