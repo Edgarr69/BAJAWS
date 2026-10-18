@@ -351,3 +351,32 @@ Hallazgos descartados como falsos positivos durante la auditoría:
 - Cookies sin httpOnly/secure (verificado: Supabase ssr lib lo setea)
 - XSS almacenado en panel (verificado: no hay `dangerouslySetInnerHTML`)
 - `requireRole` no jerárquico (es diseño intencional, no bug)
+
+---
+
+## Pendiente operativo — Analítica (Cloudflare Web Analytics)
+
+> Agregado 2026-07-10. No es un hallazgo de seguridad; es una tarea operativa
+> derivada de migrar de Google Analytics a Cloudflare Web Analytics.
+
+**Contexto:**
+Se eliminó Google Analytics / Tag Manager y el banner de cookies. La analítica
+ahora es Cloudflare Web Analytics (sin cookies). El CSP en `next.config.ts`
+permite el beacon (`static.cloudflareinsights.com` en `script-src`,
+`cloudflareinsights.com` en `connect-src`), pero **no hay ningún `<script>` de
+Cloudflare en el código** — el beacon lo inyecta Cloudflare automáticamente
+cuando el dominio pasa por su proxy.
+
+**Pendiente:**
+Confirmar en el panel de Cloudflare que Web Analytics esté activado con
+**inyección automática** para `bajaws.com.mx` (dominio proxied / nube naranja).
+Sin esto, el sitio se quedó **sin analítica** al haber quitado Google.
+
+- Dominio proxied + Web Analytics activo → ya funciona, nada que hacer.
+- Modo **manual** → falta insertar el snippet del beacon con el token de la
+  cuenta de Cloudflare en el layout raíz (`src/app/layout.tsx`).
+
+**Verificación:**
+Abrir el sitio en producción → DevTools → Network → debe aparecer una petición
+a `static.cloudflareinsights.com/beacon.min.js`. En el panel de Cloudflare
+(Analytics & Logs → Web Analytics) deben empezar a registrarse visitas.
