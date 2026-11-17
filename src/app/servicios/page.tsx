@@ -83,7 +83,7 @@ export default function ServiciosPage() {
               {
                 "@type": "Question",
                 "name": "¿Ofrecen servicio de recolección y transporte de residuos?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Sí. Contamos con flota propia para la recolección y transporte seguro de residuos industriales. Todo el traslado se realiza bajo protocolos de seguridad y con documentación conforme a la normativa de SEMARNAT y SCT." },
+                "acceptedAnswer": { "@type": "Answer", "text": "Sí. Contamos con flota propia para la recolección y transporte seguro de residuos industriales. Todo el traslado se realiza bajo protocolos de seguridad y con documentación conforme a la normativa de SEMARNAT y SICT." },
               },
               {
                 "@type": "Question",

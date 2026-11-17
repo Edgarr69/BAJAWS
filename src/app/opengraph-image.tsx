@@ -62,7 +62,7 @@ export default async function Image() {
           textAlign: 'center',
           fontFamily: 'sans-serif',
         }}>
-          Baja California · SEMARNAT · CESPT · SEMAR · SCT
+          Baja California · SEMARNAT · CESPT · SEMAR · SICT
         </div>
       </div>
     ),

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 const razones = [
   {
     titulo:     "Cumplimiento normativo garantizado",
-    descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR y SCT — sin riesgo de clausura para tu empresa.",
+    descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR y SICT — sin riesgo de clausura para tu empresa.",
   },
   {
     titulo:     `${getYearsExperience()}+ años de trayectoria`,
@@ -285,7 +285,7 @@ export default async function HomePage() {
               {
                 "@type": "Question",
                 "name": "¿Por qué es importante contratar un prestador de servicios autorizado?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT y SCT garantizan pleno cumplimiento normativo." },
+                "acceptedAnswer": { "@type": "Answer", "text": "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT y SICT garantizan pleno cumplimiento normativo." },
               },
             ],
           }),

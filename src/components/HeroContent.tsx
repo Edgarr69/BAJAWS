@@ -70,7 +70,7 @@ export default function HeroContent({ yearsExperience, authorizationsCount }: Pr
             className="flex items-center gap-x-4 flex-wrap gap-y-2 mb-9"
             style={fadeStyle(contentVisible, 450, reducedMotion)}
           >
-            {['SEMARNAT', 'CESPT', 'SEMAR', 'SCT'].map((org, i) => (
+            {['SEMARNAT', 'CESPT', 'SEMAR', 'SICT'].map((org, i) => (
               <div key={org} className="flex items-center gap-x-3">
                 {i > 0 && <span className="hidden sm:block w-px h-3.5 bg-white/20 flex-shrink-0" />}
                 <div className="flex items-center gap-1.5">

@@ -109,7 +109,7 @@ export default function Footer() {
               Autorizados por
             </h3>
             <ul className="space-y-2.5">
-              {["SEMARNAT", "CESPT", "SEMAR", "SCT"].map((dep) => (
+              {["SEMARNAT", "CESPT", "SEMAR", "SICT"].map((dep) => (
                 <li key={dep} className="flex items-center gap-1.5 text-gray-400 text-sm">
                   <svg className="w-3 h-3 text-primary-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}

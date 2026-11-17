@@ -181,7 +181,7 @@ export function AutorizacionesClient({ initialRows }: { initialRows: Autorizacio
         <div>
           <h1 className="text-xl font-bold text-slate-800">Autorizaciones</h1>
           <p className="text-xs text-slate-400 mt-1">
-            Permisos oficiales emitidos por SEMARNAT, CESPT, SEMAR y SCT.
+            Permisos oficiales emitidos por SEMARNAT, CESPT, SEMAR y SICT.
           </p>
         </div>
         <Button
