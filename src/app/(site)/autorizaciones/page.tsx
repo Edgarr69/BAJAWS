@@ -23,7 +23,11 @@ export const metadata: Metadata = {
 // al agregar o quitar registros desde el panel.
 function buildStats(rows: Autorizacion[]) {
   const distinct = (values: string[]) =>
-    new Set(values.map((v) => v.trim().toUpperCase()).filter(Boolean)).size;
+    new Set(
+      values
+        .map((v) => v.trim().toUpperCase())
+        .filter((v) => v && v !== "PENDIENTE"), // registros aún sin capturar desde el panel
+    ).size;
 
   return [
     { value: String(rows.length),                              label: "Autorizaciones vigentes" },
