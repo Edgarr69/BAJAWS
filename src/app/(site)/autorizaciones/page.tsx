@@ -19,12 +19,19 @@ export const metadata: Metadata = {
   },
 };
 
-const stats = [
-  { value: "8",  label: "Autorizaciones vigentes" },
-  { value: "5",  label: "Dependencias federales y estatales" },
-  { value: "4",  label: "Modalidades de operación" },
-  { value: "2009", label: "Año de inicio de operaciones" },
-];
+// Conteos derivados de la tabla `autorizaciones` para que se mantengan al día
+// al agregar o quitar registros desde el panel.
+function buildStats(rows: Autorizacion[]) {
+  const distinct = (values: string[]) =>
+    new Set(values.map((v) => v.trim().toUpperCase()).filter(Boolean)).size;
+
+  return [
+    { value: String(rows.length),                              label: "Autorizaciones vigentes" },
+    { value: String(distinct(rows.map((r) => r.dependencia))), label: "Dependencias federales y estatales" },
+    { value: String(distinct(rows.map((r) => r.modalidad))),   label: "Modalidades de operación" },
+    { value: "2009",                                           label: "Año de inicio de operaciones" },
+  ];
+}
 
 export default async function AutorizacionesPage() {
   const { title, intro } = siteContent.autorizaciones;
@@ -40,6 +47,8 @@ export default async function AutorizacionesPage() {
   } catch {
     // fallback silencioso — la página sigue funcionando con tabla vacía
   }
+
+  const stats = rows.length > 0 ? buildStats(rows) : [];
 
   return (
     <>
