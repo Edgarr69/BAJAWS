@@ -49,7 +49,7 @@ export const siteContent = {
     meta: {
       title: "Empresa de Tratamiento de Aguas Residuales Industriales en México",
       description:
-        `Empresa certificada en tratamiento de aguas residuales industriales en México. Autorizaciones SEMARNAT, CESPT, SEMAR y SICT. Más de ${getYearsExperience()} años de experiencia.`,
+        `Empresa certificada en tratamiento de aguas residuales industriales en México. Autorizaciones SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS. Más de ${getYearsExperience()} años de experiencia.`,
     },
   },
 
@@ -141,9 +141,9 @@ export const siteContent = {
     intro:
       "Contamos con las autorizaciones necesarias emitidas por autoridades locales, estatales y federales competentes, para llevar a cabo nuestros servicios de manejo de residuos de forma segura y confiable, siempre procurando cumplir cabalmente con las disposiciones establecidas en las normas, leyes y reglamentos que rigen en nuestro país.",
     meta: {
-      title: "Autorizaciones SEMARNAT, CESPT, SEMAR y SICT para Manejo de Residuos",
+      title: "Autorizaciones SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS para Manejo de Residuos",
       description:
-        "Autorizaciones vigentes SEMARNAT, CESPT, SEMAR y SICT para manejo, tratamiento y transporte de residuos industriales peligrosos en Baja California.",
+        "Autorizaciones vigentes SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS para manejo, tratamiento y transporte de residuos industriales peligrosos en Baja California.",
     },
   },
 
@@ -176,6 +176,8 @@ export const siteContent = {
         { dependencia:"CESPT",    descripcion:"Descarga de aguas residuales tratadas" },
         { dependencia:"SEMAR",    descripcion:"Manejo de residuos líquidos, sólidos y semisólidos" },
         { dependencia:"SICT",     descripcion:"Transporte de carga general líquida, sólida o semisólida" },
+        { dependencia:"COFEPRIS", descripcion:"Autorización sanitaria de nivel municipal" },
+        { dependencia:"SMADS",    descripcion:"Autorización ambiental de nivel estatal" },
       ],
     },
   },

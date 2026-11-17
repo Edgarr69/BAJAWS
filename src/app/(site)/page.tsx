@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 const razones = [
   {
     titulo:     "Cumplimiento normativo garantizado",
-    descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR y SICT — sin riesgo de clausura para tu empresa.",
+    descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS — sin riesgo de clausura para tu empresa.",
   },
   {
     titulo:     `${getYearsExperience()}+ años de trayectoria`,
@@ -176,11 +176,11 @@ export default async function HomePage() {
               Operamos con todas las autorizaciones vigentes
             </h2>
             <p className="text-slate-400 mb-10 text-sm max-w-xl mx-auto">
-              Cumplimos con todos los requisitos legales para operar en Baja California a nivel federal y estatal.
+              Cumplimos con todos los requisitos legales para operar en Baja California a nivel federal, estatal y municipal.
             </p>
           </AnimateOnScroll>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-3xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {agencias.map((a, i) => (
               <AnimateOnScroll key={a.dependencia} delay={i * 100}>
                 <div className="bg-white/8 border border-white/15 rounded-2xl p-5 hover:bg-white/15 hover:border-secondary-400/30 transition-[background-color,border-color] duration-300 h-full">
@@ -285,7 +285,7 @@ export default async function HomePage() {
               {
                 "@type": "Question",
                 "name": "¿Por qué es importante contratar un prestador de servicios autorizado?",
-                "acceptedAnswer": { "@type": "Answer", "text": "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT y SICT garantizan pleno cumplimiento normativo." },
+                "acceptedAnswer": { "@type": "Answer", "text": "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT, SICT, COFEPRIS y SMADS garantizan pleno cumplimiento normativo." },
               },
             ],
           }),

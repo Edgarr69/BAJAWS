@@ -35,7 +35,7 @@ const faqs = [
   },
   {
     pregunta: "¿Por qué es importante contratar un prestador de servicios autorizado?",
-    respuesta: "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT y SICT garantizan pleno cumplimiento normativo.",
+    respuesta: "Las empresas generadoras están obligadas a entregar sus residuos peligrosos únicamente a prestadores con autorizaciones vigentes. Contratar un prestador no autorizado expone a tu empresa a multas, clausura, responsabilidad penal y pone en riesgo tu operación. Nuestras autorizaciones de SEMARNAT, CESPT, SICT, COFEPRIS y SMADS garantizan pleno cumplimiento normativo.",
   },
 ];
 

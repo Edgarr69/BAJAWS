@@ -46,7 +46,7 @@ export default function RootLayout({
               "@type": "LocalBusiness",
               "@id": "https://bajaws.com.mx/#organization",
               "name": siteContent.company.name,
-              "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en México. Autorizaciones SEMARNAT, CESPT, SEMAR y SICT.",
+              "description": "Empresa certificada en tratamiento de aguas residuales industriales y gestión de residuos peligrosos en México. Autorizaciones SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS.",
               "url": "https://bajaws.com.mx",
               "logo": "https://bajaws.com.mx/logoo.webp",
               "image": "https://bajaws.com.mx/images/nosotros.webp",

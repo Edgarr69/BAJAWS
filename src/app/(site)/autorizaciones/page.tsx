@@ -10,7 +10,7 @@ import type { Autorizacion } from "@/types/panel";
 export const revalidate = 3600;
 export const metadata: Metadata = {
   ...siteContent.autorizaciones.meta,
-  title: { absolute: "Autorizaciones SEMARNAT, CESPT y SICT | Baja Wastewater Solutions" },
+  title: { absolute: "Autorizaciones SEMARNAT, CESPT, SICT, COFEPRIS y SMADS | Baja Wastewater Solutions" },
   alternates: { canonical: "/autorizaciones" },
   openGraph: {
     title: siteContent.autorizaciones.meta.title,
@@ -64,7 +64,7 @@ export default async function AutorizacionesPage() {
             "@type": "WebPage",
             "@id": "https://bajaws.com.mx/autorizaciones#webpage",
             "url": "https://bajaws.com.mx/autorizaciones",
-            "name": "Autorizaciones SEMARNAT, CESPT y SICT | Baja Wastewater Solutions",
+            "name": "Autorizaciones SEMARNAT, CESPT, SICT, COFEPRIS y SMADS | Baja Wastewater Solutions",
             "dateModified": "2026-05-07",
             "isPartOf": { "@id": "https://bajaws.com.mx/#website" },
             "about": { "@id": "https://bajaws.com.mx/#organization" },
