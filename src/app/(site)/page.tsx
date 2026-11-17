@@ -176,7 +176,7 @@ export default async function HomePage() {
               Operamos con todas las autorizaciones vigentes
             </h2>
             <p className="text-slate-400 mb-10 text-sm max-w-xl mx-auto">
-              Cumplimos con todos los requisitos legales para operar en Baja California a nivel federal, estatal y municipal.
+              Cumplimos con todos los requisitos legales para operar en Baja California a nivel federal y estatal.
             </p>
           </AnimateOnScroll>
 
