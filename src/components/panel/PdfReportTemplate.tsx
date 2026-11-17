@@ -18,7 +18,7 @@ const PAGE: React.CSSProperties = {
 function fmt(n: number, d = 2) { return n.toFixed(d); }
 
 function fmtDate(iso: string | null) {
-  if (!iso) return '–';
+  if (!iso) return 'Sin dato';
   return new Date(iso + 'T00:00:00').toLocaleDateString('es-MX', {
     day: '2-digit', month: 'short', year: 'numeric',
   });

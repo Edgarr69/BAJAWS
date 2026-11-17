@@ -103,7 +103,7 @@ export default function RespuestasPage() {
       <div className="flex flex-wrap gap-2 items-center">
         <input type="date" value={dateFrom} max={dateTo || today} onChange={e => setDateFrom(e.target.value)}
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
-        <span className="text-slate-400 text-sm">—</span>
+        <span className="text-slate-400 text-sm">a</span>
         <input type="date" value={dateTo} min={dateFrom} max={today} onChange={e => setDateTo(e.target.value)}
           className="text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500" />
         <Button size="sm" onClick={() => setFilters({ from: dateFrom, to: dateTo })} className="bg-primary-700 hover:bg-primary-600">Filtrar</Button>
@@ -182,10 +182,10 @@ export default function RespuestasPage() {
                           {new Date(s.submitted_at).toLocaleString('es-MX', { dateStyle: 'short', timeStyle: 'short' })}
                         </td>
                         <td className="px-4 py-3 font-mono text-xs text-primary-700">
-                          {(s.feedback_links as { code: string } | null)?.code ?? '—'}
+                          {(s.feedback_links as { code: string } | null)?.code ?? 'Sin dato'}
                         </td>
                         <td className="px-4 py-3 text-slate-700 text-xs">
-                          {s.company_name ?? <span className="text-slate-300">—</span>}
+                          {s.company_name ?? <span className="text-slate-300">Sin dato</span>}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-1">
@@ -226,7 +226,7 @@ export default function RespuestasPage() {
             <div className="space-y-5">
               <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-500 space-y-1">
                 <p><span className="font-medium">Fecha:</span> {new Date(detail.submission.submitted_at).toLocaleString('es-MX')}</p>
-                <p><span className="font-medium">Código:</span> {(detail.submission.feedback_links as { code: string } | null)?.code ?? '—'}</p>
+                <p><span className="font-medium">Código:</span> {(detail.submission.feedback_links as { code: string } | null)?.code ?? 'Sin dato'}</p>
                 {detail.submission.company_name && (
                   <p><span className="font-medium">Empresa:</span> {detail.submission.company_name}</p>
                 )}

@@ -462,7 +462,7 @@ export default function ExportacionesPage() {
             <div className="space-y-5">
               <div className="bg-slate-50 rounded-lg p-3 text-xs text-slate-500 space-y-1">
                 <p><span className="font-medium">Fecha:</span> {new Date(previewData.submission.submitted_at).toLocaleString('es-MX')}</p>
-                <p><span className="font-medium">Código:</span> {(previewData.submission.feedback_links as { code: string } | null)?.code ?? '—'}</p>
+                <p><span className="font-medium">Código:</span> {(previewData.submission.feedback_links as { code: string } | null)?.code ?? 'Sin dato'}</p>
                 {previewData.submission.company_name && (
                   <p><span className="font-medium">Empresa:</span> {previewData.submission.company_name}</p>
                 )}

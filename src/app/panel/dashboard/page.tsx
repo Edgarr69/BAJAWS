@@ -164,7 +164,7 @@ export default function DashboardPage() {
             onChange={e => setDateFrom(e.target.value)}
             className="text-base md:text-sm border border-slate-200 rounded-lg px-3 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-primary-500"
           />
-          <span className="text-slate-400 text-sm">—</span>
+          <span className="text-slate-400 text-sm">a</span>
           <input
             type="date" value={dateTo} min={dateFrom} max={today}
             onChange={e => setDateTo(e.target.value)}
