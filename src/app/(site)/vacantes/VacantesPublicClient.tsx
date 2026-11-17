@@ -303,7 +303,7 @@ export function VacantesPublicClient({ postings }: Props) {
         >
           <DialogHeader>
             <DialogTitle>
-              {success ? 'Postulación enviada' : duplicate ? 'Correo ya registrado' : `Aplicar — ${selected?.titulo}`}
+              {success ? 'Postulación enviada' : duplicate ? 'Correo ya registrado' : `Aplicar a ${selected?.titulo}`}
             </DialogTitle>
           </DialogHeader>
 

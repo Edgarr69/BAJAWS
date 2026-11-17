@@ -261,7 +261,7 @@ export default function FormularioPage() {
               {[1, 2, 3, 4, 5].map(v => (
                 <button
                   key={v}
-                  aria-label={`${v} - ${RATING_LABELS[v - 1]}`}
+                  aria-label={`${v}: ${RATING_LABELS[v - 1]}`}
                   onClick={() => setAnswer(q.id, v)}
                   className={`
                     flex flex-col items-center gap-1 py-3 rounded-xl border-2 transition-all

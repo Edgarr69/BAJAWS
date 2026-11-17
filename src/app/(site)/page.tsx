@@ -28,7 +28,7 @@ export const metadata: Metadata = {
 const razones = [
   {
     titulo:     "Cumplimiento normativo garantizado",
-    descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS — sin riesgo de clausura para tu empresa.",
+    descripcion:"Autorizaciones vigentes ante SEMARNAT, CESPT, SEMAR, SICT, COFEPRIS y SMADS, sin riesgo de clausura para tu empresa.",
   },
   {
     titulo:     `${getYearsExperience()}+ años de trayectoria`,
@@ -40,7 +40,7 @@ const razones = [
   },
   {
     titulo:     "Servicio 100 % integral",
-    descripcion:"Recolección, transporte, acopio y tratamiento en un solo proveedor — sin intermediarios.",
+    descripcion:"Recolección, transporte, acopio y tratamiento en un solo proveedor, sin intermediarios.",
   },
 ];
 
@@ -159,7 +159,7 @@ export default async function HomePage() {
           <div className="max-w-3xl mx-auto rounded-2xl overflow-hidden shadow-2xl border border-gray-200 aspect-video">
             <YoutubeEmbed
               videoId="UyetZ7i_Mg4"
-              title="Baja Wastewater Solutions — Video institucional"
+              title="Video institucional de Baja Wastewater Solutions"
             />
           </div>
         </AnimateOnScroll>

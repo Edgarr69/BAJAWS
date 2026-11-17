@@ -69,7 +69,7 @@ export default function AvisoPrivacidadPage() {
           <p className="mt-3 text-sm">
             Adicionalmente, cuando visita este sitio web se registran automáticamente datos técnicos
             como: tipo de navegador, sistema operativo, páginas visitadas y dirección IP (almacenada
-            de forma hasheada — no permite identificarle directamente).
+            de forma hasheada, lo que no permite identificarle directamente).
           </p>
           <p className="mt-3 text-sm">
             Proporcionar los datos marcados en los formularios es voluntario; sin embargo, no hacerlo

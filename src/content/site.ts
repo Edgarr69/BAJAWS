@@ -131,7 +131,7 @@ export const siteContent = {
     meta: {
       title: "Empresa de Tratamiento de Residuos Industriales en Baja California",
       description:
-        `Conoce a Baja Wastewater Solutions — más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en México.`,
+        `Conoce a Baja Wastewater Solutions, con más de ${getYearsExperience()} años de experiencia en tratamiento de aguas residuales y gestión de residuos industriales en México.`,
     },
   },
 
@@ -163,7 +163,7 @@ export const siteContent = {
     meta: {
       title: "Contacto y Cotización de Servicios de Tratamiento de Residuos",
       description:
-        "Solicita cotización o contáctanos en Baja Wastewater Solutions. Tijuana, Baja California. Tel: (664) 647 5020. Atención Lunes a Viernes 8:00 AM - 5:00 PM.",
+        "Solicita cotización o contáctanos en Baja Wastewater Solutions. Tijuana, Baja California. Tel: (664) 647 5020. Atención Lunes a Viernes de 8:00 AM a 5:00 PM.",
     },
   },
 

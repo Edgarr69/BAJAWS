@@ -138,7 +138,7 @@ export default function Header() {
             {/* Logo */}
             <Link
               href="/"
-              aria-label="Baja Wastewater Solutions - Inicio"
+              aria-label="Inicio de Baja Wastewater Solutions"
               className="flex-shrink-0"
               onClick={() => { setIsOpen(false); window.scrollTo({ top: 0 }); }}
             >
