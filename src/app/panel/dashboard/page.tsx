@@ -184,9 +184,9 @@ export default function DashboardPage() {
 
       {/* ── KPIs ─────────────────────────────────────────────────────────────── */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <AnimatedKpi title="Score global"     numValue={globalAvg}   decimalPlaces={2}           subtitle="Escala 1–5"     color="blue"  loading={loading} />
-        <AnimatedKpi title="% Positivos"      numValue={pctPositive} decimalPlaces={1} suffix="%" subtitle="Respuestas 4–5" color="green" loading={loading} />
-        <AnimatedKpi title="% Negativos"      numValue={pctNegative} decimalPlaces={1} suffix="%" subtitle="Respuestas 1–2" color="red"   loading={loading} />
+        <AnimatedKpi title="Score global"     numValue={globalAvg}   decimalPlaces={2}           subtitle="Escala de 1 a 5"     color="blue"  loading={loading} />
+        <AnimatedKpi title="% Positivos"      numValue={pctPositive} decimalPlaces={1} suffix="%" subtitle="Respuestas de 4 y 5" color="green" loading={loading} />
+        <AnimatedKpi title="% Negativos"      numValue={pctNegative} decimalPlaces={1} suffix="%" subtitle="Respuestas de 1 y 2" color="red"   loading={loading} />
         <AnimatedKpi
           title="Formularios contestados"
           numValue={linkStats.pct}

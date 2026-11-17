@@ -46,7 +46,7 @@ function PageContext({ data }: { data: ReportData }) {
         )}
       </div>
       <span style={{ fontSize: 10, color: '#94a3b8' }}>
-        {fmtDate(data.meta.dateFrom)} – {fmtDate(data.meta.dateTo)}
+        Del {fmtDate(data.meta.dateFrom)} al {fmtDate(data.meta.dateTo)}
       </span>
     </div>
   );
@@ -58,7 +58,7 @@ function PageFooter() {
       marginTop: 28, paddingTop: 10, borderTop: '1px solid #e2e8f0',
       fontSize: 9, color: '#94a3b8', textAlign: 'center',
     }}>
-      Reporte generado automáticamente — Baja Wastewater Solutions
+      Reporte generado automáticamente por Baja Wastewater Solutions
     </div>
   );
 }
@@ -172,7 +172,7 @@ function Page1({ data }: { data: ReportData }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 22 }}>
         {[
           { label: 'Score global',   value: fmt(summary.globalScore),             sub: '/ 5.00',        color: '#0B3C5D' },
-          { label: '% Satisfacción', value: `${fmt(summary.globalScorePct, 1)}%`, sub: 'escala 0–100',  color: '#2980B9' },
+          { label: '% Satisfacción', value: `${fmt(summary.globalScorePct, 1)}%`, sub: 'escala de 0 a 100',  color: '#2980B9' },
           { label: 'Respuestas',     value: String(summary.totalResponses),        sub: 'en el período', color: '#0B3C5D' },
           { label: 'Evaluaciones',   value: String(summary.totalSubmissions),      sub: 'formularios',   color: '#3D8B36' },
         ].map(c => (
@@ -235,7 +235,7 @@ function Page1({ data }: { data: ReportData }) {
           {/* Gráfica */}
           <div style={{ backgroundColor: '#fafafa', border: '1px solid #f1f5f9', borderRadius: 8, padding: '12px 0 6px 0', overflow: 'visible' }}>
             <div style={{ fontSize: 10, color: '#94a3b8', textAlign: 'center', marginBottom: 6, letterSpacing: '0.04em', textTransform: 'uppercase' }}>
-              Score promedio por categoría (escala 1–5)
+              Score promedio por categoría (escala de 1 a 5)
             </div>
             <BarChartSvg categories={byCategory} chartWidth={722} />
           </div>

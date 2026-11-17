@@ -348,8 +348,8 @@ export function VacantesClient({ initialItems }: { initialItems: JobPosting[] })
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       title={item.is_active
-                        ? 'Desactivar — la vacante dejará de verse en el sitio'
-                        : 'Activar — la vacante se publicará en el sitio'}
+                        ? 'Desactivar: la vacante dejará de verse en el sitio'
+                        : 'Activar: la vacante se publicará en el sitio'}
                       disabled={toggling === item.id}
                       onClick={() => handleToggle(item)}
                       className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg border transition-colors disabled:opacity-50 ${

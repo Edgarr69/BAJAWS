@@ -329,7 +329,7 @@ export function PostulacionesClient({ initialItems }: { initialItems: JobApplica
           <DialogHeader className="px-4 py-3 border-b border-slate-100 flex-row items-center justify-between space-y-0">
             <DialogTitle className="flex items-center gap-2 text-sm font-medium text-slate-700 min-w-0 pr-8">
               <FileText className="w-4 h-4 text-primary-600 shrink-0" />
-              <span className="truncate">CV — {cvPreview?.nombre}</span>
+              <span className="truncate">CV de {cvPreview?.nombre}</span>
             </DialogTitle>
             <button
               type="button"

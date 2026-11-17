@@ -358,7 +358,7 @@ export default function ExportacionesPage() {
           onOpenAutoFocus={e => e.preventDefault()}
         >
           <DialogHeader>
-            <DialogTitle>Encuestas disponibles — {company}</DialogTitle>
+            <DialogTitle>Encuestas disponibles de {company}</DialogTitle>
           </DialogHeader>
 
           {companySubs && companySubs.length > 0 ? (

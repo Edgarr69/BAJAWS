@@ -225,7 +225,7 @@ export async function sendPostulanteNotification(data: PostulanteData): Promise<
   }
 
   const resend  = new Resend(apiKey);
-  const subject = `[Postulación] ${data.nombre} — ${data.vacante}`;
+  const subject = `[Postulación] ${data.nombre}, ${data.vacante}`;
   const html    = buildPostulanteHtml(data);
 
   await Promise.all(

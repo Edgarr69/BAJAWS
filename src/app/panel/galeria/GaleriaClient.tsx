@@ -349,7 +349,7 @@ export function GaleriaClient({ fotos: initial }: GaleriaClientProps) {
       <Dialog open={previewOpen} onOpenChange={setPreviewOpen}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Vista previa — Nuestra Flota</DialogTitle>
+            <DialogTitle>Vista previa: Nuestra Flota</DialogTitle>
           </DialogHeader>
           <div className="pt-2">
             <FlotaGallery images={previewImages} />

@@ -314,7 +314,7 @@ export function AutorizacionesClient({ initialRows }: { initialRows: Autorizacio
             <p className="text-sm text-slate-600 py-2">
               ¿Eliminar la autorización{' '}
               <strong className="font-mono">{delTarget.numero_autorizacion}</strong> (
-              {delTarget.dependencia} — {delTarget.modalidad})?{' '}
+              {delTarget.dependencia}, {delTarget.modalidad})?{' '}
               Esta acción es <strong>permanente</strong>.
             </p>
           )}
