@@ -1,3 +1,4 @@
+import 'server-only';
 import { Ratelimit } from '@upstash/ratelimit';
 import { Redis } from '@upstash/redis';
 
@@ -77,6 +78,14 @@ export async function checkRateLimit(
   max: number,
   windowMs: number,
 ): Promise<RateLimitResult> {
-  if (hasUpstash) return checkUpstash(key, max, windowMs);
+  if (hasUpstash) {
+    try {
+      return await checkUpstash(key, max, windowMs);
+    } catch (err) {
+      // Si Redis no responde (base eliminada, caída, red), los formularios
+      // públicos no deben fallar: se usa el contador en memoria como respaldo.
+      console.error('[rate-limit] Upstash no disponible, usando respaldo en memoria:', err);
+    }
+  }
   return checkMemory(key, max, windowMs);
 }
