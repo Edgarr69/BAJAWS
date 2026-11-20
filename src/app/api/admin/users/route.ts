@@ -28,7 +28,7 @@ export async function GET() {
 
 const createSchema = z.object({
   email:     z.string().email('Email inválido'),
-  password:  z.string().min(8, 'Mínimo 8 caracteres').max(72, 'Máximo 72 caracteres'),
+  password:  z.string().min(10, 'Mínimo 10 caracteres').max(72, 'Máximo 72 caracteres'),
   full_name: z.string().max(80).optional(),
   role:      z.enum(['admin', 'atencion', 'pending']).default('atencion'),
 });
